@@ -1,11 +1,19 @@
 /**
  * Auth Utility — Tidur Nyenyak
- * Simulasi autentikasi menggunakan localStorage.
- * Siap diganti dengan API calls ke Laravel backend nanti.
+ * Mengelola state autentikasi dan memanggil API backend Laravel.
+ *
+ * File ini menggunakan api.js untuk berkomunikasi dengan backend.
+ * Data user & token disimpan di localStorage agar tetap login setelah refresh.
  */
+
+import { apiRegister, apiLogin, apiLogout } from './api.js';
 
 const AUTH_KEY = 'tidurnyenyak_user';
 const TOKEN_KEY = 'tidurnyenyak_token';
+
+// ==========================================
+// 📦 LOCAL STORAGE HELPERS
+// ==========================================
 
 /** Cek apakah user sudah login */
 export function isLoggedIn() {
@@ -33,48 +41,109 @@ export function setToken(token) {
   localStorage.setItem(TOKEN_KEY, token);
 }
 
-/** Logout — hapus semua data auth */
-export function logout() {
+/** Hapus semua data auth dari localStorage */
+function clearAuth() {
   localStorage.removeItem(AUTH_KEY);
   localStorage.removeItem(TOKEN_KEY);
 }
 
+// ==========================================
+// 🔐 AUTH ACTIONS (memanggil API)
+// ==========================================
+
 /**
- * Simulasi Register
- * Nanti ganti dengan: POST /api/register
+ * Register user baru via API
+ *
+ * @param {object} params
+ * @param {string} params.username - Nama pengguna
+ * @param {string} params.email    - Alamat email
+ * @param {string} params.password - Kata sandi
+ * @param {File}   [params.photo]    - File foto profil opsional
+ * @returns {Promise<{success: boolean, message?: string}>}
  */
-export function register({ username, email, password }) {
-  // Simpan user data ke localStorage
-  const userData = {
-    id: Date.now(),
-    username,
-    email,
-    created_at: new Date().toISOString(),
-  };
-  const fakeToken = 'sim_' + btoa(email + ':' + Date.now());
+export async function register({ username, email, password, photo = null }) {
+  const formData = new FormData();
+  formData.append('name', username);
+  formData.append('email', email);
+  formData.append('password', password);
+  if (photo) {
+    formData.append('photo', photo);
+  }
 
-  setUser(userData);
-  setToken(fakeToken);
+  const result = await apiRegister(formData);
 
-  return { success: true, user: userData, token: fakeToken };
+  if (result.ok) {
+    const user = result.data.user;
+    const token = result.data.access_token;
+
+    setUser({
+      id: user.id,
+      username: user.name,
+      email: user.email,
+      photo: user.photo,
+    });
+    setToken(token);
+
+    return { success: true };
+  } else {
+    const errors = result.data.errors;
+    let message = result.data.message || 'Registrasi gagal.';
+
+    if (errors) {
+      const firstKey = Object.keys(errors)[0];
+      if (firstKey && errors[firstKey].length > 0) {
+        message = errors[firstKey][0];
+      }
+    }
+
+    return { success: false, message };
+  }
 }
 
 /**
- * Simulasi Login
- * Nanti ganti dengan: POST /api/login
+ * Login user via API
+ *
+ * @param {object} params
+ * @param {string} params.email    - Alamat email
+ * @param {string} params.password - Kata sandi
+ * @returns {Promise<{success: boolean, message?: string}>}
  */
-export function login({ email, password }) {
-  // Untuk simulasi, login selalu berhasil
-  const userData = {
-    id: Date.now(),
-    username: email.split('@')[0],
-    email,
-    created_at: new Date().toISOString(),
-  };
-  const fakeToken = 'sim_' + btoa(email + ':' + Date.now());
+export async function login({ email, password }) {
+  const result = await apiLogin({ email, password });
 
-  setUser(userData);
-  setToken(fakeToken);
+  if (result.ok) {
+    const user = result.data.user;
+    const token = result.data.access_token;
 
-  return { success: true, user: userData, token: fakeToken };
+    setUser({
+      id: user.id,
+      username: user.name,
+      email: user.email,
+      photo: user.photo,
+    });
+    setToken(token);
+
+    return { success: true };
+  } else {
+    const message = result.data.message || 'Email atau kata sandi salah.';
+    return { success: false, message };
+  }
+}
+
+/**
+ * Logout user — hapus data lokal + panggil API untuk revoke token
+ *
+ * @returns {Promise<void>}
+ */
+export async function logout() {
+  const token = getToken();
+
+  // Panggil API logout untuk revoke token di backend
+  if (token) {
+    await apiLogout(token).catch(() => {
+      // Jika API gagal (misal server mati), tetap hapus data lokal
+    });
+  }
+
+  clearAuth();
 }

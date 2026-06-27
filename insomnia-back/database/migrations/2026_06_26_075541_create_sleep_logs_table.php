@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('sleep_logs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->date('log_date');
             $table->dateTime('bed_time');
             $table->dateTime('wake_time');
@@ -21,8 +21,6 @@ return new class extends Migration
             $table->text('notes');
             $table->integer('total_sleep_minutes');
             $table->timestamps();
-
-            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

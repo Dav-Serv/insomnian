@@ -13,12 +13,9 @@ return new class extends Migration
     {
         Schema::create('user_favorite_soundscapes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('soundscape_id');
-            $table->timestamps();
-
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('soundscape_id')->references('id')->on('sound_scapes')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

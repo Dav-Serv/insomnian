@@ -60,6 +60,12 @@ import Sidebar from '../layouts/Sidebar.astro';
             </div>
           </div>
 
+          <div class="flex flex-col gap-2">
+            <label for="reg-photo" class="text-sm text-muted font-medium">Foto Profil (Opsional)</label>
+            <input type="file" id="reg-photo" accept="image/*"
+              class="w-full bg-white/2 border border-white/5 rounded-xl py-3 px-4 text-white font-inherit text-sm transition-all duration-200 focus:outline-none focus:border-accent/40 file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-accent/10 file:text-accent hover:file:bg-accent/20 cursor-pointer" />
+          </div>
+
           <!-- Error message -->
           <div id="reg-error" class="hidden text-red-400 text-sm bg-red-400/8 border border-red-400/15 rounded-xl py-3 px-4"></div>
 
@@ -185,13 +191,28 @@ import Sidebar from '../layouts/Sidebar.astro';
         : '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>';
     });
 
+    // Helper: set loading state pada tombol
+    function setLoading(button, isLoading, originalText) {
+      if (isLoading) {
+        button.disabled = true;
+        button.textContent = 'Memproses...';
+        button.classList.add('opacity-60', 'cursor-wait');
+      } else {
+        button.disabled = false;
+        button.textContent = originalText;
+        button.classList.remove('opacity-60', 'cursor-wait');
+      }
+    }
+
     // Register form submit
-    registerForm.addEventListener('submit', (e) => {
+    registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const username = document.getElementById('reg-username').value.trim();
       const email = document.getElementById('reg-email').value.trim();
       const password = document.getElementById('reg-password').value;
+      const photoEl = document.getElementById('reg-photo');
       const errorEl = document.getElementById('reg-error');
+      const submitBtn = document.getElementById('reg-submit');
 
       if (username.length < 3) {
         errorEl.textContent = 'Nama pengguna minimal 3 karakter.';
@@ -199,26 +220,35 @@ import Sidebar from '../layouts/Sidebar.astro';
         return;
       }
 
-      if (password.length < 6) {
-        errorEl.textContent = 'Kata sandi minimal 6 karakter.';
+      if (password.length < 8) {
+        errorEl.textContent = 'Kata sandi minimal 8 karakter (sesuai standar backend).';
         errorEl.classList.remove('hidden');
         return;
       }
 
-      errorEl.classList.add('hidden');
+      const photo = photoEl && photoEl.files && photoEl.files[0] ? photoEl.files[0] : null;
 
-      const result = register({ username, email, password });
+      errorEl.classList.add('hidden');
+      setLoading(submitBtn, true, 'Buat Akun');
+
+      const result = await register({ username, email, password, photo });
+
       if (result.success) {
         window.location.href = '/';
+      } else {
+        errorEl.textContent = result.message || 'Registrasi gagal. Silakan coba lagi.';
+        errorEl.classList.remove('hidden');
+        setLoading(submitBtn, false, 'Buat Akun');
       }
     });
 
     // Login form submit
-    loginForm.addEventListener('submit', (e) => {
+    loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value;
       const errorEl = document.getElementById('login-error');
+      const submitBtn = document.getElementById('login-submit');
 
       if (!email || !password) {
         errorEl.textContent = 'Semua kolom harus diisi.';
@@ -227,11 +257,18 @@ import Sidebar from '../layouts/Sidebar.astro';
       }
 
       errorEl.classList.add('hidden');
+      setLoading(submitBtn, true, 'Masuk');
 
-      const result = login({ email, password });
+      const result = await login({ email, password });
+
       if (result.success) {
         window.location.href = '/';
+      } else {
+        errorEl.textContent = result.message || 'Email atau kata sandi salah.';
+        errorEl.classList.remove('hidden');
+        setLoading(submitBtn, false, 'Masuk');
       }
     });
   });
 </script>
+

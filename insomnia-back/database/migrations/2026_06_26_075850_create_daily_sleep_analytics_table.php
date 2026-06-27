@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('daily_sleep_analytics', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('sleep_log_id');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('sleep_log_id')->references('id')->on('sleep_logs')->onDelete('cascade');
             $table->integer('sleep_score');
             $table->string('recovery_status');
             $table->text('recovery_message');
@@ -22,9 +22,6 @@ return new class extends Migration
             $table->string('restfulness_status');
             $table->date('calculated_date');
             $table->timestamps();
-
-            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreignId('sleep_log_id')->references('id')->on('sleep_logs')->onDelete('cascade');
         });
     }
 
