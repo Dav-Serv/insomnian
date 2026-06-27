@@ -19,7 +19,11 @@ class SoundScapes extends Model
         'audio_url'
     ];
 
-    public function FavoritedByUsers() : BelongsToMany {
+    /**
+     * Relasi many-to-many dengan User (favorit)
+     */
+    public function favoritedByUsers(): BelongsToMany
+    {
         return $this->belongsToMany(
             User::class,
             'user_favorite_soundscapes',

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\SoundScapeController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\SettingAccountController;
