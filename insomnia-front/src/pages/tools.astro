@@ -1,0 +1,71 @@
+---
+import Sidebar from '../layouts/Sidebar.astro';
+
+// Tools page
+---
+
+<Sidebar title="Tidur Nyenyak - Tools" activeTab="tools">
+  <div class="max-w-[1100px] mx-auto">
+    <header class="mb-10">
+      <h1 class="text-3xl font-bold m-0 mb-2 text-white">Alat Bantu (Tools)</h1>
+      <p class="text-base text-muted m-0">Gunakan instrumen interaktif kami untuk merencanakan tidur atau menenangkan pikiran.</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Tool 1: Sleep Calculator -->
+      <section class="bg-[#0d1618] border border-white/2 rounded-3xl p-8 flex flex-col justify-between gap-7">
+        <div class="flex gap-4 items-start">
+          <div class="w-12 h-12 rounded-xl bg-accent/8 text-accent flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold m-0 mb-1 text-white">Kalkulator Siklus Tidur</h2>
+            <p class="text-sm text-muted m-0 leading-relaxed">Hitung waktu bangun terbaik berdasarkan siklus alami tidur 90 menit.</p>
+          </div>
+        </div>
+
+        <div class="bg-white/2 border border-white/2 p-5 rounded-[18px] flex flex-col gap-4">
+          <p class="text-[13px] text-muted m-0">Jika saya tidur sekarang, saya harus bangun pukul:</p>
+          <div class="flex flex-col gap-2">
+            <div class="flex justify-between items-center py-3 px-4 bg-white/1 border border-white/3 rounded-lg">
+              <span class="text-base font-bold text-white">23:45</span>
+              <span class="text-xs text-muted">6 Siklus (9.0 Jam)</span>
+            </div>
+            <div class="flex justify-between items-center py-3 px-4 bg-accent/5 border border-accent/20 rounded-lg">
+              <span class="text-base font-bold text-accent">01:15</span>
+              <span class="text-xs text-accent">5 Siklus (7.5 Jam) 🔥</span>
+            </div>
+            <div class="flex justify-between items-center py-3 px-4 bg-white/1 border border-white/3 rounded-lg">
+              <span class="text-base font-bold text-white">02:45</span>
+              <span class="text-xs text-muted">4 Siklus (6.0 Jam)</span>
+            </div>
+          </div>
+          <button class="bg-white/4 border border-white/5 text-white py-3 rounded-xl cursor-pointer font-medium transition-all hover:bg-white/8">Hitung Ulang</button>
+        </div>
+      </section>
+
+      <!-- Tool 2: Breathing Exercise -->
+      <section class="bg-[#0d1618] border border-white/2 rounded-3xl p-8 flex flex-col justify-between gap-7">
+        <div class="flex gap-4 items-start">
+          <div class="w-12 h-12 rounded-xl bg-accent/8 text-accent flex items-center justify-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/></svg>
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold m-0 mb-1 text-white">Latihan Napas 4-7-8</h2>
+            <p class="text-sm text-muted m-0 leading-relaxed">Tenangkan sistem saraf Anda sebelum tidur dengan teknik pernapasan ritmis.</p>
+          </div>
+        </div>
+
+        <div class="bg-white/2 border border-white/2 p-6 rounded-[18px] flex flex-col items-center gap-6">
+          <div class="relative w-[140px] h-[140px] rounded-full border border-dashed border-accent/20 flex items-center justify-center">
+            <div class="w-[80px] h-[80px] rounded-full bg-accent/15 border border-accent/30 animate-breath"></div>
+            <span class="absolute text-[13px] font-semibold text-accent [text-shadow:0_0_10px_rgba(0,0,0,0.5)]">Tarik Napas</span>
+          </div>
+          <div class="breathing-controls">
+            <button class="bg-accent/8 border border-accent/20 text-accent py-2.5 px-5 rounded-full text-sm font-semibold cursor-pointer transition-all duration-200 hover:bg-accent/12 hover:scale-102">Mulai Latihan</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</Sidebar>
