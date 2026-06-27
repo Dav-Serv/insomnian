@@ -15,7 +15,7 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name'      => 'required|string|max:255',
             'email'     => 'required|string|email|max:255|unique:users',
-            'photo'     => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'photo'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'password'  => 'required|string|min:8',
         ]);
 
@@ -27,7 +27,11 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $imagePath = $request->file('photo')->store('users', 'public');
+        $imagePath = null;
+
+        if ($request->hasFile('photo')){
+            $imagePath = $request->file('photo')->store('users', 'public');
+        }
 
         $user = User::create([
             'name'     => $request->name,
