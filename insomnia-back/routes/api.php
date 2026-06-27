@@ -20,5 +20,14 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/account', [SettingAccountController::class, 'index']);
     Route::post('/account/update', [SettingAccountController::class, 'update']);
 
+    // soundscape
+    Route::get('/soundscapes', [SoundScapeController::class, 'index']);
+    Route::get('/soundscapes/{id}', [SoundScapeController::class, 'show']);
+    Route::post('/soundscapes/{id}/favorite', [SoundScapeController::class, 'toggleFavorite']);
+
+    // favorites
+    Route::get('/favorites', [SoundScapeController::class, 'favorites']);
+    Route::put('/soundscapes/{id}/audio-url', [SoundScapeController::class, 'updateAudioUrl']);
+
     Route::post('/logout', [AuthController::class, 'logout']);
 });
