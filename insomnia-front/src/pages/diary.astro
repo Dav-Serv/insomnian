@@ -1,0 +1,77 @@
+---
+import Sidebar from '../layouts/Sidebar.astro';
+
+// Sleep Diary Page
+const diaries = [
+  { id: 1, date: 'Kemarin, 25 Juni', mood: '😴 Sangat Baik', sleepTime: '22:30 - 06:15', note: 'Malam ini tidur sangat cepat setelah mendengarkan suara hujan rintik. Bangun pagi terasa segar dan tanpa lelah.' },
+  { id: 2, date: 'Rabu, 24 Juni', mood: '😐 Biasa Saja', sleepTime: '23:45 - 06:30', note: 'Terbangun sekali di tengah malam karena suara di luar rumah, tapi berhasil tidur lagi setelah bernapas teratur.' },
+  { id: 3, date: 'Selasa, 23 Juni', mood: '🥱 Kurang Baik', sleepTime: '01:15 - 06:00', note: 'Terlalu lama menatap layar laptop sebelum tidur. Otak terasa sangat aktif dan sulit dinonaktifkan.' }
+];
+---
+
+<Sidebar title="Tidur Nyenyak - Diary" activeTab="diary">
+  <div class="max-w-[1100px] mx-auto">
+    <header class="mb-10">
+      <h1 class="text-3xl font-bold m-0 mb-2 text-white">Catatan Tidur (Diary)</h1>
+      <p class="text-base text-muted m-0">Refleksikan kualitas tidur Anda untuk menemukan pola tidur terbaik.</p>
+    </header>
+
+    <div class="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-8 items-start">
+      <!-- Left: Create New Log -->
+      <section class="form-section">
+        <div class="bg-[#0d1618] border border-white/2 rounded-3xl p-8">
+          <h2 class="text-xl font-semibold m-0 mb-6 text-white">Tulis Catatan Baru</h2>
+          <form class="flex flex-col gap-5">
+            <div class="flex flex-col gap-2">
+              <label class="text-sm text-muted font-medium">Kualitas Bangun Tidur</label>
+              <div class="grid grid-cols-4 gap-2">
+                <button type="button" class="bg-white/2 border border-white/4 text-[#b3c5c8] py-3 px-1.5 rounded-xl cursor-pointer text-sm font-medium transition-all duration-200 hover:bg-white/5 hover:text-white">😫 Buruk</button>
+                <button type="button" class="bg-white/2 border border-white/4 text-[#b3c5c8] py-3 px-1.5 rounded-xl cursor-pointer text-sm font-medium transition-all duration-200 hover:bg-white/5 hover:text-white">😐 Biasa</button>
+                <button type="button" class="bg-accent/8 border border-accent/25 text-accent py-3 px-1.5 rounded-xl cursor-pointer text-sm font-medium transition-all duration-200">😴 Baik</button>
+                <button type="button" class="bg-white/2 border border-white/4 text-[#b3c5c8] py-3 px-1.5 rounded-xl cursor-pointer text-sm font-medium transition-all duration-200 hover:bg-white/5 hover:text-white">😊 Segar</button>
+              </div>
+            </div>
+
+            <div class="flex flex-row gap-4">
+              <div class="flex-1 flex flex-col gap-2">
+                <label for="sleep-time" class="text-sm text-muted font-medium">Jam Tidur</label>
+                <input type="time" id="sleep-time" value="22:30" class="bg-white/2 border border-white/5 rounded-xl py-3.5 px-4 text-white font-inherit text-sm transition-all focus:outline-none focus:border-accent/40" />
+              </div>
+              <div class="flex-1 flex flex-col gap-2">
+                <label for="wake-time" class="text-sm text-muted font-medium">Jam Bangun</label>
+                <input type="time" id="wake-time" value="06:00" class="bg-white/2 border border-white/5 rounded-xl py-3.5 px-4 text-white font-inherit text-sm transition-all focus:outline-none focus:border-accent/40" />
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label for="notes" class="text-sm text-muted font-medium">Apa yang Anda rasakan sebelum/setelah tidur?</label>
+              <textarea id="notes" rows="4" placeholder="Tuliskan pengalaman tidur Anda malam ini..." class="bg-white/2 border border-white/5 rounded-xl py-3.5 px-4 text-white font-inherit text-sm transition-all focus:outline-none focus:border-accent/40 resize-none"></textarea>
+            </div>
+
+            <button type="submit" class="bg-accent text-[#080c0d] border-none rounded-2xl p-4 font-semibold text-sm cursor-pointer transition-all duration-200 hover:bg-accent-hover hover:-translate-y-0.5 mt-2.5">Simpan Catatan</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Right: Past Logs -->
+      <section class="history-section">
+        <h2 class="text-xl font-semibold m-0 mb-6 text-white">Riwayat Catatan</h2>
+        <div class="flex flex-col gap-4">
+          {diaries.map(log => (
+            <div class="bg-[#0d1618] border border-white/2 rounded-[20px] p-5">
+              <div class="flex justify-between items-center mb-2.5">
+                <span class="text-sm font-semibold text-white">{log.date}</span>
+                <span class="text-xs bg-white/3 py-1 px-2 rounded-md text-[#b3c5c8]">{log.mood}</span>
+              </div>
+              <div class="flex items-center gap-1.5 text-xs text-muted mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>{log.sleepTime}</span>
+              </div>
+              <p class="text-sm leading-relaxed text-[#b3c5c8] m-0 italic">"{log.note}"</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  </div>
+</Sidebar>

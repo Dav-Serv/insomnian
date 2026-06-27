@@ -1,11 +1,266 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import Sidebar from '../layouts/Sidebar.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Home Dashboard for Tidur Nyenyak
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<Sidebar title="Tidur Nyenyak - Home">
+  <div class="w-full">
+
+    <!-- ===== GUEST VIEW (belum login) ===== -->
+    <div id="guest-view" class="hidden">
+      <div class="flex flex-col items-center justify-center min-h-[65vh] text-center px-4">
+        
+        <!-- Breathing animation -->
+        <div class="relative w-28 h-28 mb-8">
+          <div class="absolute inset-0 rounded-full bg-accent/10 animate-breath"></div>
+          <div class="absolute inset-4 rounded-full bg-accent/15 animate-breath" style="animation-delay: 0.5s;"></div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="currentColor" class="text-accent">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </div>
+        </div>
+
+        <h1 class="text-[32px] font-bold text-white m-0 mb-3">
+          Selamat Datang di <span class="text-accent">Tidur Nyenyak</span>
+        </h1>
+        <p class="text-base text-muted m-0 mb-2 max-w-lg leading-relaxed">
+          Aplikasi pendamping tidur yang membantu Anda membangun kebiasaan tidur yang lebih baik melalui soundscape, jurnal harian, dan analisis pola tidur.
+        </p>
+        <p class="text-sm text-muted/60 m-0 mb-8 max-w-md">
+          Masuk atau buat akun untuk mulai melacak kualitas tidur Anda dan mendapatkan rekomendasi personal.
+        </p>
+
+        <div class="flex gap-4">
+          <a href="/auth" class="inline-flex items-center gap-2 bg-accent text-[#080c0d] border-none rounded-xl py-3.5 px-7 font-semibold text-sm no-underline transition-all duration-200 hover:bg-accent-hover hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(78,208,200,0.25)]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Mulai Sekarang
+          </a>
+        </div>
+
+        <!-- Feature highlights -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-14 w-full max-w-2xl">
+          <div class="bg-[#0d1618] border border-white/5 rounded-2xl p-5 text-left transition-all duration-300 hover:border-accent/10">
+            <div class="w-9 h-9 rounded-xl bg-accent/8 text-accent flex items-center justify-center mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+            </div>
+            <h3 class="text-sm font-semibold text-white m-0 mb-1">Soundscape</h3>
+            <p class="text-xs text-muted m-0 leading-relaxed">Suara alam menenangkan untuk menemani tidur Anda.</p>
+          </div>
+          <div class="bg-[#0d1618] border border-white/5 rounded-2xl p-5 text-left transition-all duration-300 hover:border-accent/10">
+            <div class="w-9 h-9 rounded-xl bg-accent/8 text-accent flex items-center justify-center mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h9M4 12h7M4 18h9" />
+                <path d="M16 14.5L19.5 11a1.5 1.5 0 0 1 2 2l-3.5 3.5-3 1 1-3z" />
+              </svg>
+            </div>
+            <h3 class="text-sm font-semibold text-white m-0 mb-1">Diary Tidur</h3>
+            <p class="text-xs text-muted m-0 leading-relaxed">Catat dan pantau pola tidur harian Anda.</p>
+          </div>
+          <div class="bg-[#0d1618] border border-white/5 rounded-2xl p-5 text-left transition-all duration-300 hover:border-accent/10">
+            <div class="w-9 h-9 rounded-xl bg-accent/8 text-accent flex items-center justify-center mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+              </svg>
+            </div>
+            <h3 class="text-sm font-semibold text-white m-0 mb-1">Analisis Cerdas</h3>
+            <p class="text-xs text-muted m-0 leading-relaxed">Insight personal untuk kualitas tidur lebih baik.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LOGGED-IN VIEW (sudah login) ===== -->
+    <div id="user-view" class="hidden">
+      <!-- Top Bar -->
+      <div class="flex justify-between items-center mb-8">
+        <div>
+          <h1 class="text-[28px] font-bold m-0 text-white leading-tight">
+            Selamat Pagi, <span class="text-accent" id="dashboard-username">User</span>
+          </h1>
+          <p class="text-sm text-muted mt-1 mb-0">Here is a summary of your rest. You're building better habits.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <!-- Settings Icon -->
+          <button class="w-9 h-9 rounded-full bg-white/5 border border-white/8 flex items-center justify-center text-muted hover:text-white hover:border-white/15 transition-all cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          </button>
+          <!-- Logout Button -->
+          <button id="logout-btn" class="w-9 h-9 rounded-full bg-white/5 border border-white/8 flex items-center justify-center text-muted hover:text-red-400 hover:border-red-400/30 transition-all cursor-pointer" title="Keluar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
+          <!-- Toggle -->
+          <div class="w-11 h-6 rounded-full bg-accent/20 border border-accent/30 relative cursor-pointer">
+            <div class="w-4.5 h-4.5 rounded-full bg-accent absolute top-[2.5px] right-[3px] shadow-[0_0_8px_rgba(78,208,200,0.4)]"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sleep Score Card -->
+      <div class="bg-[#0d1618] border border-white/5 rounded-2xl p-7 mb-6 relative overflow-hidden">
+        <!-- Subtle gradient glow -->
+        <div class="absolute top-0 right-0 w-48 h-48 bg-accent/3 rounded-full blur-3xl -translate-y-12 translate-x-12 pointer-events-none"></div>
+        
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-1.5 bg-accent/10 border border-accent/20 rounded-full py-1 px-3 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" class="text-accent">
+                <circle cx="12" cy="12" r="10"/>
+              </svg>
+              <span class="text-xs font-semibold text-accent">Sleep Score</span>
+            </div>
+            
+            <h2 class="text-[22px] font-bold text-white m-0 mb-2">Excellent Recovery</h2>
+            <p class="text-sm text-muted leading-relaxed m-0 max-w-md">
+              Your resting heart rate stabilized early in the night, indicating low cognitive load and deep relaxation.
+            </p>
+          </div>
+
+          <!-- Circular Score -->
+          <div class="relative w-24 h-24 shrink-0 ml-6">
+            <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+              <!-- Background ring -->
+              <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(78,208,200,0.08)" stroke-width="6"/>
+              <!-- Score arc (85%) -->
+              <circle cx="50" cy="50" r="42" fill="none" stroke="url(#scoreGradient)" stroke-width="6" 
+                stroke-linecap="round"
+                stroke-dasharray="263.89"
+                stroke-dashoffset="39.58"
+                class="drop-shadow-[0_0_6px_rgba(78,208,200,0.4)]"/>
+              <defs>
+                <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#4ed0c8"/>
+                  <stop offset="100%" stop-color="#3ba89f"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="text-[28px] font-bold text-white">85</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+        <!-- Total Time -->
+        <div class="bg-[#0d1618] border border-white/5 rounded-2xl p-5 transition-all duration-300 hover:border-accent/10">
+          <div class="w-9 h-9 rounded-xl bg-accent/8 text-accent flex items-center justify-center mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <p class="text-xs text-muted mb-1 m-0 font-medium">Total Time</p>
+          <p class="text-2xl font-bold text-white m-0">7h 20m</p>
+        </div>
+
+        <!-- Deep Sleep -->
+        <div class="bg-[#0d1618] border border-white/5 rounded-2xl p-5 transition-all duration-300 hover:border-accent/10">
+          <div class="w-9 h-9 rounded-xl bg-accent/8 text-accent flex items-center justify-center mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12h2l3-9 4 18 3-9h2"/>
+            </svg>
+          </div>
+          <p class="text-xs text-muted mb-1 m-0 font-medium">Deep Sleep</p>
+          <div class="flex items-baseline gap-2">
+            <p class="text-2xl font-bold text-white m-0">2h 15m</p>
+            <span class="text-[11px] text-accent font-medium">+15m vs avg</span>
+          </div>
+        </div>
+
+        <!-- Restfulness -->
+        <div class="bg-[#0d1618] border border-white/5 rounded-2xl p-5 transition-all duration-300 hover:border-accent/10">
+          <div class="w-9 h-9 rounded-xl bg-accent/8 text-accent flex items-center justify-center mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+            </svg>
+          </div>
+          <p class="text-xs text-muted mb-1 m-0 font-medium">Restfulness</p>
+          <p class="text-2xl font-bold text-white m-0">Optimal</p>
+        </div>
+      </div>
+
+      <!-- Recommended for you -->
+      <section>
+        <div class="flex justify-between items-center mb-5">
+          <h2 class="text-lg font-semibold text-white m-0">Recommended for you</h2>
+          <a href="/soundscape" class="text-[13px] text-accent no-underline font-medium hover:opacity-80 transition-opacity">View All</a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Midnight Rain -->
+          <a href="/soundscape" class="group relative rounded-2xl overflow-hidden aspect-[16/10] no-underline block">
+            <img src="/midnight-rain.png" alt="Midnight Rain" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 p-4">
+              <h3 class="text-white text-sm font-semibold m-0 mb-0.5">Midnight Rain</h3>
+              <p class="text-muted text-xs m-0">45 min • Nature</p>
+            </div>
+          </a>
+
+          <!-- Deep Pine Mist -->
+          <a href="/soundscape" class="group relative rounded-2xl overflow-hidden aspect-[16/10] no-underline block">
+            <img src="/deep-pine-mist.png" alt="Deep Pine Mist" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 p-4">
+              <h3 class="text-white text-sm font-semibold m-0 mb-0.5">Deep Pine Mist</h3>
+              <p class="text-muted text-xs m-0">60 min • Ambient</p>
+            </div>
+          </a>
+
+          <!-- Discover More -->
+          <a href="/soundscape" class="group flex flex-col items-center justify-center rounded-2xl bg-[#0d1618] border border-white/5 aspect-[16/10] no-underline transition-all duration-300 hover:border-accent/15 hover:bg-[#0f1c1e]">
+            <div class="w-12 h-12 rounded-full bg-accent/8 text-accent flex items-center justify-center mb-3 transition-transform duration-300 group-hover:scale-110">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.3-4.3"/>
+              </svg>
+            </div>
+            <span class="text-sm text-muted font-medium group-hover:text-white transition-colors">Discover More</span>
+          </a>
+        </div>
+      </section>
+    </div>
+
+  </div>
+</Sidebar>
+
+<script>
+  import { isLoggedIn, getUser, logout } from '../utils/auth.js';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const guestView = document.getElementById('guest-view');
+    const userView = document.getElementById('user-view');
+    const dashboardUsername = document.getElementById('dashboard-username');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    if (isLoggedIn()) {
+      const user = getUser();
+      guestView?.classList.add('hidden');
+      userView?.classList.remove('hidden');
+      if (dashboardUsername && user) {
+        dashboardUsername.textContent = user.username || 'User';
+      }
+    } else {
+      guestView?.classList.remove('hidden');
+      userView?.classList.add('hidden');
+    }
+
+    // Logout handler
+    logoutBtn?.addEventListener('click', () => {
+      logout();
+      window.location.reload();
+    });
+  });
+</script>
