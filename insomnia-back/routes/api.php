@@ -20,4 +20,5 @@ Route::get('/soundscapes/{id}', [SoundScapeController::class, 'show']);
 Route::post('/soundscapes/{id}/favorite', [SoundScapeController::class, 'toggleFavorite']);
 
 Route::get('/favorites', [SoundScapeController::class, 'favorites']);
+Route::put('/soundscapes/{id}/audio-url', [SoundScapeController::class, 'updateAudioUrl']);
 });
