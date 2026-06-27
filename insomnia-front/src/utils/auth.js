@@ -1,8 +1,9 @@
 /**
  * Auth Utility — Tidur Nyenyak
- * Simulasi autentikasi menggunakan localStorage.
- * Siap diganti dengan API calls ke Laravel backend nanti.
+ * Mengelola state autentikasi dan memanggil API backend Laravel.
  */
+
+import { apiRegister, apiLogin, apiLogout } from './api.js';
 
 const AUTH_KEY = 'tidurnyenyak_user';
 const TOKEN_KEY = 'tidurnyenyak_token';
@@ -33,48 +34,88 @@ export function setToken(token) {
   localStorage.setItem(TOKEN_KEY, token);
 }
 
-/** Logout — hapus semua data auth */
-export function logout() {
+/** Hapus semua data auth dari localStorage */
+function clearAuth() {
   localStorage.removeItem(AUTH_KEY);
   localStorage.removeItem(TOKEN_KEY);
 }
 
 /**
- * Simulasi Register
- * Nanti ganti dengan: POST /api/register
+ * Register user baru via API
  */
-export function register({ username, email, password }) {
-  // Simpan user data ke localStorage
-  const userData = {
-    id: Date.now(),
-    username,
-    email,
-    created_at: new Date().toISOString(),
-  };
-  const fakeToken = 'sim_' + btoa(email + ':' + Date.now());
+export async function register({ username, email, password, photo = null }) {
+  const formData = new FormData();
+  formData.append('name', username);
+  formData.append('email', email);
+  formData.append('password', password);
+  if (photo) {
+    formData.append('photo', photo);
+  }
 
-  setUser(userData);
-  setToken(fakeToken);
+  const result = await apiRegister(formData);
 
-  return { success: true, user: userData, token: fakeToken };
+  if (result.ok) {
+    const user = result.data.user;
+    const token = result.data.access_token;
+
+    setUser({
+      id: user.id,
+      username: user.name,
+      email: user.email,
+      photo: user.photo,
+    });
+    setToken(token);
+
+    return { success: true };
+  } else {
+    const errors = result.data.errors;
+    let message = result.data.message || 'Registrasi gagal.';
+
+    if (errors) {
+      const firstKey = Object.keys(errors)[0];
+      if (firstKey && errors[firstKey].length > 0) {
+        message = errors[firstKey][0];
+      }
+    }
+
+    return { success: false, message };
+  }
 }
 
 /**
- * Simulasi Login
- * Nanti ganti dengan: POST /api/login
+ * Login user via API
  */
-export function login({ email, password }) {
-  // Untuk simulasi, login selalu berhasil
-  const userData = {
-    id: Date.now(),
-    username: email.split('@')[0],
-    email,
-    created_at: new Date().toISOString(),
-  };
-  const fakeToken = 'sim_' + btoa(email + ':' + Date.now());
+export async function login({ email, password }) {
+  const result = await apiLogin({ email, password });
 
-  setUser(userData);
-  setToken(fakeToken);
+  if (result.ok) {
+    const user = result.data.user;
+    const token = result.data.access_token;
 
-  return { success: true, user: userData, token: fakeToken };
+    setUser({
+      id: user.id,
+      username: user.name,
+      email: user.email,
+      photo: user.photo,
+    });
+    setToken(token);
+
+    return { success: true };
+  } else {
+    const message = result.data.message || 'Email atau kata sandi salah.';
+    return { success: false, message };
+  }
+}
+
+/**
+ * Logout user
+ */
+export async function logout() {
+  const token = getToken();
+
+  if (token) {
+    await apiLogout(token).catch(() => {});
+  }
+
+  clearAuth();
 }
