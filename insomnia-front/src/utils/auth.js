@@ -127,3 +127,15 @@ export async function logout() {
 
   clearAuth();
 }
+
+/**
+ * Sync user profile changes in localStorage
+ */
+export function updateLocalUser({ username, photo }) {
+  const current = getUser();
+  if (current) {
+    if (username) current.username = username;
+    if (photo !== undefined) current.photo = photo;
+    setUser(current);
+  }
+}

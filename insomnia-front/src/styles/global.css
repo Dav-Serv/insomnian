@@ -103,18 +103,22 @@ html, body {
 }
 
 @keyframes moon-phase-morph {
+  /* Sabit (Crescent) */
   0%, 100% {
     transform: translateX(-75%);
     opacity: 0.8;
   }
+  /* Separuh (Half) */
   25% {
     transform: translateX(-40%);
     opacity: 0.9;
   }
+  /* Purnama (Full) */
   50% {
     transform: translateX(0%);
     opacity: 1;
   }
+  /* Separuh (Half) */
   75% {
     transform: translateX(40%);
     opacity: 0.9;

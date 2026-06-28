@@ -130,6 +130,24 @@ const menuItems = [
       <slot />
     </main>
   </div>
+
+  <!-- GLOBAL MOON LOADER OVERLAY -->
+  <div id="global-moon-loader" class="moon-loader-overlay">
+    <div class="moon-spinner"></div>
+    <span id="global-moon-loader-text" class="text-accent text-sm font-semibold tracking-wider">Memuat...</span>
+  </div>
+
+  <!-- GLOBAL CONFIRM MODAL -->
+  <div id="global-confirm-modal" class="confirm-modal-overlay">
+    <div class="confirm-modal">
+      <h3 class="text-lg font-bold text-white mb-2">Konfirmasi Keluar</h3>
+      <p class="text-sm text-muted mb-6">Apakah Anda yakin ingin keluar dari akun Anda?</p>
+      <div class="flex justify-center gap-3">
+        <button id="confirm-cancel-btn" class="bg-white/5 border border-white/8 text-muted py-2 px-5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-white/10 hover:text-white transition-all">Batal</button>
+        <button id="confirm-ok-btn" class="bg-red-500 text-white border-none py-2 px-5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-red-600 transition-all shadow-[0_0_12px_rgba(239,68,68,0.2)]">Logout</button>
+      </div>
+    </div>
+  </div>
 </Layout>
 
 <script>
@@ -140,6 +158,46 @@ const menuItems = [
     const loginLink = document.getElementById('sidebar-login-link');
     const usernameEl = document.getElementById('sidebar-username');
     const photoContainer = document.getElementById('sidebar-user-photo-container');
+
+    // Global elements
+    const loaderOverlay = document.getElementById('global-moon-loader');
+    const loaderText = document.getElementById('global-moon-loader-text');
+    
+    const confirmOverlay = document.getElementById('global-confirm-modal');
+    const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+    const confirmOkBtn = document.getElementById('confirm-ok-btn');
+
+    let onConfirmCallback = null;
+
+    // Define helper functions on window
+    window.showMoonLoader = (text = 'Memuat...') => {
+      if (loaderText) loaderText.textContent = text;
+      loaderOverlay?.classList.add('active');
+    };
+
+    window.hideMoonLoader = () => {
+      loaderOverlay?.classList.remove('active');
+    };
+
+    window.showLogoutConfirm = (onConfirm) => {
+      onConfirmCallback = onConfirm;
+      confirmOverlay?.classList.add('active');
+    };
+
+    window.hideLogoutConfirm = () => {
+      confirmOverlay?.classList.remove('active');
+      onConfirmCallback = null;
+    };
+
+    // Modal listeners
+    confirmCancelBtn?.addEventListener('click', () => {
+      window.hideLogoutConfirm();
+    });
+
+    confirmOkBtn?.addEventListener('click', () => {
+      if (onConfirmCallback) onConfirmCallback();
+      window.hideLogoutConfirm();
+    });
 
     if (isLoggedIn()) {
       const user = getUser();
