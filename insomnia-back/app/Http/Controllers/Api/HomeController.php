@@ -23,6 +23,22 @@ class HomeController extends Controller
 
         // 2. Ambil 2 rekomendasi soundscape
         $recommendations = SoundScapes::inRandomOrder()->take(2)->get()->map(function($item) {
+            // Resolusi thumbnail dengan fallback CDN jika berkas gambar lokal tidak ditemukan
+            $thumbnail = $item->thumbnail_url;
+            if ($thumbnail && !filter_var($thumbnail, FILTER_VALIDATE_URL)) {
+                if (!file_exists(public_path($thumbnail))) {
+                    $category = strtolower($item->category);
+                    $thumbnail = match ($category) {
+                        'rain' => 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=400&q=80',
+                        'nature' => 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&q=80',
+                        'binaural' => 'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=400&q=80',
+                        default => 'https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?w=400&q=80',
+                    };
+                } else {
+                    $thumbnail = asset($thumbnail);
+                }
+            }
+
             return [
                 'id'            => $item->id,
                 'title'         => $item->title,
@@ -30,8 +46,8 @@ class HomeController extends Controller
                 'category'      => $item->category,
                 // Mengubah format tampilan menjadi "Nature • 45 min" sesuai UI
                 'subtitle_ui'   => "{$item->category} • {$item->duration_minutes} min",
-                'thumbnail_url' => $item->thumbnail_url,
-                'audio_url'     => $item->audio_url,
+                'thumbnail_url' => $thumbnail,
+                'audio_url'     => $item->audio_url ? (filter_var($item->audio_url, FILTER_VALIDATE_URL) ? $item->audio_url : asset($item->audio_url)) : null,
             ];
         });
 
