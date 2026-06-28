@@ -7,6 +7,7 @@ use App\Http\Resources\SoundscapeResource;
 use App\Models\SoundScapes;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Http;
 
 class SoundScapeController extends Controller
 {
@@ -140,4 +141,79 @@ class SoundScapeController extends Controller
         'data'    => new SoundscapeResource($soundscape)
     ]);
 }
+
+    /**
+     * Stream audio dari Google Drive melalui proxy
+     * GET /api/stream/{id}
+     */
+    public function streamAudio(int $id)
+    {
+        // 1. Cari soundscape di database
+        $soundscape = SoundScapes::find($id);
+        
+        if (!$soundscape) {
+            abort(404, 'Soundscape not found');
+        }
+
+        // 2. Ekstrak File ID dari URL
+        $fileId = $this->extractFileId($soundscape->audio_url);
+        
+        if (!$fileId) {
+            abort(400, 'Invalid audio URL');
+        }
+
+        // 3. Bangun URL Google Drive yang benar
+        $googleUrl = "https://drive.google.com/uc?export=open&id={$fileId}";
+
+        // 4. Ambil file dari Google Drive
+        try {
+            $response = Http::withOptions([
+                'stream' => true,
+                'timeout' => 30,
+            ])->get($googleUrl);
+        } catch (\Exception $e) {
+            abort(500, 'Failed to fetch audio from Google Drive');
+        }
+
+        // 5. Cek apakah response berhasil
+        if ($response->failed()) {
+            abort(500, 'Google Drive returned error');
+        }
+
+        // 6. Dapatkan konten dan MIME type
+        $content = $response->body();
+        $contentType = $response->header('Content-Type') ?? 'audio/mpeg';
+
+        // 7. Kembalikan sebagai stream audio
+        return response()->stream(
+            function () use ($content) {
+                echo $content;
+            },
+            200,
+            [
+                'Content-Type' => $contentType,
+                'Content-Disposition' => 'inline; filename="audio.mp3"',
+                'Cache-Control' => 'public, max-age=86400', // cache 1 hari
+                'Accept-Ranges' => 'bytes',
+            ]
+        );
+    }
+
+    /**
+     * Ekstrak File ID dari URL Google Drive
+     */
+    private function extractFileId(string $url)
+    {
+        // Cocokkan pola: .../file/d/FILE_ID/... atau ...?id=FILE_ID
+        preg_match('/\/file\/d\/([^\/]+)/', $url, $matches);
+        
+        if (isset($matches[1])) {
+            return $matches[1];
+        }
+
+        // Alternatif: cari ?id=FILE_ID
+        preg_match('/[?&]id=([^&]+)/', $url, $matches);
+        
+        return $matches[1] ?? null;
+    }
 }
