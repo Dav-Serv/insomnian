@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('artist_name');
-            $table->text('descriptiom');
+            $table->text('description');
             $table->string('category');
             $table->integer('duration_minutes')->nullable();
             $table->string('thumbnail_url');

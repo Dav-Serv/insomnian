@@ -27,9 +27,9 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // Supabase has NOT NULL constraint on photo, so default to empty string if not uploaded
-        $imagePath = '';
-        if ($request->hasFile('photo')) {
+        $imagePath = null;
+
+        if ($request->hasFile('photo')){
             $imagePath = $request->file('photo')->store('users', 'public');
         }
 
@@ -37,7 +37,7 @@ class AuthController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'photo'    => $imagePath,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->password), // Password otomatis di-hash
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -64,8 +64,10 @@ class AuthController extends Controller
             ], 422);
         }
 
+        // Cari user berdasarkan email
         $user = User::where('email', $request->email)->first();
 
+        // Cek kecocokan password
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'success' => false,
@@ -73,6 +75,7 @@ class AuthController extends Controller
             ], 401);
         }
 
+        // Buat token login baru
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
