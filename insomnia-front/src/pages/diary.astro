@@ -20,7 +20,7 @@ const weeklyData = [
 ---
 
 <Sidebar title="Tidur Nyenyak - Sleep Diary" activeTab="diary">
-  <div class="diary-page">
+  <div class="w-full">
     <!-- Header -->
     <header class="mb-10">
       <h1 class="text-4xl md:text-[2.5rem] font-bold m-0 mb-3 text-white">Sleep Diary</h1>
@@ -31,16 +31,16 @@ const weeklyData = [
     <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-7 items-start">
 
       <!-- Left: Log Tonight's Sleep -->
-      <section class="diary-card">
-        <h2 class="text-[1.4rem] font-semibold m-0 mb-7 text-white">Log Tonight's Sleep</h2>
+      <section class="bg-[#0d1618] border border-white/5 rounded-2xl p-8 md:p-9">
+        <h2 class="text-xl md:text-[1.4rem] font-semibold m-0 mb-7 text-white">Log Tonight's Sleep</h2>
 
         <form id="sleep-log-form" class="flex flex-col gap-6">
           <!-- Date -->
           <div class="flex flex-col gap-2">
-            <label class="diary-label">DATE</label>
-            <div class="diary-input-wrapper">
-              <input type="text" value="Today, Oct 24" readonly class="diary-input cursor-pointer" />
-              <svg class="diary-input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <label class="text-xs font-bold tracking-wider text-[#8e9fa2] uppercase">DATE</label>
+            <div class="relative flex items-center">
+              <input type="text" value="Today, Oct 24" readonly class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl py-3.5 px-4.5 pr-11 text-white font-sans text-[15px] outline-none transition-colors focus:border-accent/40 box-border cursor-pointer" />
+              <svg class="absolute right-3.5 text-[#8e9fa2] pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                 <line x1="16" y1="2" x2="16" y2="6"/>
                 <line x1="8" y1="2" x2="8" y2="6"/>
@@ -52,20 +52,20 @@ const weeklyData = [
           <!-- Bedtime & Wake Time -->
           <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
-              <label class="diary-label">BEDTIME</label>
-              <div class="diary-input-wrapper">
-                <span class="diary-input-icon-left">
+              <label class="text-xs font-bold tracking-wider text-[#8e9fa2] uppercase">BEDTIME</label>
+              <div class="relative flex items-center">
+                <span class="absolute left-3.5 flex items-center pointer-events-none z-10">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="text-accent/60">
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                   </svg>
                 </span>
-                <input type="text" value="11:30 PM" readonly class="diary-input pl-10 text-accent" />
+                <input type="text" value="11:30 PM" readonly class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl py-3.5 pl-10 pr-4.5 text-accent font-sans text-[15px] outline-none transition-colors focus:border-accent/40 box-border" />
               </div>
             </div>
             <div class="flex flex-col gap-2">
-              <label class="diary-label">WAKE TIME</label>
-              <div class="diary-input-wrapper">
-                <span class="diary-input-icon-left">
+              <label class="text-xs font-bold tracking-wider text-[#8e9fa2] uppercase">WAKE TIME</label>
+              <div class="relative flex items-center">
+                <span class="absolute left-3.5 flex items-center pointer-events-none z-10">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted/60">
                     <circle cx="12" cy="12" r="5"/>
                     <line x1="12" y1="1" x2="12" y2="3"/>
@@ -78,7 +78,7 @@ const weeklyData = [
                     <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
                   </svg>
                 </span>
-                <input type="text" value="07:00 AM" readonly class="diary-input pl-10 text-muted" />
+                <input type="text" value="07:00 AM" readonly class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl py-3.5 pl-10 pr-4.5 text-muted font-sans text-[15px] outline-none transition-colors focus:border-accent/40 box-border" />
               </div>
             </div>
           </div>
@@ -86,46 +86,46 @@ const weeklyData = [
           <!-- Sleep Quality -->
           <div class="flex flex-col gap-3">
             <div class="flex justify-between items-center">
-              <label class="diary-label m-0">SLEEP QUALITY</label>
+              <label class="text-xs font-bold tracking-wider text-[#8e9fa2] uppercase m-0">SLEEP QUALITY</label>
               <span id="quality-label" class="text-[15px] font-semibold text-accent">Good</span>
             </div>
 
             <!-- Slider -->
-            <div class="relative">
+            <div class="relative flex items-center">
               <input
                 type="range"
                 id="quality-slider"
                 min="0"
                 max="5"
                 value="4"
-                class="quality-range w-full"
+                class="w-full h-1 bg-gradient-to-r from-[#1a2729] via-accent to-[#1a2729] rounded-sm appearance-none outline-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4.5 [&::-webkit-slider-thumb]:h-4.5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent [&::-webkit-slider-thumb]:border-3 [&::-webkit-slider-thumb]:border-[#0d1618] [&::-webkit-slider-thumb]:shadow-[0_0_8px_rgba(78,208,200,0.4)] [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:transition-shadow [&::-webkit-slider-thumb]:hover:shadow-[0_0_14px_rgba(78,208,200,0.6)] [&::-moz-range-thumb]:w-4.5 [&::-moz-range-thumb]:h-4.5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-accent [&::-moz-range-thumb]:border-3 [&::-moz-range-thumb]:border-[#0d1618] [&::-moz-range-thumb]:shadow-[0_0_8px_rgba(78,208,200,0.4)] [&::-moz-range-thumb]:cursor-pointer"
               />
             </div>
 
             <!-- Emoji Row -->
             <div class="flex justify-between items-center px-1">
-              <button type="button" class="emoji-btn" data-value="0" aria-label="Terrible">😫</button>
-              <button type="button" class="emoji-btn" data-value="1" aria-label="Bad">😟</button>
-              <button type="button" class="emoji-btn" data-value="2" aria-label="Okay">😐</button>
-              <button type="button" class="emoji-btn" data-value="3" aria-label="Fair">🙂</button>
-              <button type="button" class="emoji-btn active" data-value="4" aria-label="Good">😊</button>
-              <button type="button" class="emoji-btn" data-value="5" aria-label="Great">😄</button>
+              <button type="button" class="bg-transparent border-none text-2xl cursor-pointer p-2 rounded-lg opacity-40 transition-all filter grayscale hover:opacity-80 hover:filter-none hover:scale-115 emoji-btn" data-value="0" aria-label="Terrible">😫</button>
+              <button type="button" class="bg-transparent border-none text-2xl cursor-pointer p-2 rounded-lg opacity-40 transition-all filter grayscale hover:opacity-80 hover:filter-none hover:scale-115 emoji-btn" data-value="1" aria-label="Bad">😟</button>
+              <button type="button" class="bg-transparent border-none text-2xl cursor-pointer p-2 rounded-lg opacity-40 transition-all filter grayscale hover:opacity-80 hover:filter-none hover:scale-115 emoji-btn" data-value="2" aria-label="Okay">😐</button>
+              <button type="button" class="bg-transparent border-none text-2xl cursor-pointer p-2 rounded-lg opacity-40 transition-all filter grayscale hover:opacity-80 hover:filter-none hover:scale-115 emoji-btn" data-value="3" aria-label="Fair">🙂</button>
+              <button type="button" class="bg-transparent border-none text-2xl cursor-pointer p-2 rounded-lg opacity-100 filter-none scale-120 bg-accent/10 transition-all emoji-btn active" data-value="4" aria-label="Good">😊</button>
+              <button type="button" class="bg-transparent border-none text-2xl cursor-pointer p-2 rounded-lg opacity-40 transition-all filter grayscale hover:opacity-80 hover:filter-none hover:scale-115 emoji-btn" data-value="5" aria-label="Great">😄</button>
             </div>
           </div>
 
           <!-- Notes -->
           <div class="flex flex-col gap-2">
-            <label class="diary-label">NOTES (OPTIONAL)</label>
+            <label class="text-xs font-bold tracking-wider text-[#8e9fa2] uppercase">NOTES (OPTIONAL)</label>
             <textarea
               id="sleep-notes"
               rows="3"
               placeholder="How did you feel before bed?"
-              class="diary-textarea"
+              class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl p-4 text-white font-sans text-[15px] outline-none resize-none transition-colors placeholder:text-[#5a6e71] focus:border-accent/40 box-border"
             ></textarea>
           </div>
 
           <!-- Save Button -->
-          <button type="submit" class="diary-save-btn">Save Entry</button>
+          <button type="submit" class="w-full bg-accent text-[#080c0d] border-none rounded-2xl p-4 font-bold text-[15px] cursor-pointer transition-all mt-1 hover:bg-[#5ce3db] hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(78,208,200,0.3)] active:translate-y-0">Save Entry</button>
         </form>
       </section>
 
@@ -133,9 +133,9 @@ const weeklyData = [
       <div class="flex flex-col gap-7">
 
         <!-- Weekly Trend Card -->
-        <section class="diary-card">
+        <section class="bg-[#0d1618] border border-white/5 rounded-2xl p-8 md:p-9">
           <div class="flex justify-between items-center mb-7">
-            <h2 class="text-[1.4rem] font-semibold m-0 text-white">Weekly Trend</h2>
+            <h2 class="text-xl md:text-[1.4rem] font-semibold m-0 text-white">Weekly Trend</h2>
             <button class="flex items-center gap-1.5 bg-transparent border border-white/10 rounded-lg py-1.5 px-3 text-xs text-muted cursor-pointer hover:border-white/20 transition-colors">
               This Week
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -145,9 +145,9 @@ const weeklyData = [
           </div>
 
           <!-- Chart Area -->
-          <div class="chart-container">
+          <div class="flex gap-3 h-[260px]">
             <!-- Y-axis labels -->
-            <div class="chart-y-axis">
+            <div class="flex flex-col justify-between text-xs text-[#5a6e71] pb-8 min-w-[2.5rem] text-right">
               <span>10h</span>
               <span>7.5h</span>
               <span>5h</span>
@@ -155,33 +155,33 @@ const weeklyData = [
             </div>
 
             <!-- Chart grid + bars -->
-            <div class="chart-area">
+            <div class="flex-1 relative">
               <!-- Grid lines -->
-              <div class="chart-grid-lines">
-                <div class="chart-grid-line"></div>
-                <div class="chart-grid-line"></div>
-                <div class="chart-grid-line"></div>
-                <div class="chart-grid-line"></div>
+              <div class="absolute inset-0 pb-8 flex flex-col justify-between">
+                <div class="h-[1px] bg-white/[0.05]"></div>
+                <div class="h-[1px] bg-white/[0.05]"></div>
+                <div class="h-[1px] bg-white/[0.05]"></div>
+                <div class="h-[1px] bg-white/[0.05]"></div>
               </div>
 
               <!-- Bars -->
-              <div class="chart-bars">
+              <div class="absolute inset-0 flex items-end justify-around pb-8">
                 {weeklyData.map((d) => (
-                  <div class="chart-bar-group">
-                    <div class="chart-bar-wrapper">
+                  <div class="flex flex-col items-center gap-2 flex-1">
+                    <div class="flex flex-col items-center w-full h-[calc(260px-2rem-0.5rem)] justify-end relative">
                       {d.hours > 0 && (
-                        <div class="chart-bar-label">{d.label}</div>
+                        <div class="text-[11px] text-white bg-accent/20 border border-accent/30 rounded-md px-2 py-1 mb-1.5 whitespace-nowrap font-semibold">{d.label}</div>
                       )}
                       <div
                         class:list={[
-                          'chart-bar',
-                          d.hours > 0 ? 'has-data' : ''
+                          'w-[60%] max-w-[32px] rounded-t-lg rounded-b-md bg-white/[0.04] transition-[height] duration-400 min-h-[3px]',
+                          d.hours > 0 ? 'bg-gradient-to-b from-accent to-[#2a8a84]' : ''
                         ]}
                         style={`height: ${d.hours > 0 ? (d.hours / 10) * 100 : 0}%`}
                       ></div>
                     </div>
                     <span class:list={[
-                      'chart-day-label',
+                      'text-[13px] text-[#5a6e71] font-medium',
                       d.day === 'Sat' ? 'text-accent' : ''
                     ]}>{d.day}</span>
                   </div>
@@ -192,16 +192,16 @@ const weeklyData = [
         </section>
 
         <!-- Recent History -->
-        <section class="diary-card">
-          <h2 class="text-[1.4rem] font-semibold m-0 mb-6 text-white text-center">Recent History</h2>
+        <section class="bg-[#0d1618] border border-white/5 rounded-2xl p-8 md:p-9">
+          <h2 class="text-xl md:text-[1.4rem] font-semibold m-0 mb-6 text-white text-center">Recent History</h2>
 
           <div class="flex flex-col gap-4">
             {recentHistory.map((entry) => (
-              <div class="history-item">
+              <div class="flex justify-between items-center py-4 px-5 bg-white/[0.02] border border-white/[0.04] rounded-2xl transition-colors hover:bg-white/[0.04]">
                 <div class="flex items-center gap-4">
                   <div class:list={[
-                    'history-emoji-circle',
-                    entry.quality === 'GREAT' ? 'great' : entry.quality === 'GOOD' ? 'good' : 'fair'
+                    'w-12 h-12 rounded-full flex items-center justify-center shrink-0',
+                    entry.quality === 'GREAT' ? 'bg-accent/12 border border-accent/25' : entry.quality === 'GOOD' ? 'bg-accent/8 border border-accent/18' : 'bg-white/5 border border-white/10'
                   ]}>
                     <span class="text-lg">{entry.emoji}</span>
                   </div>
@@ -230,316 +230,6 @@ const weeklyData = [
   </div>
 </Sidebar>
 
-<style>
-  /* ── Card ── */
-  .diary-card {
-    background: #0d1618;
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    border-radius: 1.25rem;
-    padding: 2rem 2.25rem;
-  }
-
-  /* ── Labels ── */
-  .diary-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: #8e9fa2;
-    text-transform: uppercase;
-  }
-
-  /* ── Input Wrapper ── */
-  .diary-input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-
-  .diary-input {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 0.75rem;
-    padding: 0.875rem 1.125rem;
-    color: white;
-    font-family: inherit;
-    font-size: 0.9375rem;
-    outline: none;
-    transition: border-color 0.2s;
-    box-sizing: border-box;
-  }
-
-  .diary-input:focus {
-    border-color: rgba(78, 208, 200, 0.4);
-  }
-
-  .diary-input-icon {
-    position: absolute;
-    right: 0.875rem;
-    color: #8e9fa2;
-    pointer-events: none;
-  }
-
-  .diary-input-icon-left {
-    position: absolute;
-    left: 0.875rem;
-    display: flex;
-    align-items: center;
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  /* ── Quality Slider ── */
-  .quality-range {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 4px;
-    background: linear-gradient(to right, #1a2729 0%, #4ed0c8 80%, #1a2729 100%);
-    border-radius: 2px;
-    outline: none;
-    cursor: pointer;
-  }
-
-  .quality-range::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: #4ed0c8;
-    border: 3px solid #0d1618;
-    box-shadow: 0 0 8px rgba(78, 208, 200, 0.4);
-    cursor: pointer;
-    transition: box-shadow 0.2s;
-  }
-
-  .quality-range::-webkit-slider-thumb:hover {
-    box-shadow: 0 0 14px rgba(78, 208, 200, 0.6);
-  }
-
-  .quality-range::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: #4ed0c8;
-    border: 3px solid #0d1618;
-    box-shadow: 0 0 8px rgba(78, 208, 200, 0.4);
-    cursor: pointer;
-  }
-
-  /* ── Emoji Buttons ── */
-  .emoji-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    opacity: 0.4;
-    transition: all 0.2s;
-    filter: grayscale(70%);
-  }
-
-  .emoji-btn:hover {
-    opacity: 0.8;
-    filter: grayscale(0%);
-    transform: scale(1.15);
-  }
-
-  .emoji-btn.active {
-    opacity: 1;
-    filter: grayscale(0%);
-    transform: scale(1.2);
-    background: rgba(78, 208, 200, 0.1);
-  }
-
-  /* ── Textarea ── */
-  .diary-textarea {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 0.75rem;
-    padding: 1rem 1.125rem;
-    color: white;
-    font-family: inherit;
-    font-size: 0.9375rem;
-    outline: none;
-    resize: none;
-    transition: border-color 0.2s;
-    box-sizing: border-box;
-  }
-
-  .diary-textarea::placeholder {
-    color: #5a6e71;
-  }
-
-  .diary-textarea:focus {
-    border-color: rgba(78, 208, 200, 0.4);
-  }
-
-  /* ── Save Button ── */
-  .diary-save-btn {
-    width: 100%;
-    background: #4ed0c8;
-    color: #080c0d;
-    border: none;
-    border-radius: 1rem;
-    padding: 1rem;
-    font-family: inherit;
-    font-size: 0.9375rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 0.25rem;
-  }
-
-  .diary-save-btn:hover {
-    background: #5ce3db;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(78, 208, 200, 0.3);
-  }
-
-  .diary-save-btn:active {
-    transform: translateY(0);
-  }
-
-  /* ── Chart ── */
-  .chart-container {
-    display: flex;
-    gap: 0.75rem;
-    height: 260px;
-  }
-
-  .chart-y-axis {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: #5a6e71;
-    padding-bottom: 2rem;
-    min-width: 2.5rem;
-    text-align: right;
-  }
-
-  .chart-area {
-    flex: 1;
-    position: relative;
-  }
-
-  .chart-grid-lines {
-    position: absolute;
-    inset: 0;
-    bottom: 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  .chart-grid-line {
-    height: 1px;
-    background: rgba(255, 255, 255, 0.05);
-  }
-
-  .chart-bars {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-around;
-    padding-bottom: 2rem;
-  }
-
-  .chart-bar-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    flex: 1;
-  }
-
-  .chart-bar-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: calc(260px - 2rem - 0.5rem);
-    justify-content: flex-end;
-    position: relative;
-  }
-
-  .chart-bar-label {
-    font-size: 0.7rem;
-    color: white;
-    background: rgba(78, 208, 200, 0.2);
-    border: 1px solid rgba(78, 208, 200, 0.3);
-    border-radius: 0.3rem;
-    padding: 0.2rem 0.5rem;
-    margin-bottom: 0.4rem;
-    white-space: nowrap;
-    font-weight: 600;
-  }
-
-  .chart-bar {
-    width: 60%;
-    max-width: 32px;
-    border-radius: 0.35rem 0.35rem 0.15rem 0.15rem;
-    background: rgba(255, 255, 255, 0.04);
-    transition: height 0.4s ease;
-    min-height: 3px;
-  }
-
-  .chart-bar.has-data {
-    background: linear-gradient(180deg, #4ed0c8, #2a8a84);
-  }
-
-  .chart-day-label {
-    font-size: 0.8rem;
-    color: #5a6e71;
-    font-weight: 500;
-  }
-
-  /* ── History Items ── */
-  .history-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.25rem;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    border-radius: 1rem;
-    transition: background 0.2s;
-  }
-
-  .history-item:hover {
-    background: rgba(255, 255, 255, 0.04);
-  }
-
-  .history-emoji-circle {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .history-emoji-circle.great {
-    background: rgba(78, 208, 200, 0.12);
-    border: 1px solid rgba(78, 208, 200, 0.25);
-  }
-
-  .history-emoji-circle.good {
-    background: rgba(78, 208, 200, 0.08);
-    border: 1px solid rgba(78, 208, 200, 0.18);
-  }
-
-  .history-emoji-circle.fair {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-  }
-</style>
-
 <script>
   document.addEventListener('astro:page-load', () => {
     const slider = document.getElementById('quality-slider') as HTMLInputElement;
@@ -555,7 +245,13 @@ const weeklyData = [
       }
       emojiBtns.forEach((btn) => {
         const btnVal = parseInt((btn as HTMLElement).dataset.value || '0');
-        btn.classList.toggle('active', btnVal === value);
+        if (btnVal === value) {
+          btn.classList.add('active', 'opacity-100', 'filter-none', 'scale-120', 'bg-accent/10');
+          btn.classList.remove('opacity-40', 'filter', 'grayscale', 'hover:scale-115');
+        } else {
+          btn.classList.remove('active', 'opacity-100', 'filter-none', 'scale-120', 'bg-accent/10');
+          btn.classList.add('opacity-40', 'filter', 'grayscale', 'hover:scale-115');
+        }
       });
     }
 
