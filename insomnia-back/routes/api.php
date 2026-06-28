@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+
 Route::middleware('auth:sanctum')->group(function() {
     // home
     Route::get('/home', [HomeController::class, 'index']);
@@ -28,6 +29,9 @@ Route::middleware('auth:sanctum')->group(function() {
     // favorites
     Route::get('/favorites', [SoundScapeController::class, 'favorites']);
     Route::put('/soundscapes/{id}/audio-url', [SoundScapeController::class, 'updateAudioUrl']);
+
+    // audio
+    Route::get('/stream/{id}', [SoundScapeController::class, 'streamAudio']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
