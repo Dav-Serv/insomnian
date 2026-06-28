@@ -193,14 +193,16 @@ import Sidebar from '../layouts/Sidebar.astro';
 
     // Helper: set loading state pada tombol
     function setLoading(button, isLoading, originalText) {
-      if (isLoading) {
-        button.disabled = true;
-        button.textContent = 'Memproses...';
-        button.classList.add('opacity-60', 'cursor-wait');
-      } else {
-        button.disabled = false;
-        button.textContent = originalText;
-        button.classList.remove('opacity-60', 'cursor-wait');
+      if (button) {
+        if (isLoading) {
+          button.disabled = true;
+          button.textContent = 'Memproses...';
+          button.classList.add('opacity-60', 'cursor-wait');
+        } else {
+          button.disabled = false;
+          button.textContent = originalText;
+          button.classList.remove('opacity-60', 'cursor-wait');
+        }
       }
     }
 
@@ -232,7 +234,6 @@ import Sidebar from '../layouts/Sidebar.astro';
       setLoading(submitBtn, true, 'Buat Akun');
 
       const result = await register({ username, email, password, photo });
-
       if (result.success) {
         window.location.href = '/';
       } else {
@@ -260,7 +261,6 @@ import Sidebar from '../layouts/Sidebar.astro';
       setLoading(submitBtn, true, 'Masuk');
 
       const result = await login({ email, password });
-
       if (result.success) {
         window.location.href = '/';
       } else {

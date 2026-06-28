@@ -152,7 +152,6 @@ const menuItems = [
         usernameEl.textContent = user.username || 'User';
       }
       if (photoContainer && user && user.photo) {
-        // Laravel public assets link
         const photoUrl = `http://127.0.0.1:8000/storage/${user.photo}`;
         photoContainer.innerHTML = `<img src="${photoUrl}" alt="Photo" class="w-full h-full object-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2218%22 height=%2218%22 viewBox=%220%22><circle cx=%229%22 cy=%229%22 r=%228%22 fill=%22%23ccc%22 /></svg>'"/>`;
       }
