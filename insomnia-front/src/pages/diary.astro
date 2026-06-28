@@ -541,7 +541,7 @@ const weeklyData = [
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('astro:page-load', () => {
     const slider = document.getElementById('quality-slider') as HTMLInputElement;
     const label = document.getElementById('quality-label');
     const emojiBtns = document.querySelectorAll('.emoji-btn');

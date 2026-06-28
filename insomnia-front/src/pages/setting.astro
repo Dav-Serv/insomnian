@@ -86,7 +86,7 @@ import Sidebar from '../layouts/Sidebar.astro';
   import { isLoggedIn, getToken, updateLocalUser } from '../utils/auth.js';
   import { apiGetProfile, apiUpdateProfile } from '../utils/api.js';
 
-  document.addEventListener('DOMContentLoaded', async () => {
+  document.addEventListener('astro:page-load', async () => {
     // 1. Cek login
     if (!isLoggedIn()) {
       window.location.href = '/auth';

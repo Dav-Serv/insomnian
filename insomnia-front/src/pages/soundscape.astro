@@ -5,7 +5,7 @@ import Sidebar from '../layouts/Sidebar.astro';
 ---
 
 <Sidebar title="Tidur Nyenyak - Soundscape" activeTab="soundscape">
-  <div class="w-full pb-28">
+  <div class="w-full">
     <!-- Header -->
     <header class="mb-8">
       <h1 class="text-[32px] font-bold m-0 mb-3 text-white leading-tight">Nusantara Soundscape</h1>
@@ -26,111 +26,20 @@ import Sidebar from '../layouts/Sidebar.astro';
       </div>
     </div>
   </div>
-
-  <!-- BOTTOM MUSIC PLAYER BAR (Spotify-Like Style) -->
-  <div id="bottom-player-bar" class="fixed bottom-0 left-0 right-0 z-50 bg-[#090f10] border-t border-white/5 py-3 px-6 md:px-14 flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300 translate-y-full shadow-[0_-8px_30px_rgba(0,0,0,0.5)]">
-    
-    <!-- Left Section: Track Info -->
-    <div class="flex items-center gap-3.5 w-full md:w-1/3 shrink-0">
-      <div class="w-14 h-14 rounded-lg bg-[#121e20] overflow-hidden shrink-0 border border-white/5">
-        <img id="player-thumbnail" src="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231a2729%22/></svg>" alt="Album Cover" class="w-full h-full object-cover" />
-      </div>
-      <div class="overflow-hidden min-w-0">
-        <h4 id="player-title" class="text-sm font-semibold text-white m-0 truncate">Judul Lagu</h4>
-        <p id="player-artist" class="text-xs text-muted m-0 mt-0.5 truncate">Nama Artis • <span id="player-time-left">0:00 left</span></p>
-      </div>
-    </div>
-
-    <!-- Middle Section: Playback Controls & Progress Bar -->
-    <div class="flex flex-col items-center gap-2 w-full md:w-1/3 max-w-md">
-      <!-- Buttons -->
-      <div class="flex items-center gap-5">
-        <button id="player-prev-btn" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1.5 transition-colors" title="Sebelumnya">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
-        </button>
-        <button id="player-play-btn" class="w-10 h-10 rounded-full bg-accent text-[#080c0d] flex items-center justify-center border-none cursor-pointer transition-transform hover:scale-105 shadow-[0_0_12px_rgba(78,208,200,0.35)]" title="Putar/Jeda">
-          <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          <svg id="pause-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
-        </button>
-        <button id="player-next-btn" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1.5 transition-colors" title="Selanjutnya">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
-        </button>
-      </div>
-      <!-- Progress Bar Slider -->
-      <div class="flex items-center gap-3 w-full">
-        <span id="player-current-time" class="text-[10px] text-muted font-semibold font-mono w-8 text-right">00:00</span>
-        <div class="relative flex-1 group py-2 cursor-pointer" id="progress-container">
-          <input type="range" id="progress-slider" min="0" max="100" value="0" step="0.1"
-            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-          <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden transition-all group-hover:h-1.5 relative">
-            <div id="progress-bar-fill" class="h-full bg-accent w-0 transition-all rounded-full drop-shadow-[0_0_4px_rgba(78,208,200,0.6)]"></div>
-          </div>
-        </div>
-        <span id="player-total-duration" class="text-[10px] text-muted font-semibold font-mono w-8 text-left">00:00</span>
-      </div>
-    </div>
-
-    <!-- Right Section: Volume & Utilities -->
-    <div class="flex items-center justify-end gap-4 w-full md:w-1/3 shrink-0">
-      <!-- Repeat Button -->
-      <button id="player-repeat-btn" class="bg-transparent border-none text-muted hover:text-accent cursor-pointer p-1 transition-colors" title="Ulangi Lagu">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-      </button>
-
-      <!-- Volume Controls -->
-      <div class="flex items-center gap-2 max-w-[120px] w-full">
-        <button id="volume-icon-btn" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1 transition-colors">
-          <svg id="volume-high" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><span class="sr-only">Mute</span><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-          <svg id="volume-mute" class="hidden" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-        </button>
-        <div class="relative flex-1 group py-2 cursor-pointer" id="volume-container">
-          <input type="range" id="volume-slider" min="0" max="100" value="80"
-            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-          <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden transition-all group-hover:h-1.5 relative">
-            <div id="volume-bar-fill" class="h-full bg-accent w-[80%] rounded-full transition-all"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </Sidebar>
 
 <script>
   import { isLoggedIn, getToken } from '../utils/auth.js';
   import { apiGetSoundscapes, apiToggleFavorite, apiGetFavorites } from '../utils/api.js';
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const isUserLoggedIn = isLoggedIn();
-    const token = getToken();
-
-    // DOM Elements
+  document.addEventListener('astro:page-load', () => {
+    // Hanya jalankan logika ini jika kita berada di halaman soundscape
     const filtersContainer = document.getElementById('category-filters-container');
     const tracksGrid = document.getElementById('tracks-grid');
+    if (!filtersContainer || !tracksGrid) return;
 
-    // Bottom Player Elements
-    const playerBar = document.getElementById('bottom-player-bar');
-    const playerTitle = document.getElementById('player-title');
-    const playerArtist = document.getElementById('player-artist');
-    const playerTimeLeft = document.getElementById('player-time-left');
-    const playerThumbnail = document.getElementById('player-thumbnail');
-    
-    const playBtn = document.getElementById('player-play-btn');
-    const playIcon = document.getElementById('play-icon');
-    const pauseIcon = document.getElementById('pause-icon');
-    const prevBtn = document.getElementById('player-prev-btn');
-    const nextBtn = document.getElementById('player-next-btn');
-    const repeatBtn = document.getElementById('player-repeat-btn');
-    
-    const progressSlider = document.getElementById('progress-slider');
-    const progressBarFill = document.getElementById('progress-bar-fill');
-    const currentTimeText = document.getElementById('player-current-time');
-    const durationText = document.getElementById('player-total-duration');
-    
-    const volumeIconBtn = document.getElementById('volume-icon-btn');
-    const volumeHighIcon = document.getElementById('volume-high');
-    const volumeMuteIcon = document.getElementById('volume-mute');
-    const volumeSlider = document.getElementById('volume-slider');
-    const volumeBarFill = document.getElementById('volume-bar-fill');
+    const isUserLoggedIn = isLoggedIn();
+    const token = getToken();
 
     // State Variables
     let categories = ['All Sounds', 'Nature', 'Rain', 'Traditional', 'Binaural'];
@@ -139,12 +48,6 @@ import Sidebar from '../layouts/Sidebar.astro';
     }
     let currentCategory = 'all';
     let tracks = [];
-    let favoritesList = []; // local cache for unauthenticated checks or syncing
-    let currentTrackIndex = -1;
-    let isPlaying = false;
-    let isRepeat = false;
-    let previousVolume = 0.8;
-    let currentAudio = null;
 
     // Initialize category filters
     function initFilters() {
@@ -171,14 +74,6 @@ import Sidebar from '../layouts/Sidebar.astro';
 
         filtersContainer.appendChild(button);
       });
-    }
-
-    // Helper: format duration mm:ss
-    function formatTime(secs) {
-      if (isNaN(secs)) return '00:00';
-      const m = Math.floor(secs / 60);
-      const s = Math.floor(secs % 60);
-      return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
     }
 
     // Fetch tracks from API based on category filter
@@ -230,12 +125,16 @@ import Sidebar from '../layouts/Sidebar.astro';
         return;
       }
 
+      // Dapatkan ID lagu yang sedang diputar untuk highlight visual
+      const currentPlayingId = window.audioPlayer?.getCurrentTrackId?.();
+
       tracksGrid.innerHTML = '';
       tracks.forEach((track, index) => {
         const isFavorited = track.is_favorited;
+        const isCurrentlyPlaying = track.id === currentPlayingId;
 
         const card = document.createElement('div');
-        card.className = 'group cursor-pointer transition-all duration-300 hover:-translate-y-1';
+        card.className = `group cursor-pointer transition-all duration-300 hover:-translate-y-1 ${isCurrentlyPlaying ? 'ring-2 ring-accent/40 rounded-2xl' : ''}`;
 
         card.innerHTML = `
           <!-- Image Container -->
@@ -248,11 +147,16 @@ import Sidebar from '../layouts/Sidebar.astro';
             <div class="absolute top-3 left-3 bg-black/50 backdrop-blur-sm border border-white/10 rounded-md py-1 px-2.5">
               <span class="text-[11px] font-semibold text-white capitalize">${track.category}</span>
             </div>
+            ${isCurrentlyPlaying ? `
+              <div class="absolute bottom-3 right-3 bg-accent/90 text-[#080c0d] rounded-full p-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+              </div>
+            ` : ''}
           </div>
 
           <!-- Card Info -->
           <div class="px-0.5">
-            <h3 class="text-[16px] font-semibold text-white m-0 mb-1.5 group-hover:text-accent transition-colors truncate">${track.title}</h3>
+            <h3 class="text-[16px] font-semibold ${isCurrentlyPlaying ? 'text-accent' : 'text-white'} m-0 mb-1.5 group-hover:text-accent transition-colors truncate">${track.title}</h3>
             <p class="text-[13px] text-muted m-0 mb-3 leading-relaxed line-clamp-2">${track.description || 'Tidak ada deskripsi.'}</p>
 
             <!-- Footer -->
@@ -277,12 +181,12 @@ import Sidebar from '../layouts/Sidebar.astro';
           </div>
         `;
 
-        // Click on thumbnail/info starts playing
+        // Klik pada gambar/judul memutar lagu melalui API global audioPlayer
         card.querySelector('.aspect-\\[16\\/11\\]')?.addEventListener('click', () => {
-          playTrack(index);
+          window.audioPlayer?.playTrack(track, tracks, index);
         });
         card.querySelector('h3')?.addEventListener('click', () => {
-          playTrack(index);
+          window.audioPlayer?.playTrack(track, tracks, index);
         });
 
         // Handle Favorite Button Click
@@ -324,233 +228,6 @@ import Sidebar from '../layouts/Sidebar.astro';
         tracksGrid.appendChild(card);
       });
     }
-
-    // Play Selected Track
-    async function playTrack(index) {
-      if (index < 0 || index >= tracks.length) return;
-      currentTrackIndex = index;
-      const track = tracks[currentTrackIndex];
-
-      // Stop previous audio
-      if (currentAudio) {
-        currentAudio.pause();
-        currentAudio.removeEventListener('timeupdate', updateProgressBar);
-        currentAudio.removeEventListener('ended', handleTrackEnd);
-      }
-
-      if (typeof window.showMoonLoader === 'function') {
-        window.showMoonLoader('Menyiapkan Audio...');
-      }
-
-      // Update Bottom Bar UI metadata
-      if (playerTitle) playerTitle.textContent = track.title;
-      if (playerArtist) playerArtist.textContent = track.artist_name || 'Tidur Nyenyak';
-      if (playerThumbnail) playerThumbnail.src = track.thumbnail_url || 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect width=%22100%22 height=%22100%22 fill=%22%231a2729%22/></svg>';
-
-      // Slide up bottom player bar if hidden
-      if (playerBar) {
-        playerBar.classList.remove('translate-y-full');
-      }
-
-      // Always use proxy streaming for Google Drive tracks
-      try {
-        const streamUrl = `http://127.0.0.1:8000/api/stream/${track.id}`;
-        
-        // Fetch audio stream with Sanctum auth header
-        const response = await fetch(streamUrl, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error('Gagal mengunduh berkas audio dari server.');
-        }
-
-        const blob = await response.blob();
-        const objectUrl = URL.createObjectURL(blob);
-
-        // Initialize HTML5 Audio
-        currentAudio = new Audio(objectUrl);
-        currentAudio.volume = parseFloat(volumeSlider.value) / 100;
-
-        // Event listeners
-        currentAudio.addEventListener('loadedmetadata', () => {
-          if (typeof window.hideMoonLoader === 'function') {
-            window.hideMoonLoader();
-          }
-          if (durationText) durationText.textContent = formatTime(currentAudio.duration);
-          if (progressSlider) progressSlider.max = currentAudio.duration;
-        });
-
-        currentAudio.addEventListener('timeupdate', updateProgressBar);
-        currentAudio.addEventListener('ended', handleTrackEnd);
-
-        // Play audio
-        currentAudio.play()
-          .then(() => {
-            isPlaying = true;
-            updatePlayIconState();
-          })
-          .catch(err => {
-            if (typeof window.hideMoonLoader === 'function') {
-              window.hideMoonLoader();
-            }
-            console.error("Audio playback error:", err);
-            alert("Gagal memutar audio. Pastikan URL berkas audio valid.");
-          });
-
-      } catch (err) {
-        if (typeof window.hideMoonLoader === 'function') {
-          window.hideMoonLoader();
-        }
-        console.error("Audio fetch/stream error:", err);
-        alert("Gagal menyiapkan audio. Silakan coba lagi.");
-      }
-    }
-
-    // Handle updates to seekbar progress fill
-    function updateProgressBar() {
-      if (!currentAudio) return;
-      const current = currentAudio.currentTime;
-      const duration = currentAudio.duration || 0;
-      const remain = Math.max(0, duration - current);
-
-      if (progressSlider) progressSlider.value = current;
-      if (progressBarFill) {
-        const percent = duration > 0 ? (current / duration) * 100 : 0;
-        progressBarFill.style.width = `${percent}%`;
-      }
-
-      if (currentTimeText) currentTimeText.textContent = formatTime(current);
-      if (playerTimeLeft) playerTimeLeft.textContent = `${formatTime(remain)} left`;
-    }
-
-    // Handle end of song
-    function handleTrackEnd() {
-      if (isRepeat) {
-        if (currentAudio) {
-          currentAudio.currentTime = 0;
-          currentAudio.play();
-        }
-      } else {
-        playNextTrack();
-      }
-    }
-
-    // Skip to next track
-    function playNextTrack() {
-      if (tracks.length === 0) return;
-      let nextIndex = currentTrackIndex + 1;
-      if (nextIndex >= tracks.length) {
-        nextIndex = 0; // loop back to first
-      }
-      playTrack(nextIndex);
-    }
-
-    // Skip to previous track
-    function playPrevTrack() {
-      if (tracks.length === 0) return;
-      let prevIndex = currentTrackIndex - 1;
-      if (prevIndex < 0) {
-        prevIndex = tracks.length - 1; // loop to end
-      }
-      playTrack(prevIndex);
-    }
-
-    // Toggle Play Icon SVGs
-    function updatePlayIconState() {
-      if (isPlaying) {
-        playIcon?.classList.add('hidden');
-        pauseIcon?.classList.remove('hidden');
-      } else {
-        playIcon?.classList.remove('hidden');
-        pauseIcon?.classList.add('hidden');
-      }
-    }
-
-    // Event Control Bindings
-    playBtn?.addEventListener('click', () => {
-      if (!currentAudio) {
-        // If player clicked without track loaded, play first in grid
-        if (tracks.length > 0) playTrack(0);
-        return;
-      }
-
-      if (isPlaying) {
-        currentAudio.pause();
-        isPlaying = false;
-      } else {
-        currentAudio.play();
-        isPlaying = true;
-      }
-      updatePlayIconState();
-    });
-
-    prevBtn?.addEventListener('click', playPrevTrack);
-    nextBtn?.addEventListener('click', playNextTrack);
-
-    // Repeat Track Trigger
-    repeatBtn?.addEventListener('click', () => {
-      isRepeat = !isRepeat;
-      if (isRepeat) {
-        repeatBtn.classList.remove('text-muted');
-        repeatBtn.classList.add('text-accent');
-      } else {
-        repeatBtn.classList.remove('text-accent');
-        repeatBtn.classList.add('text-muted');
-      }
-    });
-
-    // Handle progress slider user adjustments (seeking)
-    progressSlider?.addEventListener('input', (e) => {
-      if (!currentAudio) return;
-      const targetTime = parseFloat(e.target.value);
-      currentAudio.currentTime = targetTime;
-      updateProgressBar();
-    });
-
-    // Volume Adjustment Handling
-    volumeSlider?.addEventListener('input', (e) => {
-      const vol = parseFloat(e.target.value) / 100;
-      if (currentAudio) {
-        currentAudio.volume = vol;
-      }
-      
-      if (volumeBarFill) {
-        volumeBarFill.style.width = `${e.target.value}%`;
-      }
-
-      // Update volume mute icon status
-      if (vol === 0) {
-        volumeHighIcon?.classList.add('hidden');
-        volumeMuteIcon?.classList.remove('hidden');
-      } else {
-        volumeHighIcon?.classList.remove('hidden');
-        volumeMuteIcon?.classList.add('hidden');
-      }
-    });
-
-    // Volume Mute Button Toggle
-    volumeIconBtn?.addEventListener('click', () => {
-      if (!volumeSlider) return;
-      
-      const currentVol = parseFloat(volumeSlider.value);
-      if (currentVol > 0) {
-        previousVolume = currentVol;
-        volumeSlider.value = 0;
-        if (currentAudio) currentAudio.volume = 0;
-        if (volumeBarFill) volumeBarFill.style.width = '0%';
-        volumeHighIcon?.classList.add('hidden');
-        volumeMuteIcon?.classList.remove('hidden');
-      } else {
-        volumeSlider.value = previousVolume;
-        if (currentAudio) currentAudio.volume = previousVolume / 100;
-        if (volumeBarFill) volumeBarFill.style.width = `${previousVolume}%`;
-        volumeHighIcon?.classList.remove('hidden');
-        volumeMuteIcon?.classList.add('hidden');
-      }
-    });
 
     // Execute setup
     initFilters();

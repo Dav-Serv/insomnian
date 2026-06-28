@@ -30,8 +30,9 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/favorites', [SoundScapeController::class, 'favorites']);
     Route::put('/soundscapes/{id}/audio-url', [SoundScapeController::class, 'updateAudioUrl']);
 
-    // audio
-    Route::get('/stream/{id}', [SoundScapeController::class, 'streamAudio']);
-
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+// audio (diluar middleware auth:sanctum agar bisa di-stream langsung oleh browser dengan query token)
+Route::get('/stream/{id}', [SoundScapeController::class, 'streamAudio']);
+

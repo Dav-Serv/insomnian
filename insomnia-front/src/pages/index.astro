@@ -222,7 +222,7 @@ import Sidebar from '../layouts/Sidebar.astro';
   import { isLoggedIn, getUser, logout, getToken } from '../utils/auth.js';
   import { apiGetHome, apiGenerateMockSleep } from '../utils/api.js';
 
-  document.addEventListener('DOMContentLoaded', async () => {
+  document.addEventListener('astro:page-load', async () => {
     const guestView = document.getElementById('guest-view');
     const userView = document.getElementById('user-view');
     const dashboardUsername = document.getElementById('dashboard-username');
