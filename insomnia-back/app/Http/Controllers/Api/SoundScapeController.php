@@ -8,6 +8,8 @@ use App\Models\SoundScapes;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+
 
 class SoundScapeController extends Controller
 {
@@ -148,72 +150,58 @@ class SoundScapeController extends Controller
      */
     public function streamAudio(int $id)
     {
-        // 1. Cari soundscape di database
         $soundscape = SoundScapes::find($id);
         
         if (!$soundscape) {
             abort(404, 'Soundscape not found');
         }
 
-        // 2. Ekstrak File ID dari URL
+        if (empty($soundscape->audio_url)) {
+            abort(400, 'Audio URL is empty');
+        }
+
         $fileId = $this->extractFileId($soundscape->audio_url);
         
         if (!$fileId) {
-            abort(400, 'Invalid audio URL');
+            abort(400, 'Invalid Google Drive URL format');
         }
 
-        // 3. Bangun URL Google Drive yang benar
-        $googleUrl = "https://drive.google.com/uc?export=open&id={$fileId}";
+        $googleUrl = "https://drive.google.com/uc?export=download&id={$fileId}";
 
-        // 4. Ambil file dari Google Drive
-        try {
-            $response = Http::withOptions([
-                'stream' => true,
-                'timeout' => 30,
-            ])->get($googleUrl);
-        } catch (\Exception $e) {
-            abort(500, 'Failed to fetch audio from Google Drive');
-        }
-
-        // 5. Cek apakah response berhasil
-        if ($response->failed()) {
-            abort(500, 'Google Drive returned error');
-        }
-
-        // 6. Dapatkan konten dan MIME type
-        $content = $response->body();
-        $contentType = $response->header('Content-Type') ?? 'audio/mpeg';
-
-        // 7. Kembalikan sebagai stream audio
-        return response()->stream(
-            function () use ($content) {
-                echo $content;
-            },
-            200,
-            [
-                'Content-Type' => $contentType,
-                'Content-Disposition' => 'inline; filename="audio.mp3"',
-                'Cache-Control' => 'public, max-age=86400', // cache 1 hari
-                'Accept-Ranges' => 'bytes',
-            ]
-        );
+        // Jadikan Laravel sebagai Proxy sejati, bukan sekadar Redirect
+        return response()->stream(function () use ($googleUrl) {
+            // Buka koneksi ke Google Drive
+            $stream = @fopen($googleUrl, 'rb');
+            
+            if ($stream) {
+                // Alirkan data biner mentah langsung ke frontend
+                fpassthru($stream);
+                fclose($stream);
+            } else {
+                echo "Failed to load audio stream.";
+            }
+        }, 200, [
+            'Content-Type'                => 'audio/mpeg', // Asumsi file Anda mp3
+            'Cache-Control'               => 'no-cache, no-store, must-revalidate',
+            'Access-Control-Allow-Origin' => '*', // Izinkan frontend Anda membaca ini
+            'Accept-Ranges'               => 'none', // Matikan range request untuk proxy sederhana
+        ]);
     }
 
     /**
      * Ekstrak File ID dari URL Google Drive
      */
-    private function extractFileId(string $url)
+   private function extractFileId(string $url): ?string
     {
-        // Cocokkan pola: .../file/d/FILE_ID/... atau ...?id=FILE_ID
-        preg_match('/\/file\/d\/([^\/]+)/', $url, $matches);
-        
-        if (isset($matches[1])) {
+        // 1. Cek apakah input sudah berupa ID murni yang valid (25-40 karakter)
+        if (preg_match('/^[a-zA-Z0-9_-]{25,40}$/', $url)) {
+            return $url;
+        }
+
+        if (preg_match('/(?:id=|\/d\/)([a-zA-Z0-9_-]{25,40})/', $url, $matches)) {
             return $matches[1];
         }
 
-        // Alternatif: cari ?id=FILE_ID
-        preg_match('/[?&]id=([^&]+)/', $url, $matches);
-        
-        return $matches[1] ?? null;
+        return null; // Format tidak dikenali atau panjang ID tidak valid
     }
 }
