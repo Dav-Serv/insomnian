@@ -5,67 +5,169 @@ import Sidebar from '../layouts/Sidebar.astro';
 ---
 
 <Sidebar title="Tidur Nyenyak - Tools" activeTab="tools">
-  <div class="max-w-[1100px] mx-auto">
-    <header class="mb-10">
-      <h1 class="text-3xl font-bold m-0 mb-2 text-white">Alat Bantu (Tools)</h1>
-      <p class="text-base text-muted m-0">Gunakan instrumen interaktif kami untuk merencanakan tidur atau menenangkan pikiran.</p>
+  <div class="max-w-[1000px] mx-auto py-2">
+    <!-- Header -->
+    <header class="mb-8">
+      <h1 class="text-4xl font-semibold tracking-tight text-white mb-2">Wind-Down Tools</h1>
+      <p class="text-sm md:text-base text-muted max-w-[650px] leading-relaxed">
+        Prepare your mind and environment for a restful night. These tools are designed to gently lower your cognitive load.
+      </p>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <!-- Tool 1: Sleep Calculator -->
-      <section class="bg-[#0d1618] border border-white/2 rounded-3xl p-8 flex flex-col justify-between gap-7">
-        <div class="flex gap-4 items-start">
-          <div class="w-12 h-12 rounded-xl bg-accent/8 text-accent flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <!-- Main Sleep Window Card -->
+    <div class="bg-[#0b1112] border border-white/5 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-stretch gap-8 mb-10 shadow-[0_12px_40px_rgba(0,0,0,0.4)] relative overflow-hidden">
+      <!-- Ambient Glow behind card -->
+      <div class="absolute -right-24 -top-24 w-80 h-80 rounded-full bg-accent/5 blur-[80px] pointer-events-none"></div>
+      
+      <!-- Left side: Text details and Bedtime target info -->
+      <div class="flex-1 flex flex-col justify-between min-h-[220px]">
+        <div>
+          <!-- Title with Clock Icon -->
+          <div class="flex items-center gap-2 text-accent mb-3.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span class="font-semibold text-base tracking-wide">Sleep Window</span>
           </div>
+          
+          <!-- Subtitle -->
+          <p class="text-sm text-muted/80 max-w-[420px] leading-relaxed mb-6">
+            Your optimal time to fall asleep based on your wake-up goal. Start winding down now to hit this window.
+          </p>
+        </div>
+        
+        <!-- Sleep Details Block -->
+        <div class="mt-auto">
+          <!-- Target Bedtime Row -->
+          <div class="flex justify-between items-end pb-3.5 border-b border-white/5">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-muted/65 tracking-wider uppercase font-semibold">Target</span>
+              <span class="text-sm text-muted/90 font-medium">Bedtime</span>
+            </div>
+            <div class="text-right flex items-baseline gap-1">
+              <span class="text-4xl font-light text-white tracking-tight">10:30</span>
+              <span class="text-xl font-light text-white/70">PM</span>
+            </div>
+          </div>
+          
+          <!-- Time Remaining Row -->
+          <div class="flex justify-between items-center pt-3.5">
+            <span class="text-sm text-muted/80 font-medium">Time remaining</span>
+            <span class="text-2xl font-semibold text-accent tracking-tight">1h 15m</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right side: Circular progress visualization -->
+      <div class="flex items-center justify-center shrink-0 w-full md:w-auto md:px-6">
+        <div class="relative w-[190px] h-[190px] md:w-[210px] md:h-[210px] rounded-full flex items-center justify-center">
+          <!-- Outermost Glowing Ring background -->
+          <div class="absolute inset-0 rounded-full border-[8px] border-accent/10"></div>
+          
+          <!-- Active colored segment ring with gradient look -->
+          <div class="absolute inset-0 rounded-full border-[8px] border-transparent border-t-accent border-r-accent border-l-accent rotate-[45deg] filter drop-shadow-[0_0_8px_rgba(78,208,200,0.35)]"></div>
+          
+          <!-- Inner Dark Circle -->
+          <div class="w-[145px] h-[145px] md:w-[160px] md:h-[160px] rounded-full bg-[#080d0e] border border-white/5 flex flex-col items-center justify-center shadow-inner relative group/moon">
+            <div class="absolute inset-0 rounded-full bg-accent/2 opacity-0 group-hover/moon:opacity-100 transition-opacity duration-500"></div>
+            
+            <!-- Crescent Moon Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-accent mb-2 filter drop-shadow-[0_0_8px_rgba(78,208,200,0.3)] transition-transform duration-500 group-hover/moon:scale-110" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+            <span class="text-[11px] text-muted/80 font-medium tracking-wider uppercase">Winding Down</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guided Exercises Section -->
+    <div>
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold text-white tracking-tight">Guided Exercises</h2>
+        <a href="#" class="text-sm font-semibold text-accent hover:text-accent-hover transition-colors flex items-center gap-1">
+          View all
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+      </div>
+      
+      <!-- Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- 4-7-8 Breathing Card -->
+        <div class="bg-[#0b1112] border border-white/5 rounded-2xl p-6 flex flex-col justify-between min-h-[190px] transition-all duration-300 hover:border-accent/25 hover:translate-y-[-4px] hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] group cursor-pointer">
           <div>
-            <h2 class="text-xl font-semibold m-0 mb-1 text-white">Kalkulator Siklus Tidur</h2>
-            <p class="text-sm text-muted m-0 leading-relaxed">Hitung waktu bangun terbaik berdasarkan siklus alami tidur 90 menit.</p>
+            <!-- Icon Container -->
+            <div class="w-10 h-10 rounded-xl bg-accent/5 border border-accent/10 flex items-center justify-center text-accent mb-5 group-hover:bg-accent/10 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 8h14M3 12h18M6 16h12"/>
+              </svg>
+            </div>
+            
+            <h3 class="text-base font-semibold text-white mb-1.5 group-hover:text-accent transition-colors">4-7-8 Breathing</h3>
+            <p class="text-xs text-muted/75 leading-relaxed">Calm your nervous system</p>
+          </div>
+          
+          <div class="flex items-center gap-1.5 text-[11px] text-muted/50 mt-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span>5 min</span>
           </div>
         </div>
 
-        <div class="bg-white/2 border border-white/2 p-5 rounded-[18px] flex flex-col gap-4">
-          <p class="text-[13px] text-muted m-0">Jika saya tidur sekarang, saya harus bangun pukul:</p>
-          <div class="flex flex-col gap-2">
-            <div class="flex justify-between items-center py-3 px-4 bg-white/1 border border-white/3 rounded-lg">
-              <span class="text-base font-bold text-white">23:45</span>
-              <span class="text-xs text-muted">6 Siklus (9.0 Jam)</span>
-            </div>
-            <div class="flex justify-between items-center py-3 px-4 bg-accent/5 border border-accent/20 rounded-lg">
-              <span class="text-base font-bold text-accent">01:15</span>
-              <span class="text-xs text-accent">5 Siklus (7.5 Jam) 🔥</span>
-            </div>
-            <div class="flex justify-between items-center py-3 px-4 bg-white/1 border border-white/3 rounded-lg">
-              <span class="text-base font-bold text-white">02:45</span>
-              <span class="text-xs text-muted">4 Siklus (6.0 Jam)</span>
-            </div>
-          </div>
-          <button class="bg-white/4 border border-white/5 text-white py-3 rounded-xl cursor-pointer font-medium transition-all hover:bg-white/8">Hitung Ulang</button>
-        </div>
-      </section>
-
-      <!-- Tool 2: Breathing Exercise -->
-      <section class="bg-[#0d1618] border border-white/2 rounded-3xl p-8 flex flex-col justify-between gap-7">
-        <div class="flex gap-4 items-start">
-          <div class="w-12 h-12 rounded-xl bg-accent/8 text-accent flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/></svg>
-          </div>
+        <!-- Meditasi Card -->
+        <div class="bg-[#0b1112] border border-white/5 rounded-2xl p-6 flex flex-col justify-between min-h-[190px] transition-all duration-300 hover:border-[#4eb0d0]/25 hover:translate-y-[-4px] hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] group cursor-pointer">
           <div>
-            <h2 class="text-xl font-semibold m-0 mb-1 text-white">Latihan Napas 4-7-8</h2>
-            <p class="text-sm text-muted m-0 leading-relaxed">Tenangkan sistem saraf Anda sebelum tidur dengan teknik pernapasan ritmis.</p>
+            <!-- Icon Container -->
+            <div class="w-10 h-10 rounded-xl bg-[#4eb0d0]/5 border border-[#4eb0d0]/10 flex items-center justify-center text-[#4eb0d0] mb-5 group-hover:bg-[#4eb0d0]/10 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="5" r="1"/>
+                <path d="m9 20 3-6 3 6M6 8h12M12 8v6"/>
+              </svg>
+            </div>
+            
+            <h3 class="text-base font-semibold text-white mb-1.5 group-hover:text-[#4eb0d0] transition-colors">Meditasi</h3>
+            <p class="text-xs text-muted/75 leading-relaxed">Tenangkan pikiran Anda</p>
+          </div>
+          
+          <div class="flex items-center gap-1.5 text-[11px] text-muted/50 mt-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span>10 min</span>
           </div>
         </div>
 
-        <div class="bg-white/2 border border-white/2 p-6 rounded-[18px] flex flex-col items-center gap-6">
-          <div class="relative w-[140px] h-[140px] rounded-full border border-dashed border-accent/20 flex items-center justify-center">
-            <div class="w-[80px] h-[80px] rounded-full bg-accent/15 border border-accent/30 animate-breath"></div>
-            <span class="absolute text-[13px] font-semibold text-accent [text-shadow:0_0_10px_rgba(0,0,0,0.5)]">Tarik Napas</span>
+        <!-- Brain Dump Card -->
+        <div class="bg-[#0b1112] border border-white/5 rounded-2xl p-6 flex flex-col justify-between min-h-[190px] transition-all duration-300 hover:border-orange-400/25 hover:translate-y-[-4px] hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] group cursor-pointer">
+          <div>
+            <!-- Icon Container -->
+            <div class="w-10 h-10 rounded-xl bg-orange-400/5 border border-orange-400/10 flex items-center justify-center text-orange-400/80 mb-5 group-hover:bg-orange-400/10 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            </div>
+            
+            <h3 class="text-base font-semibold text-white mb-1.5 group-hover:text-orange-400/80 transition-colors">Brain Dump</h3>
+            <p class="text-xs text-muted/75 leading-relaxed">Clear tomorrow's worries</p>
           </div>
-          <div class="breathing-controls">
-            <button class="bg-accent/8 border border-accent/20 text-accent py-2.5 px-5 rounded-full text-sm font-semibold cursor-pointer transition-all duration-200 hover:bg-accent/12 hover:scale-102">Mulai Latihan</button>
+          
+          <div class="flex items-center gap-1.5 text-[11px] text-muted/50 mt-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span>Unguided</span>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   </div>
 </Sidebar>
