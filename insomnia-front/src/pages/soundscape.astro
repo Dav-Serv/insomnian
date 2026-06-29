@@ -55,7 +55,7 @@ import Sidebar from '../layouts/Sidebar.astro';
       filtersContainer.innerHTML = '';
 
       categories.forEach((cat) => {
-        const catKey = cat === 'All Sounds' ? 'all' : cat.toLowerCase();
+        const catKey = cat === 'All Sounds' ? 'all' : cat === 'Favorit' ? 'favorit' : cat;
         const isActive = currentCategory === catKey;
 
         const button = document.createElement('button');
@@ -134,11 +134,11 @@ import Sidebar from '../layouts/Sidebar.astro';
         const isCurrentlyPlaying = track.id === currentPlayingId;
 
         const card = document.createElement('div');
-        card.className = `group cursor-pointer transition-all duration-300 hover:-translate-y-1 ${isCurrentlyPlaying ? 'ring-2 ring-accent/40 rounded-2xl' : ''}`;
+        card.className = `bg-[#0d1618]/70 border border-white/5 p-4 rounded-2xl group cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-accent/20 ${isCurrentlyPlaying ? 'ring-2 ring-accent/40' : ''}`;
 
         card.innerHTML = `
           <!-- Image Container -->
-          <div class="relative rounded-2xl overflow-hidden mb-4 aspect-[16/11] bg-[#121e20] border border-white/5 flex items-center justify-center">
+          <div class="relative rounded-2xl overflow-hidden mb-3.5 aspect-[16/11] bg-[#121e20] border border-white/5 flex items-center justify-center">
             <img
               src="${track.thumbnail_url || 'data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect width=%22100%22 height=%22100%22 fill=%22%231a2729%22/></svg>'}"
               alt="${track.title}"
