@@ -4,6 +4,13 @@ import Sidebar from '../layouts/Sidebar.astro';
 // Soundscape Catalog Page - Nusantara Soundscape
 ---
 
+<script is:inline>
+  // Segera alihkan jika pengguna belum masuk (mencegah kedipan konten/glitch)
+  if (!localStorage.getItem('tidurnyenyak_token')) {
+    window.location.href = '/auth';
+  }
+</script>
+
 <Sidebar title="Tidur Nyenyak - Soundscape" activeTab="soundscape">
   <div class="w-full">
     <!-- Header -->

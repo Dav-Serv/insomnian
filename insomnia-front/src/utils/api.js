@@ -16,6 +16,8 @@ const ENDPOINTS = {
   favorites: '/favorites',
   home: '/home',
   mockSleep: '/home/mock-sleep',
+  diary: '/diary',
+  diaryTambah: '/diary-tambah',
 };
 
 export async function apiCall(endpoint, { method = 'GET', body = null, token = null } = {}) {
@@ -170,3 +172,19 @@ export async function apiGenerateMockSleep(token) {
     token,
   });
 }
+
+export async function apiGetDiary(token) {
+  return apiCall(ENDPOINTS.diary, {
+    method: 'GET',
+    token,
+  });
+}
+
+export async function apiAddDiary(body, token) {
+  return apiCall(ENDPOINTS.diaryTambah, {
+    method: 'POST',
+    body,
+    token,
+  });
+}
+

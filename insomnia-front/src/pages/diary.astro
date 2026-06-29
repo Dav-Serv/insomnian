@@ -19,6 +19,13 @@ const weeklyData = [
 ];
 ---
 
+<script is:inline>
+  // Segera alihkan jika pengguna belum masuk (mencegah kedipan konten/glitch)
+  if (!localStorage.getItem('tidurnyenyak_token')) {
+    window.location.href = '/auth';
+  }
+</script>
+
 <Sidebar title="Tidur Nyenyak - Sleep Diary" activeTab="diary">
   <div class="w-full">
     <!-- Header -->
@@ -39,13 +46,7 @@ const weeklyData = [
           <div class="flex flex-col gap-2">
             <label class="text-xs font-bold tracking-wider text-[#8e9fa2] uppercase">DATE</label>
             <div class="relative flex items-center">
-              <input type="text" value="Today, Oct 24" readonly class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl py-3.5 px-4.5 pr-11 text-white font-sans text-[15px] outline-none transition-colors focus:border-accent/40 box-border cursor-pointer" />
-              <svg class="absolute right-3.5 text-[#8e9fa2] pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
+              <input type="date" id="sleep-date" required class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl py-3.5 px-4.5 text-white font-sans text-[15px] outline-none transition-colors focus:border-accent/40 box-border cursor-pointer [color-scheme:dark]" />
             </div>
           </div>
 
@@ -59,7 +60,7 @@ const weeklyData = [
                     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                   </svg>
                 </span>
-                <input type="text" value="11:30 PM" readonly class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl py-3.5 pl-10 pr-4.5 text-accent font-sans text-[15px] outline-none transition-colors focus:border-accent/40 box-border" />
+                <input type="time" id="sleep-bedtime" required class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl py-3.5 pl-10 pr-4.5 text-accent font-sans text-[15px] outline-none transition-colors focus:border-accent/40 box-border [color-scheme:dark]" />
               </div>
             </div>
             <div class="flex flex-col gap-2">
@@ -78,7 +79,7 @@ const weeklyData = [
                     <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
                   </svg>
                 </span>
-                <input type="text" value="07:00 AM" readonly class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl py-3.5 pl-10 pr-4.5 text-muted font-sans text-[15px] outline-none transition-colors focus:border-accent/40 box-border" />
+                <input type="time" id="sleep-waketime" required class="w-full bg-white/[0.03] border border-white/[0.08] rounded-xl py-3.5 pl-10 pr-4.5 text-muted font-sans text-[15px] outline-none transition-colors focus:border-accent/40 box-border [color-scheme:dark]" />
               </div>
             </div>
           </div>
@@ -165,7 +166,7 @@ const weeklyData = [
               </div>
 
               <!-- Bars -->
-              <div class="absolute inset-0 flex items-end justify-around pb-8">
+              <div id="weekly-bars-container" class="absolute inset-0 flex items-end justify-around pb-8">
                 {weeklyData.map((d) => (
                   <div class="flex flex-col items-center gap-2 flex-1">
                     <div class="flex flex-col items-center w-full h-[calc(260px-2rem-0.5rem)] justify-end relative">
@@ -195,7 +196,7 @@ const weeklyData = [
         <section class="bg-[#0d1618] border border-white/5 rounded-2xl p-8 md:p-9">
           <h2 class="text-xl md:text-[1.4rem] font-semibold m-0 mb-6 text-white text-center">Recent History</h2>
 
-          <div class="flex flex-col gap-4">
+          <div id="recent-history-container" class="flex flex-col gap-4">
             {recentHistory.map((entry) => (
               <div class="flex justify-between items-center py-4 px-5 bg-white/[0.02] border border-white/[0.04] rounded-2xl transition-colors hover:bg-white/[0.04]">
                 <div class="flex items-center gap-4">
@@ -231,11 +232,42 @@ const weeklyData = [
 </Sidebar>
 
 <script>
-  document.addEventListener('astro:page-load', () => {
+  import { isLoggedIn, getToken } from '../utils/auth.js';
+  import { apiGetDiary, apiAddDiary } from '../utils/api.js';
+
+  document.addEventListener('astro:page-load', async () => {
+    // Check authentication
+    if (!isLoggedIn()) {
+      window.location.href = '/auth';
+      return;
+    }
+
+    const token = getToken();
+
+    // DOM Elements
     const slider = document.getElementById('quality-slider') as HTMLInputElement;
     const label = document.getElementById('quality-label');
     const emojiBtns = document.querySelectorAll('.emoji-btn');
+    const form = document.getElementById('sleep-log-form') as HTMLFormElement;
+    const dateInput = document.getElementById('sleep-date') as HTMLInputElement;
+    const bedtimeInput = document.getElementById('sleep-bedtime') as HTMLInputElement;
+    const waketimeInput = document.getElementById('sleep-waketime') as HTMLInputElement;
+    const notesInput = document.getElementById('sleep-notes') as HTMLTextAreaElement;
+    const weeklyBarsContainer = document.getElementById('weekly-bars-container');
+    const recentHistoryContainer = document.getElementById('recent-history-container');
 
+    // 1. Prepopulate form inputs
+    if (dateInput) {
+      dateInput.value = new Date().toISOString().split('T')[0];
+    }
+    if (bedtimeInput) {
+      bedtimeInput.value = '23:00';
+    }
+    if (waketimeInput) {
+      waketimeInput.value = '07:00';
+    }
+
+    // 2. Handle Sleep Quality slider & emoji buttons interaction
     const qualityLabels = ['Terrible', 'Bad', 'Okay', 'Fair', 'Good', 'Great'];
 
     function updateQuality(value: number) {
@@ -268,13 +300,223 @@ const weeklyData = [
       });
     });
 
-    // Form submission placeholder
-    const form = document.getElementById('sleep-log-form');
+    // Helpers for rendering
+    function getQualityMeta(rating: number) {
+      if (rating >= 9) return { label: 'GREAT', emoji: '😄', class: 'GREAT' };
+      if (rating >= 7) return { label: 'GOOD', emoji: '😊', class: 'GOOD' };
+      if (rating >= 5) return { label: 'FAIR', emoji: '🙂', class: 'FAIR' };
+      if (rating >= 3) return { label: 'POOR', emoji: '😐', class: 'POOR' };
+      return { label: 'TERRIBLE', emoji: '😫', class: 'TERRIBLE' };
+    }
+
+    function formatTimeStr(dtStr: string) {
+      // replace '-' with '/' to make date parsing compatible with Safari and older engines
+      const formattedDtStr = dtStr.replace(/-/g, '/');
+      const dt = new Date(formattedDtStr);
+      const hrs = String(dt.getHours()).padStart(2, '0');
+      const mins = String(dt.getMinutes()).padStart(2, '0');
+      return `${hrs}:${mins}`;
+    }
+
+    // 3. Load sleep logs from backend
+    try {
+      if (weeklyBarsContainer) {
+        weeklyBarsContainer.innerHTML = '<div class="col-span-full text-center text-xs text-muted/60 py-10">Memuat tren...</div>';
+      }
+      if (recentHistoryContainer) {
+        recentHistoryContainer.innerHTML = '<div class="text-center text-xs text-muted/60 py-10">Memuat riwayat...</div>';
+      }
+
+      const response = await apiGetDiary(token);
+      if (response.ok && response.data.success) {
+        const diaries = response.data.data;
+
+        // A. Render Weekly Trend Chart
+        if (weeklyBarsContainer) {
+          // Calculate Mon-Sun dates for the current week
+          const today = new Date();
+          const day = today.getDay();
+          const diff = today.getDate() - day + (day === 0 ? -6 : 1);
+          const monday = new Date(today.setDate(diff));
+
+          const weekData = [];
+          const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+          
+          for (let i = 0; i < 7; i++) {
+            const d = new Date(monday);
+            d.setDate(monday.getDate() + i);
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            const dateStr = `${yyyy}-${mm}-${dd}`;
+            weekData.push({
+              day: dayNames[i],
+              dateStr: dateStr,
+              hours: 0,
+              label: '',
+              isToday: dateStr === new Date().toISOString().split('T')[0]
+            });
+          }
+
+          // Match weekData with actual diaries
+          diaries.forEach((log: any) => {
+            const match = weekData.find(w => w.dateStr === log.log_date);
+            if (match) {
+              const hrs = log.total_sleep_minutes / 60;
+              match.hours = Math.round(hrs * 10) / 10;
+              match.label = `${match.hours}h`;
+            }
+          });
+
+          // Build HTML for chart bars
+          weeklyBarsContainer.innerHTML = '';
+          weekData.forEach((d) => {
+            const barWrapper = document.createElement('div');
+            barWrapper.className = 'flex flex-col items-center gap-2 flex-1';
+            
+            const isFilled = d.hours > 0;
+            const labelHtml = isFilled 
+              ? `<div class="text-[11px] text-white bg-accent/20 border border-accent/30 rounded-md px-2 py-1 mb-1.5 whitespace-nowrap font-semibold">${d.label}</div>`
+              : '';
+            const barClass = isFilled
+              ? 'w-[60%] max-w-[32px] rounded-t-lg rounded-b-md transition-[height] duration-400 min-h-[3px] bg-gradient-to-b from-accent to-[#2a8a84]'
+              : 'w-[60%] max-w-[32px] rounded-t-lg rounded-b-md transition-[height] duration-400 min-h-[3px] bg-white/[0.04]';
+            const barHeight = isFilled ? (d.hours / 10) * 100 : 0;
+            const dayClass = d.isToday ? 'text-accent' : 'text-[#5a6e71]';
+
+            barWrapper.innerHTML = `
+              <div class="flex flex-col items-center w-full h-[calc(260px-2rem-0.5rem)] justify-end relative">
+                ${labelHtml}
+                <div class="${barClass}" style="height: ${barHeight}%"></div>
+              </div>
+              <span class="text-[13px] font-medium ${dayClass}">${d.day}</span>
+            `;
+            weeklyBarsContainer.appendChild(barWrapper);
+          });
+        }
+
+        // B. Render Recent History List
+        if (recentHistoryContainer) {
+          recentHistoryContainer.innerHTML = '';
+          if (diaries.length === 0) {
+            recentHistoryContainer.innerHTML = '<div class="text-center text-xs text-muted/60 py-10">Belum ada catatan tidur. Silakan tambahkan entri pertama Anda!</div>';
+          } else {
+            diaries.forEach((entry: any) => {
+              const meta = getQualityMeta(entry.sleep_quality_rating);
+              const cardClass = meta.class === 'GREAT' 
+                ? 'bg-accent/12 border border-accent/25' 
+                : meta.class === 'GOOD' 
+                  ? 'bg-accent/8 border border-accent/18' 
+                  : 'bg-white/5 border border-white/10';
+              const textClass = (meta.class === 'GREAT' || meta.class === 'GOOD') ? 'text-accent' : 'text-muted';
+              
+              // Format date: e.g. Friday, Oct 23
+              const dObj = new Date(entry.log_date + 'T00:00:00');
+              const dateFormatted = dObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+              
+              // Format time range
+              const timeRange = `${formatTimeStr(entry.bed_time)} - ${formatTimeStr(entry.wake_time)}`;
+              
+              // Format duration
+              const hrs = Math.floor(entry.total_sleep_minutes / 60);
+              const mins = entry.total_sleep_minutes % 60;
+              const durationStr = `${hrs}h ${String(mins).padStart(2, '0')}m`;
+
+              const historyItem = document.createElement('div');
+              historyItem.className = 'flex justify-between items-center py-4 px-5 bg-white/[0.02] border border-white/[0.04] rounded-2xl transition-colors hover:bg-white/[0.04]';
+              historyItem.innerHTML = `
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${cardClass}">
+                    <span class="text-lg">${meta.emoji}</span>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="text-[15px] font-semibold text-white">${dateFormatted}</span>
+                    <span class="text-[13px] text-muted mt-0.5">${timeRange}</span>
+                  </div>
+                </div>
+                <div class="flex flex-col items-end">
+                  <span class="text-2xl font-bold ${textClass}">${durationStr}</span>
+                  <span class="text-[10px] font-bold tracking-wider mt-0.5 ${textClass}">${meta.label}</span>
+                </div>
+              `;
+              recentHistoryContainer.appendChild(historyItem);
+            });
+          }
+        }
+      } else {
+        console.error('Gagal mengambil data diary:', response.data.message);
+      }
+    } catch (err) {
+      console.error('Error fetching diary:', err);
+    }
+
+    // 4. Form submission handler
     if (form) {
-      form.addEventListener('submit', (e) => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        // Backend integration will go here
-        alert('Entry saved! (Backend integration pending)');
+        
+        const logDateVal = dateInput.value;
+        const bedtimeVal = bedtimeInput.value;
+        const waketimeVal = waketimeInput.value;
+        const notesVal = notesInput.value;
+        const sliderVal = parseInt(slider.value);
+        
+        // Map 0-5 slider back to 1-10 rating scale expected by Laravel backend
+        const ratingMap = [2, 4, 6, 7, 8, 10];
+        const rating = ratingMap[sliderVal];
+
+        const wakeTimeStr = `${logDateVal} ${waketimeVal}:00`;
+        
+        // Calculate bed_time date based on wake_time date
+        const logDateObj = new Date(logDateVal + 'T00:00:00');
+        const [bedH, bedM] = bedtimeVal.split(':').map(Number);
+        const [wakeH, wakeM] = waketimeVal.split(':').map(Number);
+        
+        let bedDateVal = logDateVal;
+        if (bedH > wakeH || (bedH === wakeH && bedM >= wakeM)) {
+          const yesterday = new Date(logDateObj);
+          yesterday.setDate(yesterday.getDate() - 1);
+          const yyyy = yesterday.getFullYear();
+          const mm = String(yesterday.getMonth() + 1).padStart(2, '0');
+          const dd = String(yesterday.getDate()).padStart(2, '0');
+          bedDateVal = `${yyyy}-${mm}-${dd}`;
+        }
+        const bedTimeStr = `${bedDateVal} ${bedtimeVal}:00`;
+
+        // Disable submit button during call
+        const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+        const originalText = submitBtn ? submitBtn.textContent : 'Save Entry';
+        if (submitBtn) {
+          submitBtn.textContent = 'Saving...';
+          submitBtn.disabled = true;
+        }
+
+        try {
+          const res = await apiAddDiary({
+            log_date: logDateVal,
+            bed_time: bedTimeStr,
+            wake_time: wakeTimeStr,
+            sleep_quality_rating: rating,
+            notes: notesVal || '-'
+          }, token);
+
+          if (res.ok && res.data.success) {
+            window.location.reload();
+          } else {
+            alert('Gagal menyimpan: ' + (res.data.message || 'Error tidak diketahui'));
+            if (submitBtn) {
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+            }
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Terjadi kesalahan koneksi server.');
+          if (submitBtn) {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+          }
+        }
       });
     }
   });
