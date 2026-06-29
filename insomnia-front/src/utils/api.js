@@ -211,4 +211,69 @@ export async function apiGetToolDetail(id, token) {
   });
 }
 
+// ==========================================
+// 👑 ADMIN API CALLS
+// ==========================================
+
+export async function apiGetAdminUsers(token, page = 1) {
+  return apiCall(`/admin/users?page=${page}`, {
+    method: 'GET',
+    token,
+  });
+}
+
+export async function apiCreateAdminUser(body, token) {
+  return apiCall('/admin/users', {
+    method: 'POST',
+    body,
+    token,
+  });
+}
+
+export async function apiUpdateAdminUser(id, body, token) {
+  return apiCall(`/admin/users/${id}`, {
+    method: 'PUT',
+    body,
+    token,
+  });
+}
+
+export async function apiDeleteAdminUser(id, token) {
+  return apiCall(`/admin/users/${id}`, {
+    method: 'DELETE',
+    token,
+  });
+}
+
+export async function apiGetAdminSoundscapes(token, page = 1) {
+  return apiCall(`/admin/soundscapes?page=${page}`, {
+    method: 'GET',
+    token,
+  });
+}
+
+export async function apiCreateAdminSoundscape(body, token) {
+  return apiCall('/admin/soundscapes', {
+    method: 'POST',
+    body,
+    token,
+  });
+}
+
+export async function apiUpdateAdminSoundscape(id, body, token) {
+  return apiCall(`/admin/soundscapes/${id}`, {
+    method: 'PUT',
+    body,
+    token,
+  });
+}
+
+export async function apiDeleteAdminSoundscape(id, token) {
+  return apiCall(`/admin/soundscapes/${id}`, {
+    method: 'DELETE',
+    token,
+  });
+}
+
+
 

@@ -1,0 +1,902 @@
+---
+import Sidebar from '../layouts/Sidebar.astro';
+---
+
+<Sidebar title="Panel Admin - Tidur Nyenyak">
+  <!-- Loading state for authorization check -->
+  <div id="admin-auth-loading" class="w-full flex flex-col items-center justify-center min-h-[60vh] gap-4">
+    <div class="w-12 h-12 rounded-full border-4 border-accent/20 border-t-accent animate-spin"></div>
+    <p class="text-muted text-sm font-medium tracking-wide">Memeriksa hak akses admin...</p>
+  </div>
+
+  <!-- Main Admin Dashboard Content (Hidden until auth verified) -->
+  <div id="admin-dashboard-content" class="hidden flex-col gap-8 w-full">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-6">
+      <div>
+        <h1 class="text-3xl font-bold text-white m-0">Panel Kontrol Admin</h1>
+        <p class="text-sm text-muted m-0 mt-1.5">Kelola data pengguna, musik soundscape, dan pengaturan sistem.</p>
+      </div>
+      <!-- Stats Summary -->
+      <div class="flex gap-4 shrink-0">
+        <div class="bg-white/2 border border-white/5 rounded-2xl py-3 px-5 flex flex-col min-w-[120px]">
+          <span class="text-[10px] text-muted font-bold tracking-wider uppercase">Total User</span>
+          <span id="stat-total-users" class="text-2xl font-bold text-accent mt-0.5">-</span>
+        </div>
+        <div class="bg-white/2 border border-white/5 rounded-2xl py-3 px-5 flex flex-col min-w-[120px]">
+          <span class="text-[10px] text-muted font-bold tracking-wider uppercase">Total Audio</span>
+          <span id="stat-total-soundscapes" class="text-2xl font-bold text-accent mt-0.5">-</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="flex border-b border-white/5 gap-2">
+      <button id="tab-users-btn" class="bg-transparent border-none py-3 px-6 text-sm font-semibold cursor-pointer border-b-2 border-accent text-accent transition-all">
+        Kelola Pengguna
+      </button>
+      <button id="tab-soundscapes-btn" class="bg-transparent border-none py-3 px-6 text-sm font-semibold cursor-pointer border-b-2 border-transparent text-muted hover:text-white transition-all">
+        Kelola Soundscapes
+      </button>
+    </div>
+
+    <!-- TAB 1: USER MANAGEMENT -->
+    <div id="tab-users-content" class="flex flex-col gap-5">
+      <!-- Search & Add Actions -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="relative w-full md:max-w-xs">
+          <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </span>
+          <input type="text" id="search-users" placeholder="Cari nama atau email..." 
+            class="w-full bg-white/2 border border-white/5 rounded-xl py-2.5 pl-10 pr-4 text-white font-inherit text-xs transition-all duration-200 focus:outline-none focus:border-accent/40 focus:bg-white/3 placeholder:text-white/20 box-border" />
+        </div>
+        <button id="btn-add-user" class="bg-accent text-[#080c0d] border-none rounded-xl py-2.5 px-5 font-semibold text-xs cursor-pointer transition-all duration-200 hover:bg-accent-hover hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(78,208,200,0.25)] flex items-center gap-2 shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          Tambah Pengguna
+        </button>
+      </div>
+
+      <!-- Users Table -->
+      <div class="bg-white/2 border border-white/5 rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse text-left text-xs">
+            <thead>
+              <tr class="border-b border-white/5 bg-white/2">
+                <th class="py-4 px-6 text-muted font-semibold">Nama</th>
+                <th class="py-4 px-6 text-muted font-semibold">Email</th>
+                <th class="py-4 px-6 text-muted font-semibold">Peran (Role)</th>
+                <th class="py-4 px-6 text-muted font-semibold text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body" class="divide-y divide-white/5">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+        <!-- Empty State -->
+        <div id="users-empty-state" class="hidden py-12 text-center text-muted">
+          Tidak ada data pengguna ditemukan.
+        </div>
+      </div>
+
+      <!-- Users Pagination -->
+      <div id="users-pagination" class="flex items-center justify-between mt-2">
+        <span class="text-xs text-muted" id="users-pagination-info">Menampilkan - dari - data</span>
+        <div class="flex gap-2">
+          <button id="users-prev-btn" class="bg-white/2 border border-white/5 rounded-xl py-2 px-4 text-xs font-semibold text-muted hover:text-white disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-all">Sebelumnya</button>
+          <button id="users-next-btn" class="bg-white/2 border border-white/5 rounded-xl py-2 px-4 text-xs font-semibold text-muted hover:text-white disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-all">Selanjutnya</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: SOUNDSCAPES MANAGEMENT (Hidden by default) -->
+    <div id="tab-soundscapes-content" class="hidden flex-col gap-5">
+      <!-- Search & Add Actions -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="relative w-full md:max-w-xs">
+          <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          </span>
+          <input type="text" id="search-soundscapes" placeholder="Cari judul atau artis..." 
+            class="w-full bg-white/2 border border-white/5 rounded-xl py-2.5 pl-10 pr-4 text-white font-inherit text-xs transition-all duration-200 focus:outline-none focus:border-accent/40 focus:bg-white/3 placeholder:text-white/20 box-border" />
+        </div>
+        <button id="btn-add-soundscape" class="bg-accent text-[#080c0d] border-none rounded-xl py-2.5 px-5 font-semibold text-xs cursor-pointer transition-all duration-200 hover:bg-accent-hover hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(78,208,200,0.25)] flex items-center gap-2 shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          Tambah Soundscape
+        </button>
+      </div>
+
+      <!-- Soundscapes Table -->
+      <div class="bg-white/2 border border-white/5 rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse text-left text-xs">
+            <thead>
+              <tr class="border-b border-white/5 bg-white/2">
+                <th class="py-4 px-6 text-muted font-semibold w-16">Cover</th>
+                <th class="py-4 px-6 text-muted font-semibold">Judul</th>
+                <th class="py-4 px-6 text-muted font-semibold">Artis</th>
+                <th class="py-4 px-6 text-muted font-semibold">Kategori</th>
+                <th class="py-4 px-6 text-muted font-semibold">Durasi (Menit)</th>
+                <th class="py-4 px-6 text-muted font-semibold text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="soundscapes-table-body" class="divide-y divide-white/5">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+        <!-- Empty State -->
+        <div id="soundscapes-empty-state" class="hidden py-12 text-center text-muted">
+          Tidak ada data soundscape ditemukan.
+        </div>
+      </div>
+
+      <!-- Soundscapes Pagination -->
+      <div id="soundscapes-pagination" class="flex items-center justify-between mt-2">
+        <span class="text-xs text-muted" id="soundscapes-pagination-info">Menampilkan - dari - data</span>
+        <div class="flex gap-2">
+          <button id="soundscapes-prev-btn" class="bg-white/2 border border-white/5 rounded-xl py-2 px-4 text-xs font-semibold text-muted hover:text-white disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-all">Sebelumnya</button>
+          <button id="soundscapes-next-btn" class="bg-white/2 border border-white/5 rounded-xl py-2 px-4 text-xs font-semibold text-muted hover:text-white disabled:opacity-40 disabled:pointer-events-none cursor-pointer transition-all">Selanjutnya</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+
+  <!-- Modal 1: User Form (Add / Edit) -->
+  <div id="modal-user" class="confirm-modal-overlay">
+    <div class="bg-[#090f10] border border-white/10 rounded-3xl p-8 w-full max-w-[420px] box-border relative">
+      <button class="modal-close-btn absolute right-6 top-6 bg-transparent border-none text-muted hover:text-white cursor-pointer transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      
+      <h3 id="modal-user-title" class="text-lg font-bold text-white mb-6">Tambah Pengguna Baru</h3>
+      
+      <form id="form-user" class="flex flex-col gap-4">
+        <input type="hidden" id="user-id" />
+        
+        <div class="flex flex-col gap-2">
+          <label for="user-name" class="text-xs text-muted font-medium">Nama Lengkap</label>
+          <input type="text" id="user-name" required placeholder="Masukkan nama"
+            class="w-full bg-white/2 border border-white/5 rounded-xl py-3 px-4 text-white font-inherit text-xs focus:outline-none focus:border-accent/40 box-border" />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="user-email" class="text-xs text-muted font-medium">Alamat Email</label>
+          <input type="email" id="user-email" required placeholder="name@email.com"
+            class="w-full bg-white/2 border border-white/5 rounded-xl py-3 px-4 text-white font-inherit text-xs focus:outline-none focus:border-accent/40 box-border" />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="user-password" class="text-xs text-muted font-medium" id="label-user-password">Kata Sandi</label>
+          <input type="password" id="user-password" placeholder="Minimal 8 karakter"
+            class="w-full bg-white/2 border border-white/5 rounded-xl py-3 px-4 text-white font-inherit text-xs focus:outline-none focus:border-accent/40 box-border" />
+          <p id="helper-user-password" class="hidden text-[10px] text-muted m-0">Kosongkan jika tidak ingin mengubah kata sandi.</p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="user-role" class="text-xs text-muted font-medium">Peran (Role)</label>
+          <select id="user-role" required
+            class="w-full bg-white/2 border border-white/5 rounded-xl py-3 px-4 text-white font-inherit text-xs focus:outline-none focus:border-accent/40 box-border [&>option]:bg-[#0d1618]">
+            <option value="pengguna">Pengguna (User)</option>
+            <option value="admin">Administrator</option>
+          </select>
+        </div>
+
+        <div id="user-form-error" class="hidden text-red-400 text-xs bg-red-400/8 border border-red-400/15 rounded-xl py-2.5 px-3.5 mt-2"></div>
+
+        <button type="submit" id="user-form-submit" class="w-full bg-accent text-[#080c0d] border-none rounded-xl py-3.5 font-semibold text-xs cursor-pointer transition-all duration-200 hover:bg-accent-hover hover:-translate-y-0.5 mt-4">
+          Simpan Data
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Soundscape Form (Add / Edit) -->
+  <div id="modal-soundscape" class="confirm-modal-overlay">
+    <div class="bg-[#090f10] border border-white/10 rounded-3xl p-8 w-full max-w-[500px] box-border relative max-h-[85vh] overflow-y-auto">
+      <button class="modal-close-btn absolute right-6 top-6 bg-transparent border-none text-muted hover:text-white cursor-pointer transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      
+      <h3 id="modal-soundscape-title" class="text-lg font-bold text-white mb-6">Tambah Soundscape Baru</h3>
+      
+      <form id="form-soundscape" class="flex flex-col gap-4">
+        <input type="hidden" id="soundscape-id" />
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-2">
+            <label for="soundscape-title" class="text-xs text-muted font-medium">Judul Musik</label>
+            <input type="text" id="soundscape-title" required placeholder="Contoh: Hujan Rintik"
+              class="w-full bg-white/2 border border-white/5 rounded-xl py-3 px-4 text-white font-inherit text-xs focus:outline-none focus:border-accent/40 box-border" />
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="soundscape-artist" class="text-xs text-muted font-medium">Nama Artis / Pencipta</label>
+            <input type="text" id="soundscape-artist" required placeholder="Contoh: Alam Raya"
+              class="w-full bg-white/2 border border-white/5 rounded-xl py-3 px-4 text-white font-inherit text-xs focus:outline-none focus:border-accent/40 box-border" />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="soundscape-desc" class="text-xs text-muted font-medium">Deskripsi</label>
+          <textarea id="soundscape-desc" required rows="3" placeholder="Tuliskan deskripsi atau manfaat soundscape ini..."
+            class="w-full bg-white/2 border border-white/5 rounded-xl py-3 px-4 text-white font-inherit text-xs focus:outline-none focus:border-accent/40 box-border resize-y"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-2">
+            <label for="soundscape-category" class="text-xs text-muted font-medium">Kategori</label>
+            <select id="soundscape-category" required
+              class="w-full bg-white/2 border border-white/5 rounded-xl py-3 px-4 text-white font-inherit text-xs focus:outline-none focus:border-accent/40 box-border [&>option]:bg-[#0d1618]">
+              <option value="Nature">Nature (Alam)</option>
+              <option value="Ambient">Ambient (Suasana)</option>
+              <option value="Noise">Noise (White/Pink Noise)</option>
+              <option value="Meditation">Meditation (Meditasi)</option>
+              <option value="Music">Lofi Music</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="soundscape-duration" class="text-xs text-muted font-medium">Durasi (Menit)</label>
+            <input type="number" id="soundscape-duration" required min="1" placeholder="30"
+              class="w-full bg-white/2 border border-white/5 rounded-xl py-3 px-4 text-white font-inherit text-xs focus:outline-none focus:border-accent/40 box-border" />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="soundscape-thumb" class="text-xs text-muted font-medium">Link Gambar Cover (URL)</label>
+          <input type="url" id="soundscape-thumb" required placeholder="https://domain.com/gambar.jpg"
+            class="w-full bg-white/2 border border-white/5 rounded-xl py-3 px-4 text-white font-inherit text-xs focus:outline-none focus:border-accent/40 box-border" />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="soundscape-audio" class="text-xs text-muted font-medium">Link Berkas Audio (URL)</label>
+          <input type="url" id="soundscape-audio" required placeholder="https://domain.com/audio.mp3"
+            class="w-full bg-white/2 border border-white/5 rounded-xl py-3 px-4 text-white font-inherit text-xs focus:outline-none focus:border-accent/40 box-border" />
+        </div>
+
+        <div id="soundscape-form-error" class="hidden text-red-400 text-xs bg-red-400/8 border border-red-400/15 rounded-xl py-2.5 px-3.5 mt-2"></div>
+
+        <button type="submit" id="soundscape-form-submit" class="w-full bg-accent text-[#080c0d] border-none rounded-xl py-3.5 font-semibold text-xs cursor-pointer transition-all duration-200 hover:bg-accent-hover hover:-translate-y-0.5 mt-4">
+          Simpan Data
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Confirm Delete -->
+  <div id="modal-delete" class="confirm-modal-overlay">
+    <div class="confirm-modal bg-[#090f10] border border-white/10 rounded-3xl p-8 w-full max-w-[380px] box-border text-center">
+      <div class="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 flex items-center justify-center mx-auto mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+      </div>
+      <h3 class="text-base font-bold text-white mb-2" id="delete-title">Hapus Data</h3>
+      <p class="text-xs text-muted mb-6 leading-relaxed" id="delete-message">Apakah Anda yakin ingin menghapus data ini secara permanen? Tindakan ini tidak dapat dibatalkan.</p>
+      
+      <div class="flex justify-center gap-3">
+        <button id="delete-cancel-btn" class="bg-white/5 border border-white/8 text-muted py-2.5 px-5 rounded-xl text-xs font-semibold cursor-pointer hover:bg-white/10 hover:text-white transition-all">Batal</button>
+        <button id="delete-ok-btn" class="bg-red-500 text-white border-none py-2.5 px-5 rounded-xl text-xs font-semibold cursor-pointer hover:bg-red-600 transition-all shadow-[0_0_12px_rgba(239,68,68,0.2)]">Hapus</button>
+      </div>
+    </div>
+  </div>
+</Sidebar>
+
+<script>
+  import { isLoggedIn, getUser, getToken } from '../utils/auth.js';
+  import {
+    apiGetAdminUsers,
+    apiCreateAdminUser,
+    apiUpdateAdminUser,
+    apiDeleteAdminUser,
+    apiGetAdminSoundscapes,
+    apiCreateAdminSoundscape,
+    apiUpdateAdminSoundscape,
+    apiDeleteAdminSoundscape
+  } from '../utils/api.js';
+
+  document.addEventListener('astro:page-load', () => {
+    // 1. Otorisasi
+    if (!isLoggedIn()) {
+      window.location.href = '/auth';
+      return;
+    }
+
+    const user = getUser();
+    if (!user || user.role !== 'admin') {
+      // Jika bukan admin, arahkan ke landing page
+      window.location.href = '/';
+      return;
+    }
+
+    // Tampilkan panel admin
+    document.getElementById('admin-auth-loading')?.classList.add('hidden');
+    document.getElementById('admin-dashboard-content')?.classList.remove('hidden');
+    document.getElementById('admin-dashboard-content')?.classList.add('flex');
+
+    const token = getToken();
+
+    // 2. State & Variables
+    let usersData = [];
+    let usersMeta = { current_page: 1, last_page: 1, total: 0, from: 0, to: 0 };
+    let usersQuery = '';
+
+    let soundscapesData = [];
+    let soundscapesMeta = { current_page: 1, last_page: 1, total: 0, from: 0, to: 0 };
+    let soundscapesQuery = '';
+
+    // Modals handler
+    const userModal = document.getElementById('modal-user');
+    const soundscapeModal = document.getElementById('modal-soundscape');
+    const deleteModal = document.getElementById('modal-delete');
+
+    let deleteTarget = { type: '', id: null };
+
+    // Selectors
+    const usersTableBody = document.getElementById('users-table-body');
+    const usersEmptyState = document.getElementById('users-empty-state');
+    const usersPaginationInfo = document.getElementById('users-pagination-info');
+    const usersPrevBtn = document.getElementById('users-prev-btn');
+    const usersNextBtn = document.getElementById('users-next-btn');
+
+    const soundscapesTableBody = document.getElementById('soundscapes-table-body');
+    const soundscapesEmptyState = document.getElementById('soundscapes-empty-state');
+    const soundscapesPaginationInfo = document.getElementById('soundscapes-pagination-info');
+    const soundscapesPrevBtn = document.getElementById('soundscapes-prev-btn');
+    const soundscapesNextBtn = document.getElementById('soundscapes-next-btn');
+
+    const statUsers = document.getElementById('stat-total-users');
+    const statSoundscapes = document.getElementById('stat-total-soundscapes');
+
+    // ==========================================
+    // 🔄 LOAD DATA
+    // ==========================================
+
+    async function fetchUsers(page = 1) {
+      if (window.showMoonLoader) window.showMoonLoader('Memuat data pengguna...');
+      const response = await apiGetAdminUsers(token, page);
+      if (window.hideMoonLoader) window.hideMoonLoader();
+
+      if (response.ok && response.data.success) {
+        usersData = response.data.data.data;
+        const meta = response.data.data;
+        usersMeta = {
+          current_page: meta.current_page,
+          last_page: meta.last_page,
+          total: meta.total,
+          from: meta.from || 0,
+          to: meta.to || 0
+        };
+        if (statUsers) statUsers.textContent = usersMeta.total;
+        renderUsers();
+      } else {
+        console.error('Failed to fetch users:', response.data);
+      }
+    }
+
+    async function fetchSoundscapes(page = 1) {
+      if (window.showMoonLoader) window.showMoonLoader('Memuat data soundscapes...');
+      const response = await apiGetAdminSoundscapes(token, page);
+      if (window.hideMoonLoader) window.hideMoonLoader();
+
+      if (response.ok && response.data.success) {
+        soundscapesData = response.data.data.data;
+        const meta = response.data.data;
+        soundscapesMeta = {
+          current_page: meta.current_page,
+          last_page: meta.last_page,
+          total: meta.total,
+          from: meta.from || 0,
+          to: meta.to || 0
+        };
+        if (statSoundscapes) statSoundscapes.textContent = soundscapesMeta.total;
+        renderSoundscapes();
+      } else {
+        console.error('Failed to fetch soundscapes:', response.data);
+      }
+    }
+
+    // Initialize loaded data
+    fetchUsers(1);
+    fetchSoundscapes(1);
+
+    // ==========================================
+    // 🎨 RENDER METHODS
+    // ==========================================
+
+    function renderUsers() {
+      // Filter client side based on query for realtime feeling
+      const query = usersQuery.toLowerCase();
+      const filtered = usersData.filter(u => 
+        u.name.toLowerCase().includes(query) || 
+        u.email.toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        usersTableBody.innerHTML = '';
+        usersEmptyState?.classList.remove('hidden');
+        return;
+      }
+      usersEmptyState?.classList.add('hidden');
+
+      usersTableBody.innerHTML = filtered.map(u => `
+        <tr class="hover:bg-white/1 transition-all">
+          <td class="py-4 px-6 text-white font-medium">${u.name} ${u.id === user.id ? '<span class="ml-2 text-[9px] bg-accent/10 border border-accent/15 text-accent py-0.5 px-1.5 rounded-full font-semibold">Anda</span>' : ''}</td>
+          <td class="py-4 px-6 text-muted">${u.email}</td>
+          <td class="py-4 px-6">
+            <span class="py-1 px-2.5 rounded-lg font-semibold text-[10px] ${u.role === 'admin' ? 'bg-accent/10 text-accent border border-accent/15' : 'bg-white/5 text-muted border border-white/5'}">
+              ${u.role === 'admin' ? 'Administrator' : 'Pengguna'}
+            </span>
+          </td>
+          <td class="py-4 px-6 text-right">
+            <div class="flex items-center justify-end gap-2">
+              <button class="btn-edit-user bg-white/2 border border-white/5 text-muted hover:text-accent hover:border-accent/20 rounded-lg p-1.5 cursor-pointer transition-all" data-id="${u.id}" title="Edit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              </button>
+              ${u.id !== user.id ? `
+                <button class="btn-delete-user bg-white/2 border border-white/5 text-muted hover:text-red-400 hover:border-red-400/20 rounded-lg p-1.5 cursor-pointer transition-all" data-id="${u.id}" title="Hapus">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                </button>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      // Update pagination info
+      if (usersPaginationInfo) {
+        usersPaginationInfo.textContent = `Menampilkan ${usersMeta.from} - ${usersMeta.to} dari ${usersMeta.total} data`;
+      }
+      if (usersPrevBtn) usersPrevBtn.disabled = usersMeta.current_page <= 1;
+      if (usersNextBtn) usersNextBtn.disabled = usersMeta.current_page >= usersMeta.last_page;
+
+      // Add Action Event Listeners
+      document.querySelectorAll('.btn-edit-user').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const targetId = parseInt(btn.getAttribute('data-id'));
+          const targetUser = usersData.find(u => u.id === targetId);
+          if (targetUser) openUserModal(targetUser);
+        });
+      });
+
+      document.querySelectorAll('.btn-delete-user').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = parseInt(btn.getAttribute('data-id'));
+          openDeleteModal('user', targetId);
+        });
+      });
+    }
+
+    function renderSoundscapes() {
+      const query = soundscapesQuery.toLowerCase();
+      const filtered = soundscapesData.filter(s => 
+        s.title.toLowerCase().includes(query) || 
+        s.artist_name.toLowerCase().includes(query) ||
+        s.category.toLowerCase().includes(query)
+      );
+
+      if (filtered.length === 0) {
+        soundscapesTableBody.innerHTML = '';
+        soundscapesEmptyState?.classList.remove('hidden');
+        return;
+      }
+      soundscapesEmptyState?.classList.add('hidden');
+
+      soundscapesTableBody.innerHTML = filtered.map(s => `
+        <tr class="hover:bg-white/1 transition-all">
+          <td class="py-3 px-6">
+            <div class="w-10 h-10 rounded-lg overflow-hidden bg-white/5 border border-white/5">
+              <img src="${s.thumbnail_url}" alt="${s.title}" class="w-full h-full object-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><rect width=%2240%22 height=%2240%22 fill=%22%23222%22/></svg>'"/>
+            </div>
+          </td>
+          <td class="py-4 px-6 text-white font-medium truncate max-w-[150px]">${s.title}</td>
+          <td class="py-4 px-6 text-muted truncate max-w-[120px]">${s.artist_name}</td>
+          <td class="py-4 px-6">
+            <span class="py-0.5 px-2 bg-white/5 border border-white/5 text-muted rounded-full text-[9px] font-semibold">${s.category}</span>
+          </td>
+          <td class="py-4 px-6 text-muted">${s.duration_minutes}m</td>
+          <td class="py-4 px-6 text-right">
+            <div class="flex items-center justify-end gap-2">
+              <button class="btn-edit-soundscape bg-white/2 border border-white/5 text-muted hover:text-accent hover:border-accent/20 rounded-lg p-1.5 cursor-pointer transition-all" data-id="${s.id}" title="Edit">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              </button>
+              <button class="btn-delete-soundscape bg-white/2 border border-white/5 text-muted hover:text-red-400 hover:border-red-400/20 rounded-lg p-1.5 cursor-pointer transition-all" data-id="${s.id}" title="Hapus">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      // Update pagination info
+      if (soundscapesPaginationInfo) {
+        soundscapesPaginationInfo.textContent = `Menampilkan ${soundscapesMeta.from} - ${soundscapesMeta.to} dari ${soundscapesMeta.total} data`;
+      }
+      if (soundscapesPrevBtn) soundscapesPrevBtn.disabled = soundscapesMeta.current_page <= 1;
+      if (soundscapesNextBtn) soundscapesNextBtn.disabled = soundscapesMeta.current_page >= soundscapesMeta.last_page;
+
+      // Add Event Listeners
+      document.querySelectorAll('.btn-edit-soundscape').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = parseInt(btn.getAttribute('data-id'));
+          const targetSound = soundscapesData.find(s => s.id === targetId);
+          if (targetSound) openSoundscapeModal(targetSound);
+        });
+      });
+
+      document.querySelectorAll('.btn-delete-soundscape').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetId = parseInt(btn.getAttribute('data-id'));
+          openDeleteModal('soundscape', targetId);
+        });
+      });
+    }
+
+    // ==========================================
+    // 📑 TABS TOGGLING
+    // ==========================================
+
+    const tabUsersBtn = document.getElementById('tab-users-btn');
+    const tabSoundscapesBtn = document.getElementById('tab-soundscapes-btn');
+    const tabUsersContent = document.getElementById('tab-users-content');
+    const tabSoundscapesContent = document.getElementById('tab-soundscapes-content');
+
+    tabUsersBtn?.addEventListener('click', () => {
+      tabUsersBtn.className = 'bg-transparent border-none py-3 px-6 text-sm font-semibold cursor-pointer border-b-2 border-accent text-accent transition-all';
+      tabSoundscapesBtn.className = 'bg-transparent border-none py-3 px-6 text-sm font-semibold cursor-pointer border-b-2 border-transparent text-muted hover:text-white transition-all';
+      
+      tabUsersContent?.classList.remove('hidden');
+      tabUsersContent?.classList.add('flex');
+      tabSoundscapesContent?.classList.add('hidden');
+      tabSoundscapesContent?.classList.remove('flex');
+    });
+
+    tabSoundscapesBtn?.addEventListener('click', () => {
+      tabSoundscapesBtn.className = 'bg-transparent border-none py-3 px-6 text-sm font-semibold cursor-pointer border-b-2 border-accent text-accent transition-all';
+      tabUsersBtn.className = 'bg-transparent border-none py-3 px-6 text-sm font-semibold cursor-pointer border-b-2 border-transparent text-muted hover:text-white transition-all';
+      
+      tabSoundscapesContent?.classList.remove('hidden');
+      tabSoundscapesContent?.classList.add('flex');
+      tabUsersContent?.classList.add('hidden');
+      tabUsersContent?.classList.remove('flex');
+    });
+
+    // ==========================================
+    // 🔍 SEARCH & PAGINATION CONTROLS
+    // ==========================================
+
+    // Users Search & Paging
+    document.getElementById('search-users')?.addEventListener('input', (e) => {
+      usersQuery = e.target.value;
+      renderUsers();
+    });
+
+    usersPrevBtn?.addEventListener('click', () => {
+      if (usersMeta.current_page > 1) {
+        fetchUsers(usersMeta.current_page - 1);
+      }
+    });
+
+    usersNextBtn?.addEventListener('click', () => {
+      if (usersMeta.current_page < usersMeta.last_page) {
+        fetchUsers(usersMeta.current_page + 1);
+      }
+    });
+
+    // Soundscapes Search & Paging
+    document.getElementById('search-soundscapes')?.addEventListener('input', (e) => {
+      soundscapesQuery = e.target.value;
+      renderSoundscapes();
+    });
+
+    soundscapesPrevBtn?.addEventListener('click', () => {
+      if (soundscapesMeta.current_page > 1) {
+        fetchSoundscapes(soundscapesMeta.current_page - 1);
+      }
+    });
+
+    soundscapesNextBtn?.addEventListener('click', () => {
+      if (soundscapesMeta.current_page < soundscapesMeta.last_page) {
+        fetchSoundscapes(soundscapesMeta.current_page + 1);
+      }
+    });
+
+    // ==========================================
+    // 🚪 MODAL OPEN & CLOSE LOGIC
+    // ==========================================
+
+    function openUserModal(userData = null) {
+      const modalTitle = document.getElementById('modal-user-title');
+      const userId = document.getElementById('user-id');
+      const userName = document.getElementById('user-name');
+      const userEmail = document.getElementById('user-email');
+      const userPassword = document.getElementById('user-password');
+      const userRole = document.getElementById('user-role');
+      const errorDiv = document.getElementById('user-form-error');
+
+      // Clear previous error
+      if (errorDiv) errorDiv.classList.add('hidden');
+
+      if (userData) {
+        // Mode: EDIT
+        if (modalTitle) modalTitle.textContent = 'Revisi Data Pengguna';
+        if (userId) userId.value = userData.id;
+        if (userName) userName.value = userData.name;
+        if (userEmail) userEmail.value = userData.email;
+        if (userPassword) {
+          userPassword.value = '';
+          userPassword.required = false;
+        }
+        if (userRole) userRole.value = userData.role;
+        document.getElementById('label-user-password').textContent = 'Kata Sandi Baru (Opsional)';
+        document.getElementById('helper-user-password')?.classList.remove('hidden');
+      } else {
+        // Mode: ADD
+        if (modalTitle) modalTitle.textContent = 'Tambah Pengguna Baru';
+        if (userId) userId.value = '';
+        if (userName) userName.value = '';
+        if (userEmail) userEmail.value = '';
+        if (userPassword) {
+          userPassword.value = '';
+          userPassword.required = true;
+        }
+        if (userRole) userRole.value = 'pengguna';
+        document.getElementById('label-user-password').textContent = 'Kata Sandi';
+        document.getElementById('helper-user-password')?.classList.add('hidden');
+      }
+
+      userModal?.classList.add('active');
+    }
+
+    function openSoundscapeModal(soundscapeData = null) {
+      const modalTitle = document.getElementById('modal-soundscape-title');
+      const soundId = document.getElementById('soundscape-id');
+      const soundTitle = document.getElementById('soundscape-title');
+      const soundArtist = document.getElementById('soundscape-artist');
+      const soundDesc = document.getElementById('soundscape-desc');
+      const soundCategory = document.getElementById('soundscape-category');
+      const soundDuration = document.getElementById('soundscape-duration');
+      const soundThumb = document.getElementById('soundscape-thumb');
+      const soundAudio = document.getElementById('soundscape-audio');
+      const errorDiv = document.getElementById('soundscape-form-error');
+
+      if (errorDiv) errorDiv.classList.add('hidden');
+
+      if (soundscapeData) {
+        // Mode: EDIT
+        if (modalTitle) modalTitle.textContent = 'Revisi Soundscape';
+        if (soundId) soundId.value = soundscapeData.id;
+        if (soundTitle) soundTitle.value = soundscapeData.title;
+        if (soundArtist) soundArtist.value = soundscapeData.artist_name;
+        if (soundDesc) soundDesc.value = soundscapeData.description;
+        if (soundCategory) soundCategory.value = soundscapeData.category;
+        if (soundDuration) soundDuration.value = soundscapeData.duration_minutes;
+        if (soundThumb) soundThumb.value = soundscapeData.thumbnail_url;
+        if (soundAudio) soundAudio.value = soundscapeData.audio_url;
+      } else {
+        // Mode: ADD
+        if (modalTitle) modalTitle.textContent = 'Tambah Soundscape Baru';
+        if (soundId) soundId.value = '';
+        if (soundTitle) soundTitle.value = '';
+        if (soundArtist) soundArtist.value = '';
+        if (soundDesc) soundDesc.value = '';
+        if (soundCategory) soundCategory.value = 'Nature';
+        if (soundDuration) soundDuration.value = '';
+        if (soundThumb) soundThumb.value = '';
+        if (soundAudio) soundAudio.value = '';
+      }
+
+      soundscapeModal?.classList.add('active');
+    }
+
+    function openDeleteModal(type, id) {
+      deleteTarget = { type, id };
+      const titleEl = document.getElementById('delete-title');
+      const messageEl = document.getElementById('delete-message');
+
+      if (type === 'user') {
+        if (titleEl) titleEl.textContent = 'Hapus Akun Pengguna';
+        if (messageEl) messageEl.textContent = 'Apakah Anda yakin ingin menghapus akun pengguna ini? Seluruh data riwayat tidur (Diary) pengguna ini juga akan terhapus secara permanen.';
+      } else {
+        if (titleEl) titleEl.textContent = 'Hapus Audio Soundscape';
+        if (messageEl) messageEl.textContent = 'Apakah Anda yakin ingin menghapus berkas audio soundscape ini dari sistem? Pengguna tidak akan dapat memutarnya lagi.';
+      }
+
+      deleteModal?.classList.add('active');
+    }
+
+    function closeAllModals() {
+      userModal?.classList.remove('active');
+      soundscapeModal?.classList.remove('active');
+      deleteModal?.classList.remove('active');
+    }
+
+    // Modal Close Buttons binding
+    document.querySelectorAll('.modal-close-btn').forEach(btn => {
+      btn.addEventListener('click', closeAllModals);
+    });
+
+    document.getElementById('delete-cancel-btn')?.addEventListener('click', closeAllModals);
+
+    // Add buttons click binding
+    document.getElementById('btn-add-user')?.addEventListener('click', () => openUserModal(null));
+    document.getElementById('btn-add-soundscape')?.addEventListener('click', () => openSoundscapeModal(null));
+
+    // Close on overlay click
+    [userModal, soundscapeModal, deleteModal].forEach(modal => {
+      modal?.addEventListener('click', (e) => {
+        if (e.target === modal) closeAllModals();
+      });
+    });
+
+    // ==========================================
+    // 💾 FORM SUBMIT ACTIONS (CRUD)
+    // ==========================================
+
+    // Form User Submit
+    document.getElementById('form-user')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const id = document.getElementById('user-id').value;
+      const name = document.getElementById('user-name').value.trim();
+      const email = document.getElementById('user-email').value.trim();
+      const password = document.getElementById('user-password').value;
+      const role = document.getElementById('user-role').value;
+      const errorDiv = document.getElementById('user-form-error');
+
+      if (errorDiv) errorDiv.classList.add('hidden');
+
+      const body = { name, email, role };
+      if (password) {
+        if (password.length < 8) {
+          if (errorDiv) {
+            errorDiv.textContent = 'Kata sandi minimal 8 karakter.';
+            errorDiv.classList.remove('hidden');
+          }
+          return;
+        }
+        body.password = password;
+      }
+
+      let response;
+      if (id) {
+        // Update user
+        if (window.showMoonLoader) window.showMoonLoader('Sedang memperbarui pengguna...');
+        response = await apiUpdateAdminUser(parseInt(id), body, token);
+      } else {
+        // Create user (password is required)
+        if (!password) {
+          if (errorDiv) {
+            errorDiv.textContent = 'Kata sandi wajib diisi untuk pengguna baru.';
+            errorDiv.classList.remove('hidden');
+          }
+          return;
+        }
+        if (window.showMoonLoader) window.showMoonLoader('Sedang membuat pengguna...');
+        response = await apiCreateAdminUser(body, token);
+      }
+
+      if (window.hideMoonLoader) window.hideMoonLoader();
+
+      if (response.ok && response.data.success) {
+        closeAllModals();
+        fetchUsers(usersMeta.current_page);
+      } else {
+        if (errorDiv) {
+          const errors = response.data.errors;
+          let message = response.data.message || 'Gagal menyimpan data.';
+          if (errors) {
+            const firstKey = Object.keys(errors)[0];
+            if (firstKey && errors[firstKey].length > 0) {
+              message = errors[firstKey][0];
+            }
+          }
+          errorDiv.textContent = message;
+          errorDiv.classList.remove('hidden');
+        }
+      }
+    });
+
+    // Form Soundscape Submit
+    document.getElementById('form-soundscape')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const id = document.getElementById('soundscape-id').value;
+      const title = document.getElementById('soundscape-title').value.trim();
+      const artist_name = document.getElementById('soundscape-artist').value.trim();
+      const description = document.getElementById('soundscape-desc').value.trim();
+      const category = document.getElementById('soundscape-category').value;
+      const duration_minutes = parseFloat(document.getElementById('soundscape-duration').value);
+      const thumbnail_url = document.getElementById('soundscape-thumb').value.trim();
+      const audio_url = document.getElementById('soundscape-audio').value.trim();
+      const errorDiv = document.getElementById('soundscape-form-error');
+
+      if (errorDiv) errorDiv.classList.add('hidden');
+
+      const body = {
+        title,
+        artist_name,
+        description,
+        category,
+        duration_minutes,
+        thumbnail_url,
+        audio_url
+      };
+
+      let response;
+      if (id) {
+        // Update soundscape
+        if (window.showMoonLoader) window.showMoonLoader('Sedang memperbarui soundscape...');
+        response = await apiUpdateAdminSoundscape(parseInt(id), body, token);
+      } else {
+        // Create soundscape
+        if (window.showMoonLoader) window.showMoonLoader('Sedang membuat soundscape...');
+        response = await apiCreateAdminSoundscape(body, token);
+      }
+
+      if (window.hideMoonLoader) window.hideMoonLoader();
+
+      if (response.ok && response.data.success) {
+        closeAllModals();
+        fetchSoundscapes(soundscapesMeta.current_page);
+      } else {
+        if (errorDiv) {
+          const errors = response.data.errors;
+          let message = response.data.message || 'Gagal menyimpan data.';
+          if (errors) {
+            const firstKey = Object.keys(errors)[0];
+            if (firstKey && errors[firstKey].length > 0) {
+              message = errors[firstKey][0];
+            }
+          }
+          errorDiv.textContent = message;
+          errorDiv.classList.remove('hidden');
+        }
+      }
+    });
+
+    // Confirm Delete Actions
+    document.getElementById('delete-ok-btn')?.addEventListener('click', async () => {
+      if (!deleteTarget.id) return;
+
+      closeAllModals();
+      let response;
+
+      if (deleteTarget.type === 'user') {
+        if (window.showMoonLoader) window.showMoonLoader('Menghapus pengguna...');
+        response = await apiDeleteAdminUser(deleteTarget.id, token);
+        if (window.hideMoonLoader) window.hideMoonLoader();
+
+        if (response.ok && response.data.success) {
+          // Relocate to page 1 if current page contains no more items
+          const isPageEmpty = (usersData.length <= 1) && (usersMeta.current_page > 1);
+          fetchUsers(isPageEmpty ? usersMeta.current_page - 1 : usersMeta.current_page);
+        } else {
+          alert(response.data.message || 'Gagal menghapus pengguna.');
+        }
+      } else if (deleteTarget.type === 'soundscape') {
+        if (window.showMoonLoader) window.showMoonLoader('Menghapus soundscape...');
+        response = await apiDeleteAdminSoundscape(deleteTarget.id, token);
+        if (window.hideMoonLoader) window.hideMoonLoader();
+
+        if (response.ok && response.data.success) {
+          const isPageEmpty = (soundscapesData.length <= 1) && (soundscapesMeta.current_page > 1);
+          fetchSoundscapes(isPageEmpty ? soundscapesMeta.current_page - 1 : soundscapesMeta.current_page);
+        } else {
+          alert(response.data.message || 'Gagal menghapus soundscape.');
+        }
+      }
+
+      deleteTarget = { type: '', id: null };
+    });
+  });
+</script>
+
+<style>
+  /* Premium Select elements stylings */
+  select {
+    color-scheme: dark;
+  }
+</style>
