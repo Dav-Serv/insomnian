@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\AdminUserController;
+use App\Http\Controllers\Api\Admin\AdminSoundScapeController;
 use App\Http\Controllers\Api\SoundScapeController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\SettingAccountController;
+use App\Http\Middleware\IsAdminMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -28,7 +32,15 @@ Route::middleware('auth:sanctum')->group(function() {
 
     // favorites
     Route::get('/favorites', [SoundScapeController::class, 'favorites']);
-    Route::put('/soundscapes/{id}/audio-url', [SoundScapeController::class, 'updateAudioUrl']);
+
+    //image
+    Route::get('/soundscapes/{id}/thumbnail', [SoundScapeController::class, 'streamThumbnail']);
+
+    Route::middleware(IsAdminMiddleware::class)->prefix('admin')->group(function () {
+    //CRUD
+    Route::apiResource('users', AdminUserController::class);
+    Route::apiResource('soundscapes', AdminSoundScapeController::class);
+    });
 
     // audio
     Route::get('/stream/{id}', [SoundScapeController::class, 'streamAudio']);

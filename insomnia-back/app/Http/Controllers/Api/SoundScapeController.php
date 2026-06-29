@@ -204,4 +204,29 @@ class SoundScapeController extends Controller
 
         return null; // Format tidak dikenali atau panjang ID tidak valid
     }
+    public function updateThumbnailUrl(Request $request, int $id): JsonResponse
+    {
+        $soundscape = SoundScapes::find($id);
+
+        if (!$soundscape) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Soundscape not found'
+            ], 404);
+        }
+
+        // Validasi input: harus berupa URL yang valid
+        $request->validate([
+            'thumbnail_url' => 'required|url'
+        ]);
+
+        $soundscape->thumbnail_url = $request->thumbnail_url;
+        $soundscape->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Thumbnail URL updated successfully',
+            'data'    => new SoundscapeResource($soundscape)
+        ]);
+    }
 }
