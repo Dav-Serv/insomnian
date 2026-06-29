@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\SettingAccountController;
 use App\Http\Controllers\Api\SleepDiaryController;
+use App\Http\Controllers\Api\ToolController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,10 @@ Route::middleware('auth:sanctum')->group(function() {
     // diary
     Route::get('/diary', [SleepDiaryController::class, 'index']);
     Route::post('/diary-tambah', [SleepDiaryController::class, 'store']);
+
+    // tools
+    Route::get('/tools', [ToolController::class, 'index']);
+    Route::get('/tools/{id}', [ToolController::class, 'show']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
