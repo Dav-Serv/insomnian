@@ -18,6 +18,8 @@ const ENDPOINTS = {
   mockSleep: '/home/mock-sleep',
   diary: '/diary',
   diaryTambah: '/diary-tambah',
+  tools: '/tools',
+  toolsCategory: '/tools/category',
 };
 
 export async function apiCall(endpoint, { method = 'GET', body = null, token = null } = {}) {
@@ -187,4 +189,26 @@ export async function apiAddDiary(body, token) {
     token,
   });
 }
+
+export async function apiGetTools(token) {
+  return apiCall(ENDPOINTS.tools, {
+    method: 'GET',
+    token,
+  });
+}
+
+export async function apiGetToolsByCategory(slug, token) {
+  return apiCall(`${ENDPOINTS.toolsCategory}/${slug}`, {
+    method: 'GET',
+    token,
+  });
+}
+
+export async function apiGetToolDetail(id, token) {
+  return apiCall(`${ENDPOINTS.tools}/${id}`, {
+    method: 'GET',
+    token,
+  });
+}
+
 
