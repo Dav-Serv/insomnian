@@ -38,6 +38,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
     // tools
     Route::get('/tools', [ToolController::class, 'index']);
+    Route::get('/tools/category/{slug}', [ToolController::class, 'getByCategory']);
     Route::get('/tools/{id}', [ToolController::class, 'show']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
