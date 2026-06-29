@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\SoundScapeController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\SettingAccountController;
+use App\Http\Controllers\Api\SleepDiaryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,10 @@ Route::middleware('auth:sanctum')->group(function() {
     // favorites
     Route::get('/favorites', [SoundScapeController::class, 'favorites']);
     Route::put('/soundscapes/{id}/audio-url', [SoundScapeController::class, 'updateAudioUrl']);
+
+    // diary
+    Route::get('/diary', [SleepDiaryController::class, 'index']);
+    Route::post('/diary-tambah', [SleepDiaryController::class, 'store']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
