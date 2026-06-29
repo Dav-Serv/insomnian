@@ -28,7 +28,7 @@ const menuItems = [
 <Layout title={title}>
   <div class="flex flex-col md:flex-row min-h-screen bg-bg-dark text-white font-sans">
     <!-- Sidebar -->
-    <aside class="w-full h-auto p-4 static z-10 flex flex-col md:w-[240px] md:h-screen md:sticky md:top-0 md:py-10 md:px-5 md:shadow-none bg-bg-sidebar shrink-0 box-border">
+    <aside class="w-full h-auto p-4 static z-10 flex flex-col md:w-[240px] md:h-screen md:sticky md:top-0 md:pt-10 md:pb-0 md:px-5 md:shadow-none bg-bg-sidebar shrink-0 box-border">
 
       <!-- Brand -->
       <div class="flex items-center gap-2.5 mb-4 justify-center md:mb-8 md:justify-start md:px-3">
@@ -44,7 +44,6 @@ const menuItems = [
           <a
             href={item.path}
             class:list={[
-              'sidebar-nav-link',
               'flex items-center gap-3 py-2.5 px-3 rounded-lg text-[13px] font-medium no-underline transition-all duration-200 w-full',
               currentActive === item.id
                 ? 'bg-bg-active text-accent'
@@ -82,59 +81,73 @@ const menuItems = [
         ))}
 
         <!-- Divider pushed to bottom -->
-        <div class="hidden md:block h-px bg-white/5 mt-auto mb-3 w-full"></div>
+        <div class="hidden md:block h-px bg-white/5 mt-auto w-full"></div>
 
-        <!-- User Profile (logged in) -->
-        <a
-          id="sidebar-user-profile"
-          href="/setting"
-          class:list={[
-            'sidebar-nav-link',
-            'hidden items-center gap-3 py-2 px-3 rounded-lg no-underline transition-all duration-200 w-full group',
-            currentActive === 'setting'
-              ? 'bg-bg-active'
-              : 'hover:bg-white/5'
-          ]}
-        >
-          <div class:list={[
-            'w-10 h-10 rounded-full bg-[#1a2729] border flex items-center justify-center shrink-0 overflow-hidden',
-            currentActive === 'setting' ? 'border-accent/30' : 'border-white/8'
-          ]}>
-            <div id="sidebar-user-photo-container" class="w-full h-full flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent/60"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <!-- User Profile/Login Wrapper aligning with bottom bar height on desktop -->
+        <div class="w-full flex items-center justify-between gap-2 md:h-20 shrink-0">
+          <!-- User Profile (logged in) -->
+          <a
+            id="sidebar-user-profile"
+            href="/setting"
+            class:list={[
+              'sidebar-nav-link',
+              'hidden items-center gap-3 py-2 px-3 rounded-lg no-underline transition-all duration-200 flex-1 min-w-0 group',
+              currentActive === 'setting'
+                ? 'bg-bg-active'
+                : 'hover:bg-white/5'
+            ]}
+          >
+            <div class:list={[
+              'w-10 h-10 rounded-full bg-[#1a2729] border flex items-center justify-center shrink-0 overflow-hidden',
+              currentActive === 'setting' ? 'border-accent/30' : 'border-white/8'
+            ]}>
+              <div id="sidebar-user-photo-container" class="w-full h-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent/60"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
             </div>
-          </div>
-          <div class="flex flex-col">
-            <span id="sidebar-username" class="text-[13px] font-semibold text-white group-hover:text-accent transition-colors">User</span>
-            <span class="text-[11px] text-muted">Settings</span>
-          </div>
-        </a>
+            <div class="flex flex-col overflow-hidden">
+              <span id="sidebar-username" class="text-[13px] font-semibold text-white group-hover:text-accent transition-colors truncate">User</span>
+              <span class="text-[11px] text-muted truncate">Settings</span>
+            </div>
+          </a>
 
-        <!-- Login Link (guest) -->
-        <a
-          id="sidebar-login-link"
-          href="/auth"
-          class="hidden items-center gap-3 py-2.5 px-3 rounded-lg no-underline transition-all duration-200 w-full group hover:bg-white/5"
-        >
-          <div class="w-10 h-10 rounded-full bg-[#1a2729] border border-white/8 flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-          </div>
-          <div class="flex flex-col">
-            <span class="text-[13px] font-semibold text-muted group-hover:text-accent transition-colors">Login</span>
-            <span class="text-[11px] text-muted/60">Masuk ke akun Anda</span>
-          </div>
-        </a>
+          <!-- Logout Button (logged in, door icon only next to settings) -->
+          <button
+            id="sidebar-logout-btn"
+            class="hidden w-10 h-10 rounded-lg bg-white/5 border border-white/8 items-center justify-center text-muted hover:text-red-400 hover:border-red-400/30 transition-all cursor-pointer shrink-0"
+            title="Keluar"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
+
+          <!-- Login Link (guest) -->
+          <a
+            id="sidebar-login-link"
+            href="/auth"
+            class="hidden items-center gap-3 py-2.5 px-3 rounded-lg no-underline transition-all duration-200 w-full group hover:bg-white/5"
+          >
+            <div class="w-10 h-10 rounded-full bg-[#1a2729] border border-white/8 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-[13px] font-semibold text-muted group-hover:text-accent transition-colors">Register</span>
+              <span class="text-[11px] text-muted/60">Buat akun Anda</span>
+            </div>
+          </a>
+        </div>
       </nav>
     </aside>
 
     <!-- Main Content -->
-    <main class="grow p-6 md:p-14 overflow-y-auto box-border">
+    <main class="grow p-6 md:p-14 pb-32 md:pb-36 overflow-y-auto box-border">
       <slot />
     </main>
   </div>
 
   <!-- BOTTOM MUSIC PLAYER BAR (Persisten Lintas Halaman) -->
-  <div id="bottom-player-bar" transition:persist="audio-player" class="fixed bottom-0 left-0 md:left-[240px] right-0 z-50 bg-[#090f10] border-t border-white/5 py-3 px-6 md:px-14 flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300 translate-y-full shadow-[0_-8px_30px_rgba(0,0,0,0.5)]">
+  <div id="bottom-player-bar" transition:persist="audio-player" class="fixed bottom-0 left-0 md:left-[240px] right-0 z-50 bg-[#090f10] border-t border-white/5 py-3 md:py-0 md:h-20 px-6 md:px-14 flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300 translate-y-full shadow-[0_-8px_30px_rgba(0,0,0,0.5)] box-border">
     
     <!-- Left Section: Track Info -->
     <div class="flex items-center gap-3.5 w-full md:w-1/3 shrink-0">
@@ -220,17 +233,18 @@ const menuItems = [
 </Layout>
 
 <script>
-  import { isLoggedIn, getUser } from '../utils/auth.js';
+  import { isLoggedIn, getUser, logout } from '../utils/auth.js';
   import { initAudioPlayer } from '../utils/audioPlayer.js';
 
   // Gunakan astro:page-load agar dijalankan ulang setiap navigasi View Transitions
   document.addEventListener('astro:page-load', () => {
     const userProfile = document.getElementById('sidebar-user-profile');
     const loginLink = document.getElementById('sidebar-login-link');
+    const logoutBtn = document.getElementById('sidebar-logout-btn');
     const usernameEl = document.getElementById('sidebar-username');
     const photoContainer = document.getElementById('sidebar-user-photo-container');
-
-    // Global elements
+    
+    // ... rest of selectors
     const loaderOverlay = document.getElementById('global-moon-loader');
     const loaderText = document.getElementById('global-moon-loader-text');
     
@@ -270,11 +284,24 @@ const menuItems = [
       window.hideLogoutConfirm();
     });
 
+    // Handle logout click
+    logoutBtn?.addEventListener('click', () => {
+      window.showLogoutConfirm(async () => {
+        if (window.showMoonLoader) window.showMoonLoader('Sedang Keluar...');
+        await logout();
+        window.location.reload();
+      });
+    });
+
     if (isLoggedIn()) {
       const user = getUser();
       if (userProfile) {
         userProfile.classList.remove('hidden');
         userProfile.classList.add('flex');
+      }
+      if (logoutBtn) {
+        logoutBtn.classList.remove('hidden');
+        logoutBtn.classList.add('flex');
       }
       if (loginLink) loginLink.classList.add('hidden');
       if (usernameEl && user) {
@@ -290,6 +317,10 @@ const menuItems = [
         loginLink.classList.add('flex');
       }
       if (userProfile) userProfile.classList.add('hidden');
+      if (logoutBtn) {
+        logoutBtn.classList.add('hidden');
+        logoutBtn.classList.remove('flex');
+      }
     }
 
     // Intercept clicks on navigation links if guest is not logged in
