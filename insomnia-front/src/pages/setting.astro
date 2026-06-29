@@ -4,6 +4,13 @@ import Sidebar from '../layouts/Sidebar.astro';
 // Settings Page
 ---
 
+<script is:inline>
+  // Segera alihkan jika pengguna belum masuk (mencegah kedipan konten/glitch)
+  if (!localStorage.getItem('tidurnyenyak_token')) {
+    window.location.href = '/auth';
+  }
+</script>
+
 <Sidebar title="Tidur Nyenyak - Settings" activeTab="setting">
   <div class="max-w-[1100px] mx-auto">
     <header class="mb-10">
