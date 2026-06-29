@@ -4,6 +4,13 @@ import Sidebar from '../layouts/Sidebar.astro';
 // Tools page
 ---
 
+<script is:inline>
+  // Segera alihkan jika pengguna belum masuk (mencegah kedipan konten/glitch)
+  if (!localStorage.getItem('tidurnyenyak_token')) {
+    window.location.href = '/auth';
+  }
+</script>
+
 <Sidebar title="Tidur Nyenyak - Tools" activeTab="tools">
   <div class="max-w-[1000px] mx-auto py-2">
     <!-- Header -->

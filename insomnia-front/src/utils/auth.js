@@ -71,6 +71,7 @@ export async function register({ username, email, password, photo = null }) {
       username: user.name,
       email: user.email,
       photo: user.photo,
+      role: user.role || 'pengguna',
     });
     setToken(token);
 
@@ -105,6 +106,7 @@ export async function login({ email, password }) {
       username: user.name,
       email: user.email,
       photo: user.photo,
+      role: user.role || 'pengguna',
     });
     setToken(token);
 
