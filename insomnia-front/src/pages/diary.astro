@@ -229,6 +229,93 @@ const weeklyData = [
       </div>
     </div>
   </div>
+
+  <!-- SLEEP DIARY DETAIL MODAL -->
+  <div id="diary-detail-modal" class="confirm-modal-overlay">
+    <div class="confirm-modal max-w-xl w-[95%] md:w-[540px] text-left p-6 md:p-8 flex flex-col gap-6">
+      
+      <!-- Header -->
+      <div class="flex justify-between items-center border-b border-white/5 pb-4">
+        <h3 class="text-xl font-bold text-white m-0">Detail Catatan Tidur</h3>
+        <button id="close-detail-modal" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Content -->
+      <div class="flex flex-col gap-5">
+        <!-- Date and Score Header -->
+        <div class="flex justify-between items-start gap-4">
+          <div>
+            <h4 id="detail-date" class="text-lg font-bold text-white m-0 mb-1">-</h4>
+            <p class="text-xs text-muted m-0">Skor tidur Anda semalam</p>
+          </div>
+          <!-- Score Badge -->
+          <div class="flex flex-col items-center justify-center bg-accent/10 border border-accent/20 rounded-2xl py-2.5 px-4 shrink-0">
+            <span id="detail-score" class="text-2xl font-extrabold text-accent">-</span>
+            <span class="text-[9px] font-bold text-[#8e9fa2] tracking-wider uppercase mt-0.5">Score</span>
+          </div>
+        </div>
+
+        <!-- Grid of Details -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white/[0.02] border border-white/[0.04] rounded-xl p-3.5">
+            <span class="text-[10px] font-bold tracking-wider text-[#8e9fa2] uppercase block mb-1">TIDUR MULAI</span>
+            <span id="detail-bedtime" class="text-sm font-semibold text-white">-</span>
+          </div>
+          <div class="bg-white/[0.02] border border-white/[0.04] rounded-xl p-3.5">
+            <span class="text-[10px] font-bold tracking-wider text-[#8e9fa2] uppercase block mb-1">BANGUN</span>
+            <span id="detail-waketime" class="text-sm font-semibold text-white">-</span>
+          </div>
+          <div class="bg-white/[0.02] border border-white/[0.04] rounded-xl p-3.5">
+            <span class="text-[10px] font-bold tracking-wider text-[#8e9fa2] uppercase block mb-1">TOTAL DURASI</span>
+            <span id="detail-duration" class="text-sm font-semibold text-white">-</span>
+          </div>
+          <div class="bg-white/[0.02] border border-white/[0.04] rounded-xl p-3.5">
+            <span class="text-[10px] font-bold tracking-wider text-[#8e9fa2] uppercase block mb-1">DEEP SLEEP</span>
+            <span id="detail-deepsleep" class="text-sm font-semibold text-accent">-</span>
+          </div>
+        </div>
+
+        <!-- Quality & Recovery -->
+        <div class="bg-white/[0.02] border border-white/[0.04] rounded-xl p-4.5 flex flex-col gap-3">
+          <div class="flex justify-between items-center">
+            <div>
+              <span class="text-[10px] font-bold tracking-wider text-[#8e9fa2] uppercase block mb-0.5">KUALITAS TIDUR</span>
+              <span id="detail-quality-label" class="text-sm font-semibold text-white">-</span>
+            </div>
+            <span id="detail-quality-rating" class="text-xs font-bold bg-white/5 border border-white/10 rounded-md py-1 px-2 text-white">-</span>
+          </div>
+          <div class="h-px bg-white/5"></div>
+          <div>
+            <span class="text-[10px] font-bold tracking-wider text-[#8e9fa2] uppercase block mb-0.5">STATUS PEMULIHAN</span>
+            <div class="flex items-center gap-2">
+              <span id="detail-recovery-emoji" class="text-base">-</span>
+              <span id="detail-recovery-status" class="text-sm font-semibold text-accent">-</span>
+              <span class="text-white/20">•</span>
+              <span id="detail-restfulness-status" class="text-xs text-muted">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="flex flex-col gap-1.5">
+          <span class="text-[10px] font-bold tracking-wider text-[#8e9fa2] uppercase">CATATAN PENGGUNA</span>
+          <div class="bg-white/[0.02] border border-white/[0.04] rounded-xl p-4 min-h-[60px]">
+            <p id="detail-notes" class="text-sm text-muted m-0 leading-relaxed font-sans">-</p>
+          </div>
+        </div>
+
+        <!-- Message from Analytics -->
+        <div id="detail-recovery-message-container" class="bg-accent/5 border border-accent/10 rounded-xl p-4">
+          <p id="detail-recovery-message" class="text-xs text-accent m-0 leading-relaxed font-medium">-</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </Sidebar>
 
 <script>
@@ -255,6 +342,27 @@ const weeklyData = [
     const notesInput = document.getElementById('sleep-notes') as HTMLTextAreaElement;
     const weeklyBarsContainer = document.getElementById('weekly-bars-container');
     const recentHistoryContainer = document.getElementById('recent-history-container');
+
+    // Detail Modal Elements
+    const detailModal = document.getElementById('diary-detail-modal');
+    const closeDetailModalBtn = document.getElementById('close-detail-modal');
+    const detailDate = document.getElementById('detail-date');
+    const detailScore = document.getElementById('detail-score');
+    const detailBedtime = document.getElementById('detail-bedtime');
+    const detailWaketime = document.getElementById('detail-waketime');
+    const detailDuration = document.getElementById('detail-duration');
+    const detailDeepsleep = document.getElementById('detail-deepsleep');
+    const detailQualityLabel = document.getElementById('detail-quality-label');
+    const detailQualityRating = document.getElementById('detail-quality-rating');
+    const detailRecoveryEmoji = document.getElementById('detail-recovery-emoji');
+    const detailRecoveryStatus = document.getElementById('detail-recovery-status');
+    const detailRestfulnessStatus = document.getElementById('detail-restfulness-status');
+    const detailNotes = document.getElementById('detail-notes');
+    const detailRecoveryMessage = document.getElementById('detail-recovery-message');
+    const detailRecoveryMessageContainer = document.getElementById('detail-recovery-message-container');
+
+    // Local state to store fetched logs
+    let localDiaries: any[] = [];
 
     // 1. Prepopulate form inputs
     if (dateInput) {
@@ -318,6 +426,76 @@ const weeklyData = [
       return `${hrs}:${mins}`;
     }
 
+    function formatDurationStr(totalMins: number) {
+      const hrs = Math.floor(totalMins / 60);
+      const mins = totalMins % 60;
+      return `${hrs}h ${String(mins).padStart(2, '0')}m`;
+    }
+
+    // Modal populate & show helper
+    function showDiaryDetail(id: number) {
+      const entry = localDiaries.find((d: any) => d.id === id);
+      if (!entry) return;
+
+      const meta = getQualityMeta(entry.sleep_quality_rating);
+
+      // Format date: Tuesday, Jun 30, 2026
+      const dObj = new Date(entry.log_date + 'T00:00:00');
+      const dateFormatted = dObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+
+      if (detailDate) detailDate.textContent = dateFormatted;
+      
+      const analytic = entry.daily_analytic;
+      if (detailScore) detailScore.textContent = analytic ? String(analytic.sleep_score) : '-';
+      
+      if (detailBedtime) detailBedtime.textContent = formatTimeStr(entry.bed_time);
+      if (detailWaketime) detailWaketime.textContent = formatTimeStr(entry.wake_time);
+      
+      if (detailDuration) detailDuration.textContent = formatDurationStr(entry.total_sleep_minutes);
+
+      if (detailDeepsleep) {
+        if (analytic && analytic.deep_sleep_minutes !== undefined) {
+          detailDeepsleep.textContent = formatDurationStr(analytic.deep_sleep_minutes);
+        } else {
+          detailDeepsleep.textContent = '-';
+        }
+      }
+
+      if (detailQualityLabel) detailQualityLabel.textContent = meta.label;
+      if (detailQualityRating) detailQualityRating.textContent = `${entry.sleep_quality_rating}/10`;
+      
+      if (detailRecoveryEmoji) detailRecoveryEmoji.textContent = meta.emoji;
+      if (detailRecoveryStatus) detailRecoveryStatus.textContent = analytic ? analytic.recovery_status : 'No Data';
+      if (detailRestfulnessStatus) detailRestfulnessStatus.textContent = analytic ? analytic.restfulness_status : 'No Data';
+      
+      if (detailNotes) {
+        detailNotes.textContent = entry.notes && entry.notes !== '-' ? entry.notes : 'Tidak ada catatan tambahan.';
+      }
+
+      if (detailRecoveryMessageContainer) {
+        if (analytic && analytic.recovery_message) {
+          detailRecoveryMessageContainer.style.display = 'block';
+          if (detailRecoveryMessage) detailRecoveryMessage.textContent = analytic.recovery_message;
+        } else {
+          detailRecoveryMessageContainer.style.display = 'none';
+        }
+      }
+
+      // Show modal
+      detailModal?.classList.add('active');
+    }
+
+    // Close modal handlers
+    closeDetailModalBtn?.addEventListener('click', () => {
+      detailModal?.classList.remove('active');
+    });
+
+    detailModal?.addEventListener('click', (e) => {
+      if (e.target === detailModal) {
+        detailModal.classList.remove('active');
+      }
+    });
+
     // 3. Load sleep logs from backend
     try {
       if (weeklyBarsContainer) {
@@ -330,6 +508,7 @@ const weeklyData = [
       const response = await apiGetDiary(token);
       if (response.ok && response.data.success) {
         const diaries = response.data.data;
+        localDiaries = diaries; // Store in local variable
 
         // A. Render Weekly Trend Chart
         if (weeklyBarsContainer) {
@@ -418,12 +597,10 @@ const weeklyData = [
               const timeRange = `${formatTimeStr(entry.bed_time)} - ${formatTimeStr(entry.wake_time)}`;
               
               // Format duration
-              const hrs = Math.floor(entry.total_sleep_minutes / 60);
-              const mins = entry.total_sleep_minutes % 60;
-              const durationStr = `${hrs}h ${String(mins).padStart(2, '0')}m`;
+              const durationStr = formatDurationStr(entry.total_sleep_minutes);
 
               const historyItem = document.createElement('div');
-              historyItem.className = 'flex justify-between items-center py-4 px-5 bg-white/[0.02] border border-white/[0.04] rounded-2xl transition-colors hover:bg-white/[0.04]';
+              historyItem.className = 'flex justify-between items-center py-4 px-5 bg-white/[0.02] border border-white/[0.04] rounded-2xl transition-colors hover:bg-white/[0.04] cursor-pointer';
               historyItem.innerHTML = `
                 <div class="flex items-center gap-4">
                   <div class="w-12 h-12 rounded-full flex items-center justify-center shrink-0 ${cardClass}">
@@ -439,6 +616,12 @@ const weeklyData = [
                   <span class="text-[10px] font-bold tracking-wider mt-0.5 ${textClass}">${meta.label}</span>
                 </div>
               `;
+
+              // Click listener to show detail modal
+              historyItem.addEventListener('click', () => {
+                showDiaryDetail(entry.id);
+              });
+
               recentHistoryContainer.appendChild(historyItem);
             });
           }
