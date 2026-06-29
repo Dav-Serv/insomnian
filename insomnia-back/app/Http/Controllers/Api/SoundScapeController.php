@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\SoundscapeResource;
+use App\Http\Resources\SoundScapeResource;
 use App\Models\SoundScapes;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -32,7 +32,7 @@ class SoundScapeController extends Controller
 
         return response()->json([
             'success' => true,
-            'data'    => SoundscapeResource::collection($soundscapes)
+            'data'    => SoundScapeResource::collection($soundscapes)
         ]);
     }
 
