@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\SoundscapeResource;
+use App\Http\Resources\SoundScapeResource;
 use App\Models\SoundScapes;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Laravel\Sanctum\PersonalAccessToken;
 
 
 class SoundScapeController extends Controller
@@ -31,7 +32,7 @@ class SoundScapeController extends Controller
 
         return response()->json([
             'success' => true,
-            'data'    => SoundscapeResource::collection($soundscapes)
+            'data'    => SoundScapeResource::collection($soundscapes)
         ]);
     }
 
@@ -124,8 +125,21 @@ class SoundScapeController extends Controller
      * Stream audio dari Google Drive melalui proxy
      * GET /api/stream/{id}
      */
-    public function streamAudio(int $id)
+    public function streamAudio(Request $request, int $id)
     {
+        // 1. Ambil token dari Authorization header atau query parameter 'token'
+        $tokenString = $request->bearerToken() ?: $request->query('token');
+
+        if (!$tokenString) {
+            abort(401, 'Unauthorized: Token tidak ditemukan');
+        }
+
+        // 2. Validasi token Sanctum
+        $token = PersonalAccessToken::findToken($tokenString);
+        if (!$token || ($token->expires_at && $token->expires_at->isPast())) {
+            abort(401, 'Unauthorized: Token tidak valid atau kedaluwarsa');
+        }
+
         $soundscape = SoundScapes::find($id);
         
         if (!$soundscape) {
@@ -144,24 +158,61 @@ class SoundScapeController extends Controller
 
         $googleUrl = "https://drive.google.com/uc?export=download&id={$fileId}";
 
-        // Jadikan Laravel sebagai Proxy sejati, bukan sekadar Redirect
-        return response()->stream(function () use ($googleUrl) {
-            // Buka koneksi ke Google Drive
-            $stream = @fopen($googleUrl, 'rb');
-            
-            if ($stream) {
-                // Alirkan data biner mentah langsung ke frontend
-                fpassthru($stream);
-                fclose($stream);
-            } else {
-                echo "Failed to load audio stream.";
-            }
-        }, 200, [
-            'Content-Type'                => 'audio/mpeg', // Asumsi file Anda mp3
-            'Cache-Control'               => 'no-cache, no-store, must-revalidate',
-            'Access-Control-Allow-Origin' => '*', // Izinkan frontend Anda membaca ini
-            'Accept-Ranges'               => 'none', // Matikan range request untuk proxy sederhana
+        $requestHeaders = [];
+        if ($request->hasHeader('Range')) {
+            $requestHeaders[] = 'Range: ' . $request->header('Range');
+        }
+
+        $context = stream_context_create([
+            'http' => [
+                'header' => $requestHeaders,
+                'follow_location' => true
+            ]
         ]);
+
+        $stream = @fopen($googleUrl, 'rb', false, $context);
+        if (!$stream) {
+            abort(500, 'Failed to open stream');
+        }
+
+        $meta = stream_get_meta_data($stream);
+        $responseHeaders = $meta['wrapper_data'] ?? [];
+
+        $statusCode = 200;
+        $contentType = 'audio/mpeg';
+        $contentLength = null;
+        $contentRange = null;
+
+        foreach ($responseHeaders as $headerLine) {
+            if (preg_match('/^HTTP\/\d+\.\d+\s+(\d+)/i', $headerLine, $matches)) {
+                $statusCode = (int)$matches[1];
+            } elseif (preg_match('/^Content-Type:\s*(.+)/i', $headerLine, $matches)) {
+                $contentType = trim($matches[1]);
+            } elseif (preg_match('/^Content-Length:\s*(\d+)/i', $headerLine, $matches)) {
+                $contentLength = (int)trim($matches[1]);
+            } elseif (preg_match('/^Content-Range:\s*(.+)/i', $headerLine, $matches)) {
+                $contentRange = trim($matches[1]);
+            }
+        }
+
+        $headersToSend = [
+            'Content-Type' => $contentType,
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Access-Control-Allow-Origin' => '*',
+            'Accept-Ranges' => 'bytes',
+        ];
+
+        if ($contentLength !== null) {
+            $headersToSend['Content-Length'] = $contentLength;
+        }
+        if ($contentRange !== null) {
+            $headersToSend['Content-Range'] = $contentRange;
+        }
+
+        return response()->stream(function () use ($stream) {
+            fpassthru($stream);
+            fclose($stream);
+        }, $statusCode, $headersToSend);
     }
 
     /**

@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-bg-dark: #080c0d;
+  --color-bg-sidebar: #0a1012;
+  --color-bg-active: rgba(78, 208, 200, 0.08);
+  --color-accent: #4ed0c8;
+  --color-accent-hover: #5eddd5;
+  --color-muted: #7a8a8e;
+
+  /* Font */
+  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  /* Animation - breathing */
+  --animate-breath: breath 4s ease-in-out infinite;
+}
+
+@keyframes breath {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+}
+
+/* Base styles */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-bg-dark);
+  color: #ffffff;
+  font-family: var(--font-sans);
+}
+
+/* Smooth scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Moon Phase Loader Container Overlay */
+.moon-loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(8, 12, 13, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  gap: 18px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.moon-loader-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.moon-spinner {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 3px solid rgba(78, 208, 200, 0.15);
+  position: relative;
+  background: #080c0d;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(78, 208, 200, 0.1);
+}
+
+.moon-spinner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 15px var(--color-accent);
+  animation: moon-phase-morph 2.8s infinite ease-in-out;
+}
+
+@keyframes moon-phase-morph {
+  /* Sabit (Crescent) */
+  0%, 100% {
+    transform: translateX(-75%);
+    opacity: 0.8;
+  }
+  /* Separuh (Half) */
+  25% {
+    transform: translateX(-40%);
+    opacity: 0.9;
+  }
+  /* Purnama (Full) */
+  50% {
+    transform: translateX(0%);
+    opacity: 1;
+  }
+  /* Separuh (Half) */
+  75% {
+    transform: translateX(40%);
+    opacity: 0.9;
+  }
+}
+
+/* Elegant Confirm Modal */
+.confirm-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(8, 12, 13, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.confirm-modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.confirm-modal {
+  background: #0d1618;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  padding: 28px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  transform: scale(0.9);
+  transition: transform 0.25s ease;
+}
+
+.confirm-modal-overlay.active .confirm-modal {
+  transform: scale(1);
+}

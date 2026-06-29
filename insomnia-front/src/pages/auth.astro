@@ -138,7 +138,7 @@ import Sidebar from '../layouts/Sidebar.astro';
 <script>
   import { register, login } from '../utils/auth.js';
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('astro:page-load', () => {
     const registerForm = document.getElementById('register-form');
     const loginForm = document.getElementById('login-form');
     const toggleBtn = document.getElementById('toggle-auth-mode');
@@ -232,11 +232,17 @@ import Sidebar from '../layouts/Sidebar.astro';
 
       errorEl.classList.add('hidden');
       setLoading(submitBtn, true, 'Buat Akun');
+      if (typeof window.showMoonLoader === 'function') {
+        window.showMoonLoader('Sedang Mendaftar Akun...');
+      }
 
       const result = await register({ username, email, password, photo });
       if (result.success) {
         window.location.href = '/';
       } else {
+        if (typeof window.hideMoonLoader === 'function') {
+          window.hideMoonLoader();
+        }
         errorEl.textContent = result.message || 'Registrasi gagal. Silakan coba lagi.';
         errorEl.classList.remove('hidden');
         setLoading(submitBtn, false, 'Buat Akun');
@@ -259,11 +265,17 @@ import Sidebar from '../layouts/Sidebar.astro';
 
       errorEl.classList.add('hidden');
       setLoading(submitBtn, true, 'Masuk');
+      if (typeof window.showMoonLoader === 'function') {
+        window.showMoonLoader('Sedang Masuk ke Akun...');
+      }
 
       const result = await login({ email, password });
       if (result.success) {
         window.location.href = '/';
       } else {
+        if (typeof window.hideMoonLoader === 'function') {
+          window.hideMoonLoader();
+        }
         errorEl.textContent = result.message || 'Email atau kata sandi salah.';
         errorEl.classList.remove('hidden');
         setLoading(submitBtn, false, 'Masuk');

@@ -34,8 +34,13 @@ class SettingAccountController extends Controller
         $request->validate([
             'name'     => 'required|string|max:255',
             'password' => ['nullable', 'string', Password::min(8)], // Minimal 8 karakter jika ingin ganti password
-            'photo'    => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Maksimal 2MB
         ]);
+
+        if ($request->hasFile('photo')) {
+            $request->validate([
+                'photo' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Maksimal 2MB
+            ]);
+        }
 
         // Masukkan data nama yang wajib diubah
         $data = [
@@ -57,6 +62,12 @@ class SettingAccountController extends Controller
             // Simpan foto baru ke folder 'profile_photos' di disk public
             $path = $request->file('photo')->store('users', 'public');
             $data['photo'] = $path;
+        } elseif ($request->input('remove_photo') === 'true') {
+            // Logika Hapus Foto (set ke string kosong untuk Supabase NOT NULL constraint)
+            if ($user->photo && Storage::disk('public')->exists($user->photo)) {
+                Storage::disk('public')->delete($user->photo);
+            }
+            $data['photo'] = "";
         }
 
         // Update data ke database

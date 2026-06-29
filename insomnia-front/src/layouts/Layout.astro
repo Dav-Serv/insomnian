@@ -1,3 +1,7 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+---
 <!doctype html>
 <html lang="en">
 	<head>
@@ -6,7 +10,8 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>Tidur Nyenyak</title>
+		<ClientRouter />
 	</head>
 	<body>
 		<slot />

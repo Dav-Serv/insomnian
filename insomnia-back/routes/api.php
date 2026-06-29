@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\SettingAccountController;
 use App\Http\Middleware\IsAdminMiddleware;
+use App\Http\Controllers\Api\SleepDiaryController;
+use App\Http\Controllers\Api\ToolController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -42,8 +44,18 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::apiResource('soundscapes', AdminSoundScapeController::class);
     });
 
-    // audio
-    Route::get('/stream/{id}', [SoundScapeController::class, 'streamAudio']);
+    // diary
+    Route::get('/diary', [SleepDiaryController::class, 'index']);
+    Route::post('/diary-tambah', [SleepDiaryController::class, 'store']);
+
+    // tools
+    Route::get('/tools', [ToolController::class, 'index']);
+    Route::get('/tools/category/{slug}', [ToolController::class, 'getByCategory']);
+    Route::get('/tools/{id}', [ToolController::class, 'show']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+// audio (diluar middleware auth:sanctum agar bisa di-stream langsung oleh browser dengan query token)
+Route::get('/stream/{id}', [SoundScapeController::class, 'streamAudio']);
+

@@ -10,6 +10,16 @@ const ENDPOINTS = {
   login:    '/login',
   logout:   '/logout',
   user:     '/user',
+  account:  '/account',
+  updateAccount: '/account/update',
+  soundscapes: '/soundscapes',
+  favorites: '/favorites',
+  home: '/home',
+  mockSleep: '/home/mock-sleep',
+  diary: '/diary',
+  diaryTambah: '/diary-tambah',
+  tools: '/tools',
+  toolsCategory: '/tools/category',
 };
 
 export async function apiCall(endpoint, { method = 'GET', body = null, token = null } = {}) {
@@ -114,3 +124,91 @@ export async function apiGetUser(token) {
     token,
   });
 }
+
+export async function apiGetProfile(token) {
+  return apiCall(ENDPOINTS.account, {
+    method: 'GET',
+    token,
+  });
+}
+
+export async function apiUpdateProfile(formData, token) {
+  return apiCallFormData(ENDPOINTS.updateAccount, formData, token);
+}
+
+export async function apiGetSoundscapes(category = 'all', token = null) {
+  let endpoint = ENDPOINTS.soundscapes;
+  if (category && category !== 'all') {
+    endpoint += `?category=${category}`;
+  }
+  return apiCall(endpoint, {
+    method: 'GET',
+    token,
+  });
+}
+
+export async function apiToggleFavorite(id, token) {
+  return apiCall(`/soundscapes/${id}/favorite`, {
+    method: 'POST',
+    token,
+  });
+}
+
+export async function apiGetFavorites(token) {
+  return apiCall(ENDPOINTS.favorites, {
+    method: 'GET',
+    token,
+  });
+}
+
+export async function apiGetHome(token) {
+  return apiCall(ENDPOINTS.home, {
+    method: 'GET',
+    token,
+  });
+}
+
+export async function apiGenerateMockSleep(token) {
+  return apiCall(ENDPOINTS.mockSleep, {
+    method: 'POST',
+    token,
+  });
+}
+
+export async function apiGetDiary(token) {
+  return apiCall(ENDPOINTS.diary, {
+    method: 'GET',
+    token,
+  });
+}
+
+export async function apiAddDiary(body, token) {
+  return apiCall(ENDPOINTS.diaryTambah, {
+    method: 'POST',
+    body,
+    token,
+  });
+}
+
+export async function apiGetTools(token) {
+  return apiCall(ENDPOINTS.tools, {
+    method: 'GET',
+    token,
+  });
+}
+
+export async function apiGetToolsByCategory(slug, token) {
+  return apiCall(`${ENDPOINTS.toolsCategory}/${slug}`, {
+    method: 'GET',
+    token,
+  });
+}
+
+export async function apiGetToolDetail(id, token) {
+  return apiCall(`${ENDPOINTS.tools}/${id}`, {
+    method: 'GET',
+    token,
+  });
+}
+
+

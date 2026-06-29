@@ -5,67 +5,1050 @@ import Sidebar from '../layouts/Sidebar.astro';
 ---
 
 <Sidebar title="Tidur Nyenyak - Tools" activeTab="tools">
-  <div class="max-w-[1100px] mx-auto">
-    <header class="mb-10">
-      <h1 class="text-3xl font-bold m-0 mb-2 text-white">Alat Bantu (Tools)</h1>
-      <p class="text-base text-muted m-0">Gunakan instrumen interaktif kami untuk merencanakan tidur atau menenangkan pikiran.</p>
+  <div class="max-w-[1000px] mx-auto py-2">
+    <!-- Header -->
+    <header class="mb-8">
+      <h1 class="text-4xl font-semibold tracking-tight text-white mb-2">Wind-Down Tools</h1>
+      <p class="text-sm md:text-base text-muted max-w-[650px] leading-relaxed">
+        Prepare your mind and environment for a restful night. These tools are designed to gently lower your cognitive load.
+      </p>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <!-- Tool 1: Sleep Calculator -->
-      <section class="bg-[#0d1618] border border-white/2 rounded-3xl p-8 flex flex-col justify-between gap-7">
-        <div class="flex gap-4 items-start">
-          <div class="w-12 h-12 rounded-xl bg-accent/8 text-accent flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    <!-- Main Sleep Window Card -->
+    <div class="bg-[#0b1112] border border-white/5 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-stretch gap-8 mb-10 shadow-[0_12px_40px_rgba(0,0,0,0.4)] relative overflow-hidden">
+      <!-- Ambient Glow behind card -->
+      <div class="absolute -right-24 -top-24 w-80 h-80 rounded-full bg-accent/5 blur-[80px] pointer-events-none"></div>
+      
+      <!-- Left side: Text details and Bedtime target info -->
+      <div class="flex-1 flex flex-col justify-between min-h-[220px]">
+        <div>
+          <!-- Title with Clock Icon -->
+          <div class="flex items-center gap-2 text-accent mb-3.5">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span class="font-semibold text-base tracking-wide">Sleep Window</span>
           </div>
+          
+          <!-- Subtitle -->
+          <p class="text-sm text-muted/80 max-w-[420px] leading-relaxed mb-6">
+            Your optimal time to fall asleep based on your wake-up goal. Start winding down now to hit this window.
+          </p>
+        </div>
+        
+        <!-- Sleep Details Block -->
+        <div class="mt-auto">
+          <!-- Target Bedtime Row -->
+          <div class="flex justify-between items-end pb-3.5 border-b border-white/5">
+            <div class="flex flex-col gap-0.5">
+              <span class="text-xs text-muted/65 tracking-wider uppercase font-semibold">Target</span>
+              <span class="text-sm text-muted/90 font-medium">Bedtime</span>
+            </div>
+            <div class="text-right flex items-baseline gap-1">
+              <span id="target-bedtime-val" class="text-4xl font-light text-white tracking-tight">10:30</span>
+              <span id="target-bedtime-ampm" class="text-xl font-light text-white/70">PM</span>
+            </div>
+          </div>
+          
+          <!-- Time Remaining Row -->
+          <div class="flex justify-between items-center pt-3.5">
+            <span class="text-sm text-muted/80 font-medium">Time remaining</span>
+            <span id="time-remaining-val" class="text-2xl font-semibold text-accent tracking-tight">--</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right side: Circular progress visualization -->
+      <div class="flex items-center justify-center shrink-0 w-full md:w-auto md:px-6">
+        <div class="relative w-[190px] h-[190px] md:w-[210px] md:h-[210px] rounded-full flex items-center justify-center">
+          <!-- Outermost Glowing Ring background -->
+          <div class="absolute inset-0 rounded-full border-[8px] border-accent/10"></div>
+          
+          <!-- Active colored segment ring with gradient look -->
+          <div id="sleep-window-ring" class="absolute inset-0 rounded-full border-[8px] border-transparent border-t-accent border-r-accent border-l-accent rotate-[45deg] filter drop-shadow-[0_0_8px_rgba(78,208,200,0.35)] transition-all duration-1000"></div>
+          
+          <!-- Inner Dark Circle -->
+          <div class="w-[145px] h-[145px] md:w-[160px] md:h-[160px] rounded-full bg-[#080d0e] border border-white/5 flex flex-col items-center justify-center shadow-inner relative group/moon">
+            <div class="absolute inset-0 rounded-full bg-accent/2 opacity-0 group-hover/moon:opacity-100 transition-opacity duration-500"></div>
+            
+            <!-- Crescent Moon Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-accent mb-2 filter drop-shadow-[0_0_8px_rgba(78,208,200,0.3)] transition-transform duration-500 group-hover/moon:scale-110" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+            <span id="sleep-window-status-label" class="text-[11px] text-muted/80 font-medium tracking-wider uppercase">Winding Down</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guided Exercises Section -->
+    <div>
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold text-white tracking-tight">Guided Exercises</h2>
+        <button id="btn-view-all" class="bg-transparent border-none text-sm font-semibold text-accent hover:text-accent-hover cursor-pointer transition-colors flex items-center gap-1">
+          View all
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- 4-7-8 Breathing Card -->
+        <div id="card-breathing" class="bg-[#0b1112] border border-white/5 rounded-2xl p-6 flex flex-col justify-between min-h-[190px] transition-all duration-300 hover:border-accent/25 hover:translate-y-[-4px] hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] group cursor-pointer">
           <div>
-            <h2 class="text-xl font-semibold m-0 mb-1 text-white">Kalkulator Siklus Tidur</h2>
-            <p class="text-sm text-muted m-0 leading-relaxed">Hitung waktu bangun terbaik berdasarkan siklus alami tidur 90 menit.</p>
+            <!-- Icon Container -->
+            <div class="w-10 h-10 rounded-xl bg-accent/5 border border-accent/10 flex items-center justify-center text-accent mb-5 group-hover:bg-accent/10 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 8h14M3 12h18M6 16h12"/>
+              </svg>
+            </div>
+            
+            <h3 class="text-base font-semibold text-white mb-1.5 group-hover:text-accent transition-colors">4-7-8 Breathing</h3>
+            <p class="text-xs text-muted/75 leading-relaxed">Calm your nervous system</p>
+          </div>
+          
+          <div class="flex items-center gap-1.5 text-[11px] text-muted/50 mt-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span>5 min</span>
           </div>
         </div>
 
-        <div class="bg-white/2 border border-white/2 p-5 rounded-[18px] flex flex-col gap-4">
-          <p class="text-[13px] text-muted m-0">Jika saya tidur sekarang, saya harus bangun pukul:</p>
-          <div class="flex flex-col gap-2">
-            <div class="flex justify-between items-center py-3 px-4 bg-white/1 border border-white/3 rounded-lg">
-              <span class="text-base font-bold text-white">23:45</span>
-              <span class="text-xs text-muted">6 Siklus (9.0 Jam)</span>
-            </div>
-            <div class="flex justify-between items-center py-3 px-4 bg-accent/5 border border-accent/20 rounded-lg">
-              <span class="text-base font-bold text-accent">01:15</span>
-              <span class="text-xs text-accent">5 Siklus (7.5 Jam) 🔥</span>
-            </div>
-            <div class="flex justify-between items-center py-3 px-4 bg-white/1 border border-white/3 rounded-lg">
-              <span class="text-base font-bold text-white">02:45</span>
-              <span class="text-xs text-muted">4 Siklus (6.0 Jam)</span>
-            </div>
-          </div>
-          <button class="bg-white/4 border border-white/5 text-white py-3 rounded-xl cursor-pointer font-medium transition-all hover:bg-white/8">Hitung Ulang</button>
-        </div>
-      </section>
-
-      <!-- Tool 2: Breathing Exercise -->
-      <section class="bg-[#0d1618] border border-white/2 rounded-3xl p-8 flex flex-col justify-between gap-7">
-        <div class="flex gap-4 items-start">
-          <div class="w-12 h-12 rounded-xl bg-accent/8 text-accent flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/></svg>
-          </div>
+        <!-- Meditasi Card -->
+        <div id="card-meditation" class="bg-[#0b1112] border border-white/5 rounded-2xl p-6 flex flex-col justify-between min-h-[190px] transition-all duration-300 hover:border-[#4eb0d0]/25 hover:translate-y-[-4px] hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] group cursor-pointer">
           <div>
-            <h2 class="text-xl font-semibold m-0 mb-1 text-white">Latihan Napas 4-7-8</h2>
-            <p class="text-sm text-muted m-0 leading-relaxed">Tenangkan sistem saraf Anda sebelum tidur dengan teknik pernapasan ritmis.</p>
+            <!-- Icon Container -->
+            <div class="w-10 h-10 rounded-xl bg-[#4eb0d0]/5 border border-[#4eb0d0]/10 flex items-center justify-center text-[#4eb0d0] mb-5 group-hover:bg-[#4eb0d0]/10 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="5" r="1"/>
+                <path d="m9 20 3-6 3 6M6 8h12M12 8v6"/>
+              </svg>
+            </div>
+            
+            <h3 id="meditation-title-card" class="text-base font-semibold text-white mb-1.5 group-hover:text-[#4eb0d0] transition-colors">Meditasi & Relaksasi</h3>
+            <p id="meditation-desc-card" class="text-xs text-muted/75 leading-relaxed">Tenangkan pikiran Anda</p>
+          </div>
+          
+          <div class="flex items-center gap-1.5 text-[11px] text-muted/50 mt-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span id="meditation-duration-card">10 min</span>
           </div>
         </div>
 
-        <div class="bg-white/2 border border-white/2 p-6 rounded-[18px] flex flex-col items-center gap-6">
-          <div class="relative w-[140px] h-[140px] rounded-full border border-dashed border-accent/20 flex items-center justify-center">
-            <div class="w-[80px] h-[80px] rounded-full bg-accent/15 border border-accent/30 animate-breath"></div>
-            <span class="absolute text-[13px] font-semibold text-accent [text-shadow:0_0_10px_rgba(0,0,0,0.5)]">Tarik Napas</span>
+        <!-- Brain Dump Card -->
+        <div id="card-braindump" class="bg-[#0b1112] border border-white/5 rounded-2xl p-6 flex flex-col justify-between min-h-[190px] transition-all duration-300 hover:border-orange-400/25 hover:translate-y-[-4px] hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] group cursor-pointer">
+          <div>
+            <!-- Icon Container -->
+            <div class="w-10 h-10 rounded-xl bg-orange-400/5 border border-orange-400/10 flex items-center justify-center text-orange-400/80 mb-5 group-hover:bg-orange-400/10 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            </div>
+            
+            <h3 class="text-base font-semibold text-white mb-1.5 group-hover:text-orange-400/80 transition-colors">Brain Dump</h3>
+            <p class="text-xs text-muted/75 leading-relaxed">Clear tomorrow's worries</p>
           </div>
-          <div class="breathing-controls">
-            <button class="bg-accent/8 border border-accent/20 text-accent py-2.5 px-5 rounded-full text-sm font-semibold cursor-pointer transition-all duration-200 hover:bg-accent/12 hover:scale-102">Mulai Latihan</button>
+          
+          <div class="flex items-center gap-1.5 text-[11px] text-muted/50 mt-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span>Unguided</span>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL INTERAKTIF OVERLAY -->
+  <!-- ============================================================== -->
+
+  <!-- 1. Breathing Modal -->
+  <div id="breathing-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="bg-[#0b1213] border border-white/10 rounded-3xl p-8 max-w-md w-full mx-4 flex flex-col items-center relative text-center">
+      <button class="modal-close absolute top-4 right-4 text-muted hover:text-white bg-transparent border-none text-xl cursor-pointer">&times;</button>
+      <h3 id="breath-modal-title" class="text-xl font-semibold text-white mb-2">4-7-8 Breathing</h3>
+      <p id="breath-modal-subtitle" class="text-xs text-muted mb-8">Relax your mind & calm your nervous system</p>
+      
+      <!-- Animated Breathing Ring & Circle -->
+      <div class="relative w-64 h-64 flex items-center justify-center mb-8">
+        <div id="breath-outer-ring" class="absolute w-48 h-48 rounded-full bg-accent/5 border border-accent/20 transition-all duration-1000 ease-in-out"></div>
+        <div id="breath-circle" class="absolute w-36 h-36 rounded-full bg-accent/15 border border-accent/30 shadow-[0_0_40px_rgba(78,208,200,0.15)] flex flex-col items-center justify-center transition-all duration-1000 ease-in-out">
+          <span id="breath-instruction" class="text-white text-lg font-bold tracking-wide">Ready</span>
+          <span id="breath-timer" class="text-accent text-3xl font-light mt-1">4</span>
+        </div>
+      </div>
+
+      <!-- Stats / Cycles info -->
+      <div class="flex gap-8 mb-8">
+        <div class="text-center">
+          <span class="block text-[10px] text-muted tracking-wider uppercase font-semibold">Cycles</span>
+          <span id="breath-cycles" class="text-lg font-bold text-white">0 / 4</span>
+        </div>
+        <div class="text-center">
+          <span class="block text-[10px] text-muted tracking-wider uppercase font-semibold">Phase</span>
+          <span id="breath-phase" class="text-lg font-bold text-accent">--</span>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="flex gap-4 w-full">
+        <button id="btn-breath-start" class="flex-1 bg-accent text-[#080c0d] border-none rounded-xl py-3 px-6 font-semibold text-sm cursor-pointer transition-all hover:bg-accent-hover">Start</button>
+        <button id="btn-breath-reset" class="bg-white/5 border border-white/10 text-white rounded-xl py-3 px-6 font-semibold text-sm cursor-pointer transition-all hover:bg-white/10">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Meditation / Audio Player Modal -->
+  <div id="audio-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="bg-[#0b1213] border border-white/10 rounded-3xl p-6 md:p-8 max-w-2xl w-full mx-4 flex flex-col md:flex-row gap-6 relative">
+      <button class="modal-close absolute top-4 right-4 text-muted hover:text-white bg-transparent border-none text-xl cursor-pointer z-10">&times;</button>
+      
+      <!-- Player Panel Left -->
+      <div class="flex-1 flex flex-col items-center text-center justify-center">
+        <!-- CD / Art Visualizer -->
+        <div class="relative w-44 h-44 rounded-full bg-[#121f21] border border-white/5 flex items-center justify-center shadow-2xl mb-5 overflow-hidden group">
+          <div id="audio-visualizer-glow" class="absolute inset-0 bg-accent/5 rounded-full scale-90 group-hover:scale-105 transition-transform duration-1000 blur-xl"></div>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-accent animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-4h2v4zm0-6H9V8h2v2zm4 6h-2v-4h2v4zm0-6h-2V8h2v2z"/>
+          </svg>
+        </div>
+
+        <h3 id="audio-track-title" class="text-lg font-semibold text-white mb-0.5">Relaksasi Otot Progresif</h3>
+        <p id="audio-track-subtitle" class="text-xs text-muted mb-6">Dr. Sleep Specialist</p>
+
+        <!-- Hidden Native Audio -->
+        <audio id="modal-audio-element" class="hidden"></audio>
+
+        <!-- Progress Slider -->
+        <div class="w-full mb-4">
+          <input type="range" id="audio-progress-bar" value="0" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-accent focus:outline-none" />
+          <div class="flex justify-between text-[10px] text-muted mt-2">
+            <span id="audio-time-current">00:00</span>
+            <span id="audio-time-duration">30:00</span>
+          </div>
+        </div>
+
+        <!-- Audio Controls -->
+        <div class="flex items-center gap-6">
+          <button id="btn-audio-prev-15" class="bg-transparent border-none text-muted hover:text-white cursor-pointer" title="-15s">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.334 4zM4.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0011 16V8a1 1 0 00-1.6-.8l-5.334 4z"/>
+            </svg>
+          </button>
+          <button id="btn-audio-play" class="w-12 h-12 rounded-full bg-accent text-[#080c0d] flex items-center justify-center border-none cursor-pointer transition-transform hover:scale-105 hover:bg-accent-hover shadow-lg">
+            <svg id="audio-play-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg id="audio-pause-icon" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+          </button>
+          <button id="btn-audio-next-15" class="bg-transparent border-none text-muted hover:text-white cursor-pointer" title="+15s">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 5v14l8.561-6.226a1 1 0 000-1.548L13 5zM3 5v14l8.561-6.226a1 1 0 000-1.548L3 5z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Playlist / Chapters Panel Right -->
+      <div class="flex-1 border-t md:border-t-0 md:border-l border-white/5 pt-5 md:pt-0 md:pl-6 flex flex-col justify-start">
+        <h4 class="text-sm font-semibold text-white mb-3">Panduan Sesi (Chapters)</h4>
+        <div id="audio-chapters-list" class="flex flex-col gap-2 overflow-y-auto max-h-[220px] md:max-h-[300px] pr-2">
+          <!-- Chapters will be loaded dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Article Modal -->
+  <div id="article-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="bg-[#0b1213] border border-white/10 rounded-3xl p-6 md:p-8 max-w-xl w-full mx-4 flex flex-col relative max-h-[85vh]">
+      <button class="modal-close absolute top-4 right-4 text-muted hover:text-white bg-transparent border-none text-xl cursor-pointer z-10">&times;</button>
+      
+      <div class="overflow-y-auto pr-2">
+        <header class="mb-6 border-b border-white/5 pb-4">
+          <span id="article-readtime" class="text-[10px] text-accent tracking-wider uppercase font-semibold">3 min read</span>
+          <h3 id="article-title" class="text-xl md:text-2xl font-bold text-white mt-1">Panduan Kamar Ideal</h3>
+        </header>
+        <article id="article-body" class="text-sm text-muted/90 leading-relaxed font-sans prose prose-invert max-w-none">
+          <!-- Article HTML loaded dynamically -->
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Brain Dump Modal -->
+  <div id="braindump-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="bg-[#0b1213] border border-white/10 rounded-3xl p-8 max-w-lg w-full mx-4 flex flex-col relative text-center relative overflow-hidden">
+      <button class="modal-close absolute top-4 right-4 text-muted hover:text-white bg-transparent border-none text-xl cursor-pointer z-10">&times;</button>
+      
+      <!-- Stars BG for animation -->
+      <div id="braindump-stars" class="absolute inset-0 pointer-events-none opacity-40"></div>
+
+      <div id="braindump-input-stage" class="transition-all duration-500">
+        <h3 class="text-xl font-semibold text-white mb-2">Brain Dump</h3>
+        <p class="text-xs text-muted mb-6">Write down everything keeping you awake, then release it into the dark.</p>
+        
+        <textarea id="braindump-textarea" class="w-full bg-[#121f21]/30 border border-white/10 rounded-2xl p-4 text-white text-sm outline-none transition-all focus:border-accent/40 font-sans resize-none h-40 mb-6" placeholder="Ketik apa saja yang mengganggu pikiran Anda... (Tugas besok, kekhawatiran, ide)"></textarea>
+        
+        <button id="btn-braindump-release" class="w-full bg-accent text-[#080c0d] border-none rounded-xl py-3.5 px-6 font-semibold text-sm cursor-pointer transition-all hover:bg-accent-hover">Release Into the Night</button>
+      </div>
+
+      <div id="braindump-success-stage" class="hidden opacity-0 transition-all duration-1000 flex flex-col items-center py-8">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-accent mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+        <h3 class="text-xl font-semibold text-white mb-2">Let It Go</h3>
+        <p class="text-xs text-muted max-w-[280px]">Your thoughts have been cleared. Take a deep breath. You are ready to rest.</p>
+        <button id="btn-braindump-done" class="mt-8 bg-white/5 border border-white/10 text-white rounded-xl py-2.5 px-6 font-semibold text-sm cursor-pointer transition-all hover:bg-white/10">Back to Tools</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Category Explorer Modal -->
+  <div id="category-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md opacity-0 pointer-events-none transition-all duration-300">
+    <div class="bg-[#0b1213] border border-white/10 rounded-3xl p-6 md:p-8 max-w-2xl w-full mx-4 flex flex-col relative max-h-[85vh]">
+      <button class="modal-close absolute top-4 right-4 text-muted hover:text-white bg-transparent border-none text-xl cursor-pointer z-10">&times;</button>
+      
+      <h3 class="text-xl font-bold text-white mb-6">Explore Wind-Down Tools</h3>
+      
+      <!-- Categories switch tabs -->
+      <div class="flex border-b border-white/5 gap-4 mb-6" id="category-tabs-header">
+        <!-- Load category buttons dynamically -->
+      </div>
+
+      <!-- Items Grid -->
+      <div class="overflow-y-auto pr-2 flex-1">
+        <div id="category-items-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Load items dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
 </Sidebar>
+
+<!-- ============================================================== -->
+  <!-- PAGE LOGIC (CLIENT SIDE) -->
+  <!-- ============================================================== -->
+<script>
+  import { getToken, isLoggedIn } from '../utils/auth.js';
+  import { apiGetTools, apiGetToolsByCategory, apiGetToolDetail, apiGetDiary } from '../utils/api.js';
+
+  document.addEventListener('astro:page-load', async () => {
+    if (!isLoggedIn()) return;
+    const token = getToken();
+
+    // ==========================================
+    // ⏰ SLEEP WINDOW COUNTDOWN DYNAMICS
+    // ==========================================
+    const bedtimeValEl = document.getElementById('target-bedtime-val');
+    const bedtimeAmpmEl = document.getElementById('target-bedtime-ampm');
+    const timeRemainingEl = document.getElementById('time-remaining-val');
+    const statusLabelEl = document.getElementById('sleep-window-status-label');
+    const sleepWindowRing = document.getElementById('sleep-window-ring');
+
+    let targetHour = 22; // 10:30 PM default (22:30)
+    let targetMinute = 30;
+
+    // Optional: Fetch latest wake time from diary and subtract 8 hours
+    try {
+      const diaryRes = await apiGetDiary(token);
+      if (diaryRes.ok && diaryRes.data.success && diaryRes.data.data.length > 0) {
+        const latestLog = diaryRes.data.data[0]; // Terakhir
+        if (latestLog && latestLog.wake_time) {
+          const wakeDate = new Date(latestLog.wake_time);
+          if (!isNaN(wakeDate.getTime())) {
+            // Subtract 8 hours to get target bedtime
+            wakeDate.setHours(wakeDate.getHours() - 8);
+            targetHour = wakeDate.getHours();
+            targetMinute = wakeDate.getMinutes();
+
+            // format Bedtime UI
+            let displayH = targetHour;
+            let ampm = 'PM';
+            if (displayH >= 12) {
+              ampm = 'PM';
+              if (displayH > 12) displayH -= 12;
+            } else {
+              ampm = 'AM';
+              if (displayH === 0) displayH = 12;
+            }
+            const displayM = targetMinute < 10 ? `0${targetMinute}` : targetMinute;
+            
+            if (bedtimeValEl) bedtimeValEl.textContent = `${displayH}:${displayM}`;
+            if (bedtimeAmpmEl) bedtimeAmpmEl.textContent = ampm;
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("Unable to fetch custom sleep window target from diary history:", err);
+    }
+
+    // Live Clock Countdown
+    function updateCountdown() {
+      const now = new Date();
+      const targetTime = new Date();
+      targetTime.setHours(targetHour, targetMinute, 0, 0);
+
+      // If bedtime already passed for today, set to tomorrow's bedtime
+      if (now > targetTime) {
+        targetTime.setDate(targetTime.getDate() + 1);
+      }
+
+      const diffMs = targetTime.getTime() - now.getTime();
+      const diffMins = Math.floor(diffMs / 60000);
+      const hours = Math.floor(diffMins / 60);
+      const mins = diffMins % 60;
+
+      // Update remaining text
+      if (timeRemainingEl) {
+        if (hours > 12) {
+          // If bedtime is far away, say "Sleep finished / day mode"
+          timeRemainingEl.textContent = `${hours}h ${mins}m`;
+          if (statusLabelEl) statusLabelEl.textContent = "Prepare Day";
+          if (sleepWindowRing) sleepWindowRing.style.transform = `rotate(0deg)`;
+        } else {
+          timeRemainingEl.textContent = `${hours}h ${mins}m`;
+          if (statusLabelEl) statusLabelEl.textContent = "Winding Down";
+          // dynamic rotate based on 8h wind-down window
+          const pct = Math.min(100, Math.max(0, (diffMins / 480) * 100)); // pct of 8 hours
+          const rotateDeg = 45 + (100 - pct) * 3.6;
+          if (sleepWindowRing) sleepWindowRing.style.transform = `rotate(${rotateDeg}deg)`;
+        }
+      }
+    }
+
+    updateCountdown();
+    const clockInterval = setInterval(updateCountdown, 60000);
+
+    // Clean up interval on page leave (astro:before-preparation)
+    document.addEventListener('astro:before-preparation', () => {
+      clearInterval(clockInterval);
+    }, { once: true });
+
+
+    // ==========================================
+    // ⚙️ BACKEND DATA INTEGRATION
+    // ==========================================
+    let mainRecommendation = null;
+    let categoriesList = [];
+
+    async function loadMainToolsData() {
+      try {
+        const response = await apiGetTools(token);
+        if (response.ok && response.data.success) {
+          mainRecommendation = response.data.data.recommendation;
+          categoriesList = response.data.data.categories;
+
+          // Dynamically map recommendation to card-meditation content
+          if (mainRecommendation) {
+            const cardTitle = document.getElementById('meditation-title-card');
+            const cardDesc = document.getElementById('meditation-desc-card');
+            const cardDuration = document.getElementById('meditation-duration-card');
+
+            if (cardTitle) cardTitle.textContent = mainRecommendation.title;
+            if (cardDesc) cardDesc.textContent = mainRecommendation.subtitle || mainRecommendation.description;
+            if (cardDuration) cardDuration.textContent = `${mainRecommendation.duration_minutes} min`;
+          }
+        }
+      } catch (err) {
+        console.error("Error loading main tools data:", err);
+      }
+    }
+
+    await loadMainToolsData();
+
+
+    // ==========================================
+    // 📦 MODALS SYSTEM - SETUP
+    // ==========================================
+    const modals = {
+      breathing: document.getElementById('breathing-modal'),
+      audio: document.getElementById('audio-modal'),
+      article: document.getElementById('article-modal'),
+      braindump: document.getElementById('braindump-modal'),
+      category: document.getElementById('category-modal'),
+    };
+
+    function openModal(modalId) {
+      // Pause background soundscape if playing
+      if (modalId === 'audio' && window.__audioPlayerData && typeof window.__audioPlayerData.pause === 'function') {
+        try {
+          window.__audioPlayerData.pause();
+        } catch(e) {}
+      }
+
+      const m = modals[modalId];
+      if (m) {
+        m.classList.remove('pointer-events-none');
+        m.classList.add('opacity-100');
+      }
+    }
+
+    function closeModal(m) {
+      m.classList.remove('opacity-100');
+      m.classList.add('pointer-events-none');
+
+      // Stop exercises if closed
+      if (m.id === 'breathing-modal') {
+        stopBreathingTimer();
+      } else if (m.id === 'audio-modal') {
+        stopAudioPlayer();
+      }
+    }
+
+    // Wire close buttons
+    document.querySelectorAll('.modal-close').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const modal = e.target.closest('[id$="-modal"]');
+        if (modal) closeModal(modal);
+      });
+    });
+
+    // Close on backdrop click
+    Object.values(modals).forEach(m => {
+      if (m) {
+        m.addEventListener('click', (e) => {
+          if (e.target === m) closeModal(m);
+        });
+      }
+    });
+
+
+    // ==========================================
+    // 🍃 BREATHING TIMER LOGIC (4-7-8 & Box)
+    // ==========================================
+    let breathInterval = null;
+    let breathRunning = false;
+    let breathCycleCurrent = 0;
+    let breathCycleMax = 4;
+    let breathIntervals = { inhale_seconds: 4, hold_seconds: 7, exhale_seconds: 8 };
+    let breathInstructions = [];
+    
+    const breathOuterRing = document.getElementById('breath-outer-ring');
+    const breathCircle = document.getElementById('breath-circle');
+    const breathInstructionText = document.getElementById('breath-instruction');
+    const breathTimerText = document.getElementById('breath-timer');
+    const breathCyclesText = document.getElementById('breath-cycles');
+    const breathPhaseText = document.getElementById('breath-phase');
+    const btnBreathStart = document.getElementById('btn-breath-start');
+    const btnBreathReset = document.getElementById('btn-breath-reset');
+
+    async function launchBreathingExercise(id) {
+      openModal('breathing');
+      stopBreathingTimer();
+
+      try {
+        const res = await apiGetToolDetail(id, token);
+        if (res.ok && res.data.success) {
+          const tool = res.data.data;
+          
+          document.getElementById('breath-modal-title').textContent = tool.title;
+          
+          breathCycleMax = tool.content.cycles || 4;
+          breathIntervals = tool.content.intervals || { inhale_seconds: 4, hold_seconds: 7, exhale_seconds: 8 };
+          breathInstructions = tool.content.instructions || [];
+
+          document.getElementById('breath-modal-subtitle').textContent = `Cycle target: ${breathCycleMax} • ${breathIntervals.inhale_seconds}-${breathIntervals.hold_seconds}-${breathIntervals.exhale_seconds}`;
+        }
+      } catch (err) {
+        console.warn("Using offline fallback breathing setup:", err);
+        // Fallback standard 4-7-8
+        breathCycleMax = 4;
+        breathIntervals = { inhale_seconds: 4, hold_seconds: 7, exhale_seconds: 8 };
+        breathInstructions = [
+          'Tarik napas melalui hidung secara perlahan selama 4 detik.',
+          'Tahan napas Anda dengan rileks selama 7 detik.',
+          'Hembuskan napas sepenuhnya melalui mulut selama 8 detik.',
+          'Ulangi siklus ini sampai selesai.'
+        ];
+      }
+
+      resetBreathingUI();
+    }
+
+    function resetBreathingUI() {
+      breathCycleCurrent = 0;
+      updateBreathingStats(0, '--');
+      breathInstructionText.textContent = "Ready";
+      breathTimerText.textContent = breathIntervals.inhale_seconds;
+      btnBreathStart.textContent = "Start";
+      btnBreathStart.className = "flex-1 bg-accent text-[#080c0d] border-none rounded-xl py-3 px-6 font-semibold text-sm cursor-pointer transition-all hover:bg-accent-hover";
+      
+      // Reset circle scaling
+      breathCircle.style.transform = 'scale(1)';
+      breathOuterRing.style.transform = 'scale(1)';
+      breathOuterRing.classList.remove('border-accent', 'border-orange-400');
+    }
+
+    function updateBreathingStats(cycle, phase) {
+      breathCyclesText.textContent = `${cycle} / ${breathCycleMax}`;
+      breathPhaseText.textContent = phase;
+    }
+
+    function startBreathingTimer() {
+      if (breathRunning) {
+        pauseBreathingTimer();
+        return;
+      }
+
+      breathRunning = true;
+      btnBreathStart.textContent = "Pause";
+      btnBreathStart.className = "flex-1 bg-white/10 border border-white/10 text-white rounded-xl py-3 px-6 font-semibold text-sm cursor-pointer transition-all hover:bg-white/20";
+      
+      let phase = 'inhale'; // inhale, hold, exhale
+      let countdown = breathIntervals.inhale_seconds;
+      breathCycleCurrent = 1;
+      
+      updateBreathingStats(breathCycleCurrent, 'Inhale');
+      breathInstructionText.textContent = 'Inhale';
+      breathTimerText.textContent = countdown;
+
+      // Circle expands on inhale
+      breathCircle.style.transform = 'scale(1.5)';
+      breathOuterRing.style.transform = 'scale(1.7)';
+      breathOuterRing.style.transition = `all ${breathIntervals.inhale_seconds}s ease-in-out`;
+      breathCircle.style.transition = `all ${breathIntervals.inhale_seconds}s ease-in-out`;
+
+      breathInterval = setInterval(() => {
+        countdown--;
+        
+        if (countdown <= 0) {
+          if (phase === 'inhale') {
+            // transition to hold
+            phase = 'hold';
+            countdown = breathIntervals.hold_seconds;
+            updateBreathingStats(breathCycleCurrent, 'Hold');
+            breathInstructionText.textContent = 'Hold';
+            
+            // Hold style: circle stays big, pulses slightly, or ring changes color
+            breathOuterRing.style.transition = 'all 1s ease-in-out';
+            breathOuterRing.classList.add('border-orange-400/50');
+          } else if (phase === 'hold') {
+            // transition to exhale
+            phase = 'exhale';
+            countdown = breathIntervals.exhale_seconds;
+            updateBreathingStats(breathCycleCurrent, 'Exhale');
+            breathInstructionText.textContent = 'Exhale';
+            
+            // Circle shrinks on exhale
+            breathCircle.style.transform = 'scale(1)';
+            breathOuterRing.style.transform = 'scale(1)';
+            breathOuterRing.classList.remove('border-orange-400/50');
+            breathOuterRing.style.transition = `all ${breathIntervals.exhale_seconds}s ease-in-out`;
+            breathCircle.style.transition = `all ${breathIntervals.exhale_seconds}s ease-in-out`;
+          } else if (phase === 'exhale') {
+            // Complete cycle
+            if (breathCycleCurrent >= breathCycleMax) {
+              // Finished
+              stopBreathingTimer();
+              breathInstructionText.textContent = 'Finished';
+              breathTimerText.textContent = '☺';
+              updateBreathingStats(breathCycleMax, 'Done');
+              return;
+            } else {
+              breathCycleCurrent++;
+              phase = 'inhale';
+              countdown = breathIntervals.inhale_seconds;
+              updateBreathingStats(breathCycleCurrent, 'Inhale');
+              breathInstructionText.textContent = 'Inhale';
+              
+              // Circle expands
+              breathCircle.style.transform = 'scale(1.5)';
+              breathOuterRing.style.transform = 'scale(1.7)';
+              breathOuterRing.style.transition = `all ${breathIntervals.inhale_seconds}s ease-in-out`;
+              breathCircle.style.transition = `all ${breathIntervals.inhale_seconds}s ease-in-out`;
+            }
+          }
+        }
+
+        breathTimerText.textContent = countdown;
+      }, 1000);
+    }
+
+    function pauseBreathingTimer() {
+      breathRunning = false;
+      clearInterval(breathInterval);
+      btnBreathStart.textContent = "Resume";
+      btnBreathStart.className = "flex-1 bg-accent text-[#080c0d] border-none rounded-xl py-3 px-6 font-semibold text-sm cursor-pointer transition-all hover:bg-accent-hover";
+      
+      // Pause transitions
+      const computedStyle = window.getComputedStyle(breathCircle);
+      const matrix = computedStyle.transform;
+      breathCircle.style.transition = 'none';
+      breathOuterRing.style.transition = 'none';
+      breathCircle.style.transform = matrix;
+      breathOuterRing.style.transform = matrix;
+    }
+
+    function stopBreathingTimer() {
+      breathRunning = false;
+      clearInterval(breathInterval);
+      resetBreathingUI();
+    }
+
+    btnBreathStart.addEventListener('click', startBreathingTimer);
+    btnBreathReset.addEventListener('click', stopBreathingTimer);
+
+
+    // ==========================================
+    // 🎵 MEDITATION AUDIO PLAYER LOGIC
+    // ==========================================
+    const audioEl = document.getElementById('modal-audio-element');
+    const audioProgressBar = document.getElementById('audio-progress-bar');
+    const audioTimeCurrent = document.getElementById('audio-time-current');
+    const audioTimeDuration = document.getElementById('audio-time-duration');
+    const btnAudioPlay = document.getElementById('btn-audio-play');
+    const audioPlayIcon = document.getElementById('audio-play-icon');
+    const audioPauseIcon = document.getElementById('audio-pause-icon');
+    const btnAudioPrev15 = document.getElementById('btn-audio-prev-15');
+    const btnAudioNext15 = document.getElementById('btn-audio-next-15');
+    const audioChaptersList = document.getElementById('audio-chapters-list');
+    
+    let isAudioPlaying = false;
+    let chaptersData = [];
+
+    async function launchMeditationPlayer(id) {
+      openModal('audio');
+      stopAudioPlayer();
+
+      try {
+        const res = await apiGetToolDetail(id, token);
+        if (res.ok && res.data.success) {
+          const tool = res.data.data;
+          
+          document.getElementById('audio-track-title').textContent = tool.title;
+          document.getElementById('audio-track-subtitle').textContent = tool.content.guide_author || "Guided Meditation";
+          
+          // Set audio source
+          // Fallback to static calming ocean if file does not exist or fails
+          audioEl.src = tool.content.audio_url || "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+          
+          // Load chapters
+          chaptersData = tool.content.chapters || [];
+          renderChapters(chaptersData);
+        }
+      } catch (err) {
+        console.warn("Using meditation audio fallback:", err);
+        document.getElementById('audio-track-title').textContent = "Relaksasi Otot Progresif";
+        document.getElementById('audio-track-subtitle').textContent = "Dr. Sleep Specialist";
+        audioEl.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+        chaptersData = [
+          { time: '00:00', title: 'Introduction & Setup' },
+          { time: '02:00', title: 'Breathing Focus' },
+          { time: '05:00', title: 'Body Scan' }
+        ];
+        renderChapters(chaptersData);
+      }
+    }
+
+    function renderChapters(chapters) {
+      audioChaptersList.innerHTML = '';
+      chapters.forEach((chap) => {
+        const div = document.createElement('div');
+        div.className = "flex justify-between items-center bg-white/[0.02] border border-white/5 rounded-xl py-3 px-4 cursor-pointer transition-all hover:bg-white/[0.06] hover:border-accent/25 group/item";
+        div.innerHTML = `
+          <span class="text-xs text-white font-medium group-hover/item:text-accent transition-colors">${chap.title}</span>
+          <span class="text-[10px] text-muted tracking-wider">${chap.time}</span>
+        `;
+        div.addEventListener('click', () => {
+          // Parse timestamp MM:SS to seconds
+          const [m, s] = chap.time.split(':').map(Number);
+          const secs = m * 60 + s;
+          audioEl.currentTime = secs;
+          if (!isAudioPlaying) playAudio();
+        });
+        audioChaptersList.appendChild(div);
+      });
+    }
+
+    function formatTime(secs) {
+      if (isNaN(secs) || secs < 0) return '00:00';
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    function playAudio() {
+      audioEl.play().then(() => {
+        isAudioPlaying = true;
+        audioPlayIcon.classList.add('hidden');
+        audioPauseIcon.classList.remove('hidden');
+        document.getElementById('audio-visualizer-glow').classList.add('bg-accent/15');
+      }).catch(err => {
+        // Fallback for audio loading issues
+        console.error("Audio playback error:", err);
+      });
+    }
+
+    function pauseAudio() {
+      audioEl.pause();
+      isAudioPlaying = false;
+      audioPlayIcon.classList.remove('hidden');
+      audioPauseIcon.classList.add('hidden');
+      document.getElementById('audio-visualizer-glow').classList.remove('bg-accent/15');
+    }
+
+    function stopAudioPlayer() {
+      pauseAudio();
+      audioEl.src = '';
+      audioProgressBar.value = 0;
+      audioTimeCurrent.textContent = '00:00';
+      audioTimeDuration.textContent = '00:00';
+    }
+
+    btnAudioPlay.addEventListener('click', () => {
+      if (isAudioPlaying) {
+        pauseAudio();
+      } else {
+        playAudio();
+      }
+    });
+
+    audioEl.addEventListener('timeupdate', () => {
+      if (audioEl.duration) {
+        const pct = (audioEl.currentTime / audioEl.duration) * 100;
+        audioProgressBar.value = pct;
+        audioTimeCurrent.textContent = formatTime(audioEl.currentTime);
+      }
+    });
+
+    audioEl.addEventListener('loadedmetadata', () => {
+      audioTimeDuration.textContent = formatTime(audioEl.duration);
+    });
+
+    audioProgressBar.addEventListener('input', (e) => {
+      if (audioEl.duration) {
+        const targetPct = parseFloat(e.target.value);
+        audioEl.currentTime = (targetPct / 100) * audioEl.duration;
+      }
+    });
+
+    btnAudioPrev15.addEventListener('click', () => {
+      audioEl.currentTime = Math.max(0, audioEl.currentTime - 15);
+    });
+
+    btnAudioNext15.addEventListener('click', () => {
+      audioEl.currentTime = Math.min(audioEl.duration || 0, audioEl.currentTime + 15);
+    });
+
+
+    // ==========================================
+    // 📖 ARTICLE WRITER / READER LOGIC
+    // ==========================================
+    async function launchArticleReader(id) {
+      openModal('article');
+      try {
+        const res = await apiGetToolDetail(id, token);
+        if (res.ok && res.data.success) {
+          const tool = res.data.data;
+          document.getElementById('article-title').textContent = tool.title;
+          document.getElementById('article-readtime').textContent = tool.content.reading_time || '3 min read';
+          document.getElementById('article-body').innerHTML = tool.content.body || '';
+        }
+      } catch (err) {
+        console.error("Error reading article:", err);
+      }
+    }
+
+
+    // ==========================================
+    // ✍️ BRAIN DUMP LOGIC (Animasi & Rilis)
+    // ==========================================
+    const textarea = document.getElementById('braindump-textarea');
+    const inputStage = document.getElementById('braindump-input-stage');
+    const successStage = document.getElementById('braindump-success-stage');
+    const btnRelease = document.getElementById('btn-braindump-release');
+    const btnDone = document.getElementById('btn-braindump-done');
+    const starsContainer = document.getElementById('braindump-stars');
+
+    // Create simple background glowing star elements inside the modal for ambient look
+    for (let i = 0; i < 20; i++) {
+      const star = document.createElement('div');
+      star.className = 'absolute bg-white rounded-full opacity-60';
+      star.style.width = `${Math.random() * 2 + 1}px`;
+      star.style.height = star.style.width;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      starsContainer?.appendChild(star);
+    }
+
+    function launchBrainDump() {
+      openModal('braindump');
+      textarea.value = '';
+      inputStage.style.display = 'block';
+      inputStage.style.opacity = '1';
+      successStage.classList.add('hidden');
+      successStage.style.opacity = '0';
+    }
+
+    btnRelease.addEventListener('click', () => {
+      const text = textarea.value.trim();
+      if (!text) {
+        alert("Pikiran Anda tampak kosong! Ketik sesuatu dulu.");
+        return;
+      }
+
+      // Play floating up animation
+      textarea.style.transition = 'all 1.2s ease-in-out';
+      textarea.style.transform = 'translateY(-100px) scale(0.6)';
+      textarea.style.opacity = '0';
+
+      btnRelease.disabled = true;
+      btnRelease.textContent = "Releasing thoughts...";
+
+      setTimeout(() => {
+        // Hide input stage
+        inputStage.style.display = 'none';
+        textarea.style.transform = 'none';
+        textarea.style.opacity = '1';
+        btnRelease.disabled = false;
+        btnRelease.textContent = "Release Into the Night";
+
+        // Show success
+        successStage.classList.remove('hidden');
+        setTimeout(() => {
+          successStage.style.opacity = '1';
+        }, 50);
+      }, 1200);
+    });
+
+    btnDone.addEventListener('click', () => {
+      closeModal(modals.braindump);
+    });
+
+
+    // ==========================================
+    // 🧭 CATEGORY EXPLORER & VIEWS DYNAMIC
+    // ==========================================
+    const btnViewAll = document.getElementById('btn-view-all');
+    const categoryTabsHeader = document.getElementById('category-tabs-header');
+    const categoryItemsGrid = document.getElementById('category-items-grid');
+
+    async function loadCategoryItems(slug) {
+      categoryItemsGrid.innerHTML = `<div class="col-span-full py-8 text-center text-muted text-xs">Loading items...</div>`;
+
+      // Set active tab styling
+      document.querySelectorAll('.cat-tab').forEach(tab => {
+        if (tab.getAttribute('data-slug') === slug) {
+          tab.className = "cat-tab py-2 px-4 bg-accent/10 border border-accent/20 text-accent font-semibold text-xs rounded-full cursor-pointer transition-all";
+        } else {
+          tab.className = "cat-tab py-2 px-4 bg-transparent border border-white/5 text-muted hover:text-white font-medium text-xs rounded-full cursor-pointer transition-all";
+        }
+      });
+
+      try {
+        const res = await apiGetToolsByCategory(slug, token);
+        if (res.ok && res.data.success) {
+          const items = res.data.data;
+          if (items.length === 0) {
+            categoryItemsGrid.innerHTML = `<div class="col-span-full py-8 text-center text-muted text-xs">Belum ada aktivitas di kategori ini.</div>`;
+            return;
+          }
+
+          categoryItemsGrid.innerHTML = '';
+          items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = "bg-[#121f21]/20 border border-white/5 rounded-2xl p-5 flex flex-col justify-between min-h-[140px] hover:border-accent/30 hover:bg-[#121f21]/40 cursor-pointer transition-all group";
+            
+            // Map icon based on action type
+            let iconSvg = '';
+            if (item.action_type === 'breathing_timer') {
+              iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14M3 12h18M6 16h12"/></svg>`;
+            } else if (item.action_type === 'audio_player') {
+              iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M10 8v8l6-4z"/></svg>`;
+            } else {
+              iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`;
+            }
+
+            card.innerHTML = `
+              <div>
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="p-1.5 rounded-lg bg-accent/5 text-accent border border-accent/10">${iconSvg}</span>
+                  <h4 class="text-sm font-semibold text-white group-hover:text-accent transition-colors">${item.title}</h4>
+                </div>
+                <p class="text-xs text-muted/80 leading-relaxed mb-4">${item.description}</p>
+              </div>
+              <span class="text-[10px] text-muted/50 font-medium font-sans">${item.duration_minutes} mins</span>
+            `;
+
+            card.addEventListener('click', () => {
+              closeModal(modals.category);
+              if (item.action_type === 'breathing_timer') {
+                launchBreathingExercise(item.id);
+              } else if (item.action_type === 'audio_player') {
+                launchMeditationPlayer(item.id);
+              } else if (item.action_type === 'article') {
+                launchArticleReader(item.id);
+              }
+            });
+
+            categoryItemsGrid.appendChild(card);
+          });
+        }
+      } catch (err) {
+        console.error("Error loading category items:", err);
+      }
+    }
+
+    btnViewAll.addEventListener('click', () => {
+      openModal('category');
+      
+      // Render categories tabs headers
+      categoryTabsHeader.innerHTML = '';
+      if (categoriesList.length === 0) {
+        // Offline default categories fallback
+        categoriesList = [
+          { name: 'Pernapasan', slug: 'pernapasan' },
+          { name: 'Edukasi & Sleep Hygiene', slug: 'edukasi' }
+        ];
+      }
+
+      categoriesList.forEach((cat, index) => {
+        const btn = document.createElement('button');
+        btn.setAttribute('data-slug', cat.slug);
+        btn.className = `cat-tab py-2 px-4 rounded-full cursor-pointer transition-all text-xs font-semibold ${index === 0 ? 'bg-accent/10 border border-accent/20 text-accent' : 'bg-transparent border border-white/5 text-muted hover:text-white'}`;
+        btn.textContent = cat.name;
+        btn.addEventListener('click', () => loadCategoryItems(cat.slug));
+        categoryTabsHeader.appendChild(btn);
+      });
+
+      if (categoriesList.length > 0) {
+        loadCategoryItems(categoriesList[0].slug);
+      }
+    });
+
+
+    // ==========================================
+    // 🚀 CARD CLICK HANDLERS (HOMEPAGE STATICS)
+    // ==========================================
+    document.getElementById('card-breathing').addEventListener('click', () => {
+      launchBreathingExercise(1);
+    });
+
+    document.getElementById('card-meditation').addEventListener('click', () => {
+      // Launch progressive muscle relaxation (which is ID 2 from Tools recommendation)
+      launchMeditationPlayer(2);
+    });
+
+    document.getElementById('card-braindump').addEventListener('click', () => {
+      launchBrainDump();
+    });
+  });
+</script>
+

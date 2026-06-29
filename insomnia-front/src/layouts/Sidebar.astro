@@ -28,7 +28,7 @@ const menuItems = [
 <Layout title={title}>
   <div class="flex flex-col md:flex-row min-h-screen bg-bg-dark text-white font-sans">
     <!-- Sidebar -->
-    <aside class="w-full h-auto p-4 static z-10 flex flex-col md:w-[240px] md:h-screen md:sticky md:top-0 md:py-10 md:px-5 md:shadow-none bg-bg-sidebar shrink-0 box-border">
+    <aside class="w-full h-auto p-4 static z-10 flex flex-col md:w-[240px] md:h-screen md:sticky md:top-0 md:pt-10 md:pb-0 md:px-5 md:shadow-none bg-bg-sidebar shrink-0 box-border">
 
       <!-- Brand -->
       <div class="flex items-center gap-2.5 mb-4 justify-center md:mb-8 md:justify-start md:px-3">
@@ -43,7 +43,9 @@ const menuItems = [
         {menuItems.map((item) => (
           <a
             href={item.path}
+            data-id={item.id}
             class:list={[
+              'sidebar-menu-item',
               'flex items-center gap-3 py-2.5 px-3 rounded-lg text-[13px] font-medium no-underline transition-all duration-200 w-full',
               currentActive === item.id
                 ? 'bg-bg-active text-accent'
@@ -81,71 +83,227 @@ const menuItems = [
         ))}
 
         <!-- Divider pushed to bottom -->
-        <div class="hidden md:block h-px bg-white/5 mt-auto mb-3 w-full"></div>
+        <div class="hidden md:block h-px bg-white/5 mt-auto w-full"></div>
 
-        <!-- User Profile (logged in) -->
-        <a
-          id="sidebar-user-profile"
-          href="/setting"
-          class:list={[
-            'hidden items-center gap-3 py-2 px-3 rounded-lg no-underline transition-all duration-200 w-full group',
-            currentActive === 'setting'
-              ? 'bg-bg-active'
-              : 'hover:bg-white/5'
-          ]}
-        >
-          <div class:list={[
-            'w-10 h-10 rounded-full bg-[#1a2729] border flex items-center justify-center shrink-0 overflow-hidden',
-            currentActive === 'setting' ? 'border-accent/30' : 'border-white/8'
-          ]}>
-            <div id="sidebar-user-photo-container" class="w-full h-full flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent/60"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <!-- User Profile/Login Wrapper aligning with bottom bar height on desktop -->
+        <div class="w-full flex items-center justify-between gap-2 md:h-20 shrink-0">
+          <!-- User Profile (logged in) -->
+          <a
+            id="sidebar-user-profile"
+            href="/setting"
+            class:list={[
+              'sidebar-nav-link',
+              'hidden items-center gap-3 py-2 px-3 rounded-lg no-underline transition-all duration-200 flex-1 min-w-0 group',
+              currentActive === 'setting'
+                ? 'bg-bg-active'
+                : 'hover:bg-white/5'
+            ]}
+          >
+            <div class:list={[
+              'w-10 h-10 rounded-full bg-[#1a2729] border flex items-center justify-center shrink-0 overflow-hidden',
+              currentActive === 'setting' ? 'border-accent/30' : 'border-white/8'
+            ]}>
+              <div id="sidebar-user-photo-container" class="w-full h-full flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent/60"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
             </div>
-          </div>
-          <div class="flex flex-col">
-            <span id="sidebar-username" class="text-[13px] font-semibold text-white group-hover:text-accent transition-colors">User</span>
-            <span class="text-[11px] text-muted">Settings</span>
-          </div>
-        </a>
+            <div class="flex flex-col overflow-hidden">
+              <span id="sidebar-username" class="text-[13px] font-semibold text-white group-hover:text-accent transition-colors truncate">User</span>
+              <span class="text-[11px] text-muted truncate">Settings</span>
+            </div>
+          </a>
 
-        <!-- Login Link (guest) -->
-        <a
-          id="sidebar-login-link"
-          href="/auth"
-          class="hidden items-center gap-3 py-2.5 px-3 rounded-lg no-underline transition-all duration-200 w-full group hover:bg-white/5"
-        >
-          <div class="w-10 h-10 rounded-full bg-[#1a2729] border border-white/8 flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-          </div>
-          <div class="flex flex-col">
-            <span class="text-[13px] font-semibold text-muted group-hover:text-accent transition-colors">Login</span>
-            <span class="text-[11px] text-muted/60">Masuk ke akun Anda</span>
-          </div>
-        </a>
+          <!-- Logout Button (logged in, door icon only next to settings) -->
+          <button
+            id="sidebar-logout-btn"
+            class="hidden w-10 h-10 rounded-lg bg-white/5 border border-white/8 items-center justify-center text-muted hover:text-red-400 hover:border-red-400/30 transition-all cursor-pointer shrink-0"
+            title="Keluar"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
+
+          <!-- Login Link (guest) -->
+          <a
+            id="sidebar-login-link"
+            href="/auth"
+            class="hidden items-center gap-3 py-2.5 px-3 rounded-lg no-underline transition-all duration-200 w-full group hover:bg-white/5"
+          >
+            <div class="w-10 h-10 rounded-full bg-[#1a2729] border border-white/8 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-[13px] font-semibold text-muted group-hover:text-accent transition-colors">Register</span>
+              <span class="text-[11px] text-muted/60">Buat akun Anda</span>
+            </div>
+          </a>
+        </div>
       </nav>
     </aside>
 
     <!-- Main Content -->
-    <main class="grow p-6 md:p-14 overflow-y-auto box-border">
+    <main class="grow p-6 md:p-14 pb-32 md:pb-36 overflow-y-auto box-border">
       <slot />
     </main>
+  </div>
+
+  <!-- BOTTOM MUSIC PLAYER BAR (Persisten Lintas Halaman) -->
+  <div id="bottom-player-bar" transition:persist="audio-player" class="fixed bottom-0 left-0 md:left-[240px] right-0 z-50 bg-[#090f10] border-t border-white/5 py-3 md:py-0 md:h-20 px-6 md:px-14 flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300 translate-y-full shadow-[0_-8px_30px_rgba(0,0,0,0.5)] box-border">
+    
+    <!-- Left Section: Track Info -->
+    <div class="flex items-center gap-3.5 w-full md:w-1/3 shrink-0">
+      <div class="w-14 h-14 rounded-lg bg-[#121e20] overflow-hidden shrink-0 border border-white/5">
+        <img id="player-thumbnail" src="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231a2729%22/></svg>" alt="Album Cover" class="w-full h-full object-cover" />
+      </div>
+      <div class="overflow-hidden min-w-0">
+        <h4 id="player-title" class="text-sm font-semibold text-white m-0 truncate">Judul Lagu</h4>
+        <p id="player-artist" class="text-xs text-muted m-0 mt-0.5 truncate">Nama Artis &bull; <span id="player-time-left">0:00 left</span></p>
+      </div>
+    </div>
+
+    <!-- Middle Section: Playback Controls & Progress Bar -->
+    <div class="flex flex-col items-center gap-2 w-full md:w-1/3 max-w-md">
+      <!-- Buttons -->
+      <div class="flex items-center gap-5">
+        <button id="player-prev-btn" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1.5 transition-colors" title="Sebelumnya">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+        </button>
+        <button id="player-play-btn" class="w-10 h-10 rounded-full bg-accent text-[#080c0d] flex items-center justify-center border-none cursor-pointer transition-transform hover:scale-105 shadow-[0_0_12px_rgba(78,208,200,0.35)]" title="Putar/Jeda">
+          <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <svg id="pause-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+        </button>
+        <button id="player-next-btn" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1.5 transition-colors" title="Selanjutnya">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+        </button>
+      </div>
+      <!-- Progress Bar Slider -->
+      <div class="flex items-center gap-3 w-full">
+        <span id="player-current-time" class="text-[10px] text-muted font-semibold font-mono w-8 text-right">00:00</span>
+        <div class="relative flex-1 group py-2 cursor-pointer" id="progress-container">
+          <input type="range" id="progress-slider" min="0" max="100" value="0" step="0.1"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+          <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden transition-all group-hover:h-1.5 relative">
+            <div id="progress-bar-fill" class="h-full bg-accent w-0 transition-all rounded-full drop-shadow-[0_0_4px_rgba(78,208,200,0.6)]"></div>
+          </div>
+        </div>
+        <span id="player-total-duration" class="text-[10px] text-muted font-semibold font-mono w-8 text-left">00:00</span>
+      </div>
+    </div>
+
+    <!-- Right Section: Volume & Utilities -->
+    <div class="flex items-center justify-end gap-4 w-full md:w-1/3 shrink-0">
+      <!-- Repeat Button -->
+      <button id="player-repeat-btn" class="bg-transparent border-none text-muted hover:text-accent cursor-pointer p-1 transition-colors" title="Ulangi Lagu">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      </button>
+
+      <!-- Volume Controls -->
+      <div class="flex items-center gap-2 max-w-[120px] w-full">
+        <button id="volume-icon-btn" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1 transition-colors" title="Mute/Unmute">
+          <svg id="volume-high" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <svg id="volume-mute" class="hidden" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+        </button>
+        <div class="relative flex-1 group py-2 cursor-pointer" id="volume-container">
+          <input type="range" id="volume-slider" min="0" max="100" value="80"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+          <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden transition-all group-hover:h-1.5 relative">
+            <div id="volume-bar-fill" class="h-full bg-accent w-[80%] rounded-full transition-all"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GLOBAL MOON LOADER OVERLAY -->
+  <div id="global-moon-loader" class="moon-loader-overlay">
+    <div class="moon-spinner"></div>
+    <span id="global-moon-loader-text" class="text-accent text-sm font-semibold tracking-wider">Memuat...</span>
+  </div>
+
+  <!-- GLOBAL CONFIRM MODAL -->
+  <div id="global-confirm-modal" class="confirm-modal-overlay">
+    <div class="confirm-modal">
+      <h3 class="text-lg font-bold text-white mb-2">Konfirmasi Keluar</h3>
+      <p class="text-sm text-muted mb-6">Apakah Anda yakin ingin keluar dari akun Anda?</p>
+      <div class="flex justify-center gap-3">
+        <button id="confirm-cancel-btn" class="bg-white/5 border border-white/8 text-muted py-2 px-5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-white/10 hover:text-white transition-all">Batal</button>
+        <button id="confirm-ok-btn" class="bg-red-500 text-white border-none py-2 px-5 rounded-xl text-sm font-semibold cursor-pointer hover:bg-red-600 transition-all shadow-[0_0_12px_rgba(239,68,68,0.2)]">Logout</button>
+      </div>
+    </div>
   </div>
 </Layout>
 
 <script>
-  import { isLoggedIn, getUser } from '../utils/auth.js';
+  import { isLoggedIn, getUser, logout } from '../utils/auth.js';
+  import { initAudioPlayer } from '../utils/audioPlayer.js';
 
-  document.addEventListener('DOMContentLoaded', () => {
+  // Gunakan astro:page-load agar dijalankan ulang setiap navigasi View Transitions
+  document.addEventListener('astro:page-load', () => {
     const userProfile = document.getElementById('sidebar-user-profile');
     const loginLink = document.getElementById('sidebar-login-link');
+    const logoutBtn = document.getElementById('sidebar-logout-btn');
     const usernameEl = document.getElementById('sidebar-username');
     const photoContainer = document.getElementById('sidebar-user-photo-container');
+    
+    // ... rest of selectors
+    const loaderOverlay = document.getElementById('global-moon-loader');
+    const loaderText = document.getElementById('global-moon-loader-text');
+    
+    const confirmOverlay = document.getElementById('global-confirm-modal');
+    const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
+    const confirmOkBtn = document.getElementById('confirm-ok-btn');
+
+    let onConfirmCallback = null;
+
+    // Define helper functions on window
+    window.showMoonLoader = (text = 'Memuat...') => {
+      if (loaderText) loaderText.textContent = text;
+      loaderOverlay?.classList.add('active');
+    };
+
+    window.hideMoonLoader = () => {
+      loaderOverlay?.classList.remove('active');
+    };
+
+    window.showLogoutConfirm = (onConfirm) => {
+      onConfirmCallback = onConfirm;
+      confirmOverlay?.classList.add('active');
+    };
+
+    window.hideLogoutConfirm = () => {
+      confirmOverlay?.classList.remove('active');
+      onConfirmCallback = null;
+    };
+
+    // Modal listeners
+    confirmCancelBtn?.addEventListener('click', () => {
+      window.hideLogoutConfirm();
+    });
+
+    confirmOkBtn?.addEventListener('click', () => {
+      if (onConfirmCallback) onConfirmCallback();
+      window.hideLogoutConfirm();
+    });
+
+    // Handle logout click
+    logoutBtn?.addEventListener('click', () => {
+      window.showLogoutConfirm(async () => {
+        if (window.showMoonLoader) window.showMoonLoader('Sedang Keluar...');
+        await logout();
+        window.location.reload();
+      });
+    });
 
     if (isLoggedIn()) {
       const user = getUser();
       if (userProfile) {
         userProfile.classList.remove('hidden');
         userProfile.classList.add('flex');
+      }
+      if (logoutBtn) {
+        logoutBtn.classList.remove('hidden');
+        logoutBtn.classList.add('flex');
       }
       if (loginLink) loginLink.classList.add('hidden');
       if (usernameEl && user) {
@@ -161,6 +319,33 @@ const menuItems = [
         loginLink.classList.add('flex');
       }
       if (userProfile) userProfile.classList.add('hidden');
+      if (logoutBtn) {
+        logoutBtn.classList.add('hidden');
+        logoutBtn.classList.remove('flex');
+      }
     }
+
+    // Disable navigation links (Soundscape, Diary, Settings) if guest is not logged in
+    if (!isLoggedIn()) {
+      const disabledTabs = ['soundscape', 'diary', 'setting'];
+      
+      const menuItems = document.querySelectorAll('.sidebar-menu-item');
+      menuItems.forEach((link) => {
+        const id = link.getAttribute('data-id');
+        if (id && disabledTabs.includes(id)) {
+          link.classList.add('opacity-30', 'pointer-events-none');
+          link.setAttribute('tabindex', '-1');
+        }
+      });
+
+      // User profile link (setting)
+      if (userProfile) {
+        userProfile.classList.add('opacity-30', 'pointer-events-none');
+        userProfile.setAttribute('tabindex', '-1');
+      }
+    }
+
+    // Inisialisasi pemutar musik global (persisten lintas halaman)
+    initAudioPlayer();
   });
 </script>
