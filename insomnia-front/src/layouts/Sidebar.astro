@@ -31,29 +31,58 @@ const menuItems = [
     <!-- Sidebar -->
     <aside class="w-full h-auto p-4 static z-10 flex flex-col md:w-[240px] md:h-screen md:sticky md:top-0 md:pt-10 md:pb-0 md:px-5 md:shadow-none bg-bg-sidebar shrink-0 box-border">
 
-      <!-- Brand -->
-      <div class="flex items-center gap-2.5 mb-4 justify-center md:mb-8 md:justify-start md:px-3">
+      <!-- Desktop Brand -->
+      <div class="hidden md:flex items-center gap-2.5 mb-8 justify-start px-3">
         <svg class="text-accent shrink-0" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
         <span class="text-lg font-semibold text-accent whitespace-nowrap">Tidur Nyenyak</span>
       </div>
 
+      <!-- Mobile Header (Brand + Profile + Logout) -->
+      <div class="flex md:hidden items-center justify-between w-full mb-2 px-1">
+        <!-- Left: Profile / Login -->
+        <a href="/setting" class="sidebar-user-profile hidden items-center justify-center w-8 h-8 rounded-full bg-[#1a2729] border border-white/8 overflow-hidden shrink-0">
+          <div class="sidebar-user-photo-container w-full h-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent/60"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+        </a>
+        <a href="/auth" class="sidebar-login-link hidden items-center justify-center w-8 h-8 rounded-full bg-[#1a2729] border border-white/8 shrink-0 text-muted hover:text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        </a>
+
+        <!-- Center: Brand -->
+        <div class="flex items-center gap-2 justify-center">
+          <svg class="text-accent shrink-0" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+          <span class="text-base font-semibold text-accent whitespace-nowrap">Tidur Nyenyak</span>
+        </div>
+
+        <!-- Right: Logout / Placeholder -->
+        <button class="sidebar-logout-btn hidden items-center justify-center w-8 h-8 rounded-full bg-white/5 border border-white/8 text-muted hover:text-red-400 shrink-0 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </button>
+        <div class="sidebar-guest-placeholder w-8 h-8 hidden"></div>
+      </div>
+
       <!-- Nav -->
-      <nav class="flex flex-row justify-around gap-1 items-center md:flex-col md:gap-1 md:items-stretch md:grow">
+      <nav class="fixed bottom-0 left-0 right-0 z-[60] bg-[#0a1012] border-t border-white/5 h-[68px] px-1 flex flex-row justify-around items-center md:static md:h-auto md:border-none md:bg-transparent md:px-0 md:flex-col md:gap-1 md:items-stretch md:grow md:z-auto">
         {menuItems.map((item) => (
           <a
             href={item.path}
             data-id={item.id}
             class:list={[
               'sidebar-menu-item',
-              'flex items-center gap-3 py-2.5 px-3 rounded-lg text-[13px] font-medium no-underline transition-all duration-200 w-full',
+              'flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-3 py-1 md:py-2.5 px-1 md:px-3 rounded-lg text-[10px] md:text-[13px] font-medium no-underline transition-all duration-200 h-full md:h-auto flex-1 md:flex-none md:w-full',
               currentActive === item.id
-                ? 'bg-bg-active text-accent'
-                : 'text-muted hover:text-white hover:bg-white/5'
+                ? 'text-accent md:bg-bg-active'
+                : 'text-muted hover:text-white md:hover:bg-white/5'
             ]}
           >
-            <div class="flex items-center justify-center w-5 h-5 shrink-0">
+            <div class="flex items-center justify-center w-6 h-6 md:w-5 md:h-5 shrink-0">
               {item.id === 'home' && (
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -79,7 +108,7 @@ const menuItems = [
                 </svg>
               )}
             </div>
-            <span>{item.label}</span>
+            <span class="block md:inline mt-0.5 md:mt-0">{item.label}</span>
           </a>
         ))}
 
@@ -90,31 +119,30 @@ const menuItems = [
           data-id="admin"
           class:list={[
             'sidebar-menu-item hidden',
-            'flex items-center gap-3 py-2.5 px-3 rounded-lg text-[13px] font-medium no-underline transition-all duration-200 w-full',
+            'flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-3 py-1 md:py-2.5 px-1 md:px-3 rounded-lg text-[10px] md:text-[13px] font-medium no-underline transition-all duration-200 h-full md:h-auto flex-1 md:flex-none md:w-full',
             currentActive === 'admin'
-              ? 'bg-bg-active text-accent'
-              : 'text-muted hover:text-white hover:bg-white/5'
+              ? 'text-accent md:bg-bg-active'
+              : 'text-muted hover:text-white md:hover:bg-white/5'
           ]}
         >
-          <div class="flex items-center justify-center w-5 h-5 shrink-0">
+          <div class="flex items-center justify-center w-6 h-6 md:w-5 md:h-5 shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
           </div>
-          <span>Admin Panel</span>
+          <span class="block md:inline mt-0.5 md:mt-0">Admin</span>
         </a>
 
         <!-- Divider pushed to bottom -->
         <div class="hidden md:block h-px bg-white/5 mt-auto w-full"></div>
 
         <!-- User Profile/Login Wrapper aligning with bottom bar height on desktop -->
-        <div class="w-full flex items-center justify-between gap-2 md:h-20 shrink-0">
+        <div class="hidden md:flex w-full items-center justify-between gap-2 h-20 shrink-0 mt-2">
           <!-- User Profile (logged in) -->
           <a
-            id="sidebar-user-profile"
             href="/setting"
             class:list={[
-              'sidebar-nav-link',
+              'sidebar-user-profile sidebar-nav-link',
               'hidden items-center gap-3 py-2 px-3 rounded-lg no-underline transition-all duration-200 flex-1 min-w-0 group',
               currentActive === 'setting'
                 ? 'bg-bg-active'
@@ -125,20 +153,19 @@ const menuItems = [
               'w-10 h-10 rounded-full bg-[#1a2729] border flex items-center justify-center shrink-0 overflow-hidden',
               currentActive === 'setting' ? 'border-accent/30' : 'border-white/8'
             ]}>
-              <div id="sidebar-user-photo-container" class="w-full h-full flex items-center justify-center">
+              <div class="sidebar-user-photo-container w-full h-full flex items-center justify-center" transition:persist="sidebar-user-photo">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-accent/60"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               </div>
             </div>
             <div class="flex flex-col overflow-hidden">
-              <span id="sidebar-username" class="text-[13px] font-semibold text-white group-hover:text-accent transition-colors truncate">User</span>
+              <span class="sidebar-username text-[13px] font-semibold text-white group-hover:text-accent transition-colors truncate">User</span>
               <span class="text-[11px] text-muted truncate">Settings</span>
             </div>
           </a>
 
           <!-- Logout Button (logged in, door icon only next to settings) -->
           <button
-            id="sidebar-logout-btn"
-            class="hidden w-10 h-10 rounded-lg bg-white/5 border border-white/8 items-center justify-center text-muted hover:text-red-400 hover:border-red-400/30 transition-all cursor-pointer shrink-0"
+            class="sidebar-logout-btn hidden w-10 h-10 rounded-lg bg-white/5 border border-white/8 items-center justify-center text-muted hover:text-red-400 hover:border-red-400/30 transition-all cursor-pointer shrink-0"
             title="Keluar"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -148,9 +175,8 @@ const menuItems = [
 
           <!-- Login Link (guest) -->
           <a
-            id="sidebar-login-link"
             href="/auth"
-            class="hidden items-center gap-3 py-2.5 px-3 rounded-lg no-underline transition-all duration-200 w-full group hover:bg-white/5"
+            class="sidebar-login-link hidden items-center gap-3 py-2.5 px-3 rounded-lg no-underline transition-all duration-200 w-full group hover:bg-white/5"
           >
             <div class="w-10 h-10 rounded-full bg-[#1a2729] border border-white/8 flex items-center justify-center shrink-0">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
@@ -165,39 +191,66 @@ const menuItems = [
     </aside>
 
     <!-- Main Content -->
-    <main class="grow p-6 md:p-14 pb-32 md:pb-36 overflow-y-auto box-border">
+    <main class="grow p-6 md:p-14 pb-[280px] md:pb-36 overflow-y-auto box-border">
       <slot />
     </main>
   </div>
 
   <!-- BOTTOM MUSIC PLAYER BAR (Persisten Lintas Halaman) -->
-  <div id="bottom-player-bar" transition:persist="audio-player" class="fixed bottom-0 left-0 md:left-[240px] right-0 z-50 bg-[#090f10] border-t border-white/5 py-3 md:py-0 md:h-20 px-6 md:px-14 flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300 translate-y-full shadow-[0_-8px_30px_rgba(0,0,0,0.5)] box-border">
+  <div id="bottom-player-bar" transition:persist="audio-player" class="fixed bottom-[68px] md:bottom-0 left-0 md:left-[240px] right-0 z-40 bg-[#090f10] border-t border-white/5 py-3 md:py-0 md:h-20 px-6 md:px-14 flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300 translate-y-full shadow-[0_-8px_30px_rgba(0,0,0,0.5)] box-border">
     
     <!-- Left Section: Track Info -->
-    <div class="flex items-center gap-3.5 w-full md:w-1/3 shrink-0">
+    <div class="flex items-center gap-3.5 w-full md:w-auto lg:w-1/3 shrink-0">
       <div class="w-14 h-14 rounded-lg bg-[#121e20] overflow-hidden shrink-0 border border-white/5">
         <img id="player-thumbnail" src="data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%231a2729%22/></svg>" alt="Album Cover" class="w-full h-full object-cover" />
       </div>
-      <div class="overflow-hidden min-w-0">
+      <div class="overflow-hidden min-w-0 md:hidden lg:block">
         <h4 id="player-title" class="text-sm font-semibold text-white m-0 truncate">Judul Lagu</h4>
         <p id="player-artist" class="text-xs text-muted m-0 mt-0.5 truncate">Nama Artis &bull; <span id="player-time-left">0:00 left</span></p>
       </div>
     </div>
 
     <!-- Middle Section: Playback Controls & Progress Bar -->
-    <div class="flex flex-col items-center gap-2 w-full md:w-1/3 max-w-md">
+    <div class="flex flex-col items-center gap-2 w-full md:flex-1 lg:w-1/3 lg:max-w-md">
       <!-- Buttons -->
-      <div class="flex items-center gap-5">
-        <button id="player-prev-btn" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1.5 transition-colors" title="Sebelumnya">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+      <div class="flex items-center justify-between md:justify-center w-full gap-5">
+        <!-- Mobile Repeat Button (Left side of playback controls) -->
+        <button id="mobile-player-repeat-btn" class="md:hidden bg-transparent border-none text-muted hover:text-accent cursor-pointer p-1 transition-colors" title="Ulangi Lagu">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
         </button>
-        <button id="player-play-btn" class="w-10 h-10 rounded-full bg-accent text-[#080c0d] flex items-center justify-center border-none cursor-pointer transition-transform hover:scale-105 shadow-[0_0_12px_rgba(78,208,200,0.35)]" title="Putar/Jeda">
-          <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          <svg id="pause-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
-        </button>
-        <button id="player-next-btn" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1.5 transition-colors" title="Selanjutnya">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
-        </button>
+
+        <div class="flex items-center gap-5 md:gap-4 lg:gap-5">
+          <button id="player-prev-btn" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1.5 transition-colors" title="Sebelumnya">
+            <svg class="w-[18px] h-[18px] md:w-3.5 md:h-3.5 lg:w-[18px] lg:h-[18px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5"/></svg>
+          </button>
+          <button id="player-play-btn" class="w-10 h-10 md:w-8 md:h-8 lg:w-10 lg:h-10 rounded-full bg-accent text-[#080c0d] flex items-center justify-center border-none cursor-pointer transition-transform hover:scale-105 shadow-[0_0_12px_rgba(78,208,200,0.35)]" title="Putar/Jeda">
+            <svg id="play-icon" class="w-5 h-5 md:w-4 md:h-4 lg:w-5 lg:h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <svg id="pause-icon" class="hidden w-5 h-5 md:w-4 md:h-4 lg:w-5 lg:h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+          </button>
+          <button id="player-next-btn" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1.5 transition-colors" title="Selanjutnya">
+            <svg class="w-[18px] h-[18px] md:w-3.5 md:h-3.5 lg:w-[18px] lg:h-[18px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+          </button>
+        </div>
+
+        <!-- Mobile Volume Button (Right side of playback controls) -->
+        <div class="relative md:hidden flex items-center justify-center group" id="mobile-volume-wrapper">
+          <button id="mobile-volume-icon-btn" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1 transition-colors" title="Volume">
+            <svg id="mobile-volume-high" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            <svg id="mobile-volume-mute" class="hidden" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          </button>
+          
+          <!-- Vertical Volume Slider Popup -->
+          <div id="mobile-volume-popup" class="absolute bottom-[calc(100%+12px)] right-1/2 translate-x-1/2 hidden flex-col items-center bg-[#121e20] border border-white/10 py-3 rounded-lg shadow-xl w-10 h-28 z-[70]">
+            <div class="relative w-full h-full cursor-pointer flex justify-center items-end group/slider">
+              <!-- Using transform rotate for the input -->
+              <input type="range" id="mobile-volume-slider" min="0" max="100" value="80"
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80px] h-6 opacity-0 cursor-pointer z-10" style="transform: rotate(-90deg);" />
+              <div class="w-1.5 h-full bg-white/10 rounded-full overflow-hidden transition-all group-hover/slider:w-2 relative flex flex-col justify-end">
+                <div id="mobile-volume-bar-fill" class="w-full bg-accent transition-all rounded-full" style="height: 80%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <!-- Progress Bar Slider -->
       <div class="flex items-center gap-3 w-full">
@@ -213,24 +266,29 @@ const menuItems = [
       </div>
     </div>
 
-    <!-- Right Section: Volume & Utilities -->
-    <div class="flex items-center justify-end gap-4 w-full md:w-1/3 shrink-0">
+    <!-- Right Section: Volume & Utilities (Desktop Only) -->
+    <div class="hidden md:flex items-center justify-end gap-4 md:w-auto lg:w-1/3 shrink-0">
       <!-- Repeat Button -->
       <button id="player-repeat-btn" class="bg-transparent border-none text-muted hover:text-accent cursor-pointer p-1 transition-colors" title="Ulangi Lagu">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
       </button>
 
-      <!-- Volume Controls -->
-      <div class="flex items-center gap-2 max-w-[120px] w-full">
-        <button id="volume-icon-btn" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1 transition-colors" title="Mute/Unmute">
+      <!-- Desktop Volume Controls (Popup style) -->
+      <div class="relative flex items-center justify-center group" id="desktop-volume-wrapper">
+        <button id="volume-icon-btn" class="bg-transparent border-none text-muted hover:text-white cursor-pointer p-1 transition-colors" title="Volume">
           <svg id="volume-high" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
           <svg id="volume-mute" class="hidden" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
         </button>
-        <div class="relative flex-1 group py-2 cursor-pointer" id="volume-container">
-          <input type="range" id="volume-slider" min="0" max="100" value="80"
-            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-          <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden transition-all group-hover:h-1.5 relative">
-            <div id="volume-bar-fill" class="h-full bg-accent w-[80%] rounded-full transition-all"></div>
+        
+        <!-- Vertical Volume Slider Popup -->
+        <div id="desktop-volume-popup" class="absolute bottom-[calc(100%+12px)] right-1/2 translate-x-1/2 hidden flex-col items-center bg-[#121e20] border border-white/10 py-3 rounded-lg shadow-xl w-10 h-28 z-[70]">
+          <div class="relative w-full h-full cursor-pointer flex justify-center items-end group/slider">
+            <!-- Using transform rotate for the input -->
+            <input type="range" id="volume-slider" min="0" max="100" value="80"
+              class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80px] h-6 opacity-0 cursor-pointer z-10" style="transform: rotate(-90deg);" />
+            <div class="w-1.5 h-full bg-white/10 rounded-full overflow-hidden transition-all group-hover/slider:w-2 relative flex flex-col justify-end">
+              <div id="volume-bar-fill" class="w-full bg-accent transition-all rounded-full" style="height: 80%;"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -262,11 +320,12 @@ const menuItems = [
 
   // Gunakan astro:page-load agar dijalankan ulang setiap navigasi View Transitions
   document.addEventListener('astro:page-load', () => {
-    const userProfile = document.getElementById('sidebar-user-profile');
-    const loginLink = document.getElementById('sidebar-login-link');
-    const logoutBtn = document.getElementById('sidebar-logout-btn');
-    const usernameEl = document.getElementById('sidebar-username');
-    const photoContainer = document.getElementById('sidebar-user-photo-container');
+    const userProfiles = document.querySelectorAll('.sidebar-user-profile');
+    const loginLinks = document.querySelectorAll('.sidebar-login-link');
+    const logoutBtns = document.querySelectorAll('.sidebar-logout-btn');
+    const usernameEls = document.querySelectorAll('.sidebar-username');
+    const photoContainers = document.querySelectorAll('.sidebar-user-photo-container');
+    const guestPlaceholders = document.querySelectorAll('.sidebar-guest-placeholder');
     
     // ... rest of selectors
     const loaderOverlay = document.getElementById('global-moon-loader');
@@ -309,31 +368,35 @@ const menuItems = [
     });
 
     // Handle logout click
-    logoutBtn?.addEventListener('click', () => {
-      window.showLogoutConfirm(async () => {
-        if (window.showMoonLoader) window.showMoonLoader('Sedang Keluar...');
-        await logout();
-        window.location.reload();
+    logoutBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        window.showLogoutConfirm(async () => {
+          if (window.showMoonLoader) window.showMoonLoader('Sedang Keluar...');
+          await logout();
+          window.location.reload();
+        });
       });
     });
 
     if (isLoggedIn()) {
       const user = getUser();
-      if (userProfile) {
-        userProfile.classList.remove('hidden');
-        userProfile.classList.add('flex');
-      }
-      if (logoutBtn) {
-        logoutBtn.classList.remove('hidden');
-        logoutBtn.classList.add('flex');
-      }
-      if (loginLink) loginLink.classList.add('hidden');
-      if (usernameEl && user) {
-        usernameEl.textContent = user.username || 'User';
-      }
-      if (photoContainer && user && user.photo) {
+      userProfiles.forEach(el => { el.classList.remove('hidden'); el.classList.add('flex'); });
+      logoutBtns.forEach(el => { el.classList.remove('hidden'); el.classList.add('flex'); });
+      loginLinks.forEach(el => { el.classList.add('hidden'); });
+      guestPlaceholders.forEach(el => { el.classList.add('hidden'); });
+      
+      usernameEls.forEach(el => { el.textContent = user.username || 'User'; });
+      
+      if (user && user.photo) {
         const photoUrl = `http://127.0.0.1:8000/storage/${user.photo}`;
-        photoContainer.innerHTML = `<img src="${photoUrl}" alt="Photo" class="w-full h-full object-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2218%22 height=%2218%22 viewBox=%220%22><circle cx=%229%22 cy=%229%22 r=%228%22 fill=%22%23ccc%22 /></svg>'"/>`;
+        photoContainers.forEach(el => {
+          const img = el.querySelector('img');
+          if (!img) {
+            el.innerHTML = `<img src="${photoUrl}" alt="Photo" class="w-full h-full object-cover" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2218%22 height=%2218%22 viewBox=%220%22><circle cx=%229%22 cy=%229%22 r=%228%22 fill=%22%23ccc%22 /></svg>'"/>`;
+          } else if (img.src !== photoUrl) {
+            img.src = photoUrl;
+          }
+        });
       }
       
       // Tampilkan link admin jika role adalah admin
@@ -343,15 +406,10 @@ const menuItems = [
         adminLink.classList.add('flex');
       }
     } else {
-      if (loginLink) {
-        loginLink.classList.remove('hidden');
-        loginLink.classList.add('flex');
-      }
-      if (userProfile) userProfile.classList.add('hidden');
-      if (logoutBtn) {
-        logoutBtn.classList.add('hidden');
-        logoutBtn.classList.remove('flex');
-      }
+      loginLinks.forEach(el => { el.classList.remove('hidden'); el.classList.add('flex'); });
+      userProfiles.forEach(el => { el.classList.add('hidden'); });
+      logoutBtns.forEach(el => { el.classList.add('hidden'); el.classList.remove('flex'); });
+      guestPlaceholders.forEach(el => { el.classList.remove('hidden'); el.classList.add('block'); });
     }
 
     // Disable navigation links (Soundscape, Diary, Tools, Settings) if guest is not logged in
@@ -368,10 +426,10 @@ const menuItems = [
       });
 
       // User profile link (setting)
-      if (userProfile) {
-        userProfile.classList.add('opacity-30', 'pointer-events-none');
-        userProfile.setAttribute('tabindex', '-1');
-      }
+      userProfiles.forEach(el => {
+        el.classList.add('opacity-30', 'pointer-events-none');
+        el.setAttribute('tabindex', '-1');
+      });
     }
 
     // Inisialisasi pemutar musik global (persisten lintas halaman)

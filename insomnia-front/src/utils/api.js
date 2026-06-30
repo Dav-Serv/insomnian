@@ -168,6 +168,13 @@ export async function apiGetHome(token) {
   });
 }
 
+export async function apiGetHomeRecommendations(token) {
+  return apiCall(`${ENDPOINTS.home}/recommendations`, {
+    method: 'GET',
+    token,
+  });
+}
+
 export async function apiGenerateMockSleep(token) {
   return apiCall(ENDPOINTS.mockSleep, {
     method: 'POST',

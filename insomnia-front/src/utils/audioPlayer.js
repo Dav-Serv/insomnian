@@ -63,33 +63,35 @@ function updatePlayPauseIcon(p) {
 }
 
 function updateVolumeUI(p) {
-  const slider = document.getElementById('volume-slider');
-  const fill = document.getElementById('volume-bar-fill');
-  const highIcon = document.getElementById('volume-high');
-  const muteIcon = document.getElementById('volume-mute');
+  const sliders = [document.getElementById('volume-slider'), document.getElementById('mobile-volume-slider')];
+  const fills = [document.getElementById('volume-bar-fill'), document.getElementById('mobile-volume-bar-fill')];
+  const highIcons = [document.getElementById('volume-high'), document.getElementById('mobile-volume-high')];
+  const muteIcons = [document.getElementById('volume-mute'), document.getElementById('mobile-volume-mute')];
 
-  if (slider) slider.value = p.volume;
-  if (fill) fill.style.width = `${p.volume}%`;
+  sliders.forEach(s => { if (s) s.value = p.volume; });
+  fills.forEach(f => { if (f) f.style.height = `${p.volume}%`; });
 
   if (p.volume === 0) {
-    highIcon?.classList.add('hidden');
-    muteIcon?.classList.remove('hidden');
+    highIcons.forEach(i => i?.classList.add('hidden'));
+    muteIcons.forEach(i => i?.classList.remove('hidden'));
   } else {
-    highIcon?.classList.remove('hidden');
-    muteIcon?.classList.add('hidden');
+    highIcons.forEach(i => i?.classList.remove('hidden'));
+    muteIcons.forEach(i => i?.classList.add('hidden'));
   }
 }
 
 function updateRepeatUI(p) {
-  const btn = document.getElementById('player-repeat-btn');
-  if (!btn) return;
-  if (p.isRepeat) {
-    btn.classList.remove('text-muted');
-    btn.classList.add('text-accent');
-  } else {
-    btn.classList.remove('text-accent');
-    btn.classList.add('text-muted');
-  }
+  const btns = [document.getElementById('player-repeat-btn'), document.getElementById('mobile-player-repeat-btn')];
+  btns.forEach(btn => {
+    if (!btn) return;
+    if (p.isRepeat) {
+      btn.classList.remove('text-muted');
+      btn.classList.add('text-accent');
+    } else {
+      btn.classList.remove('text-accent');
+      btn.classList.add('text-muted');
+    }
+  });
 }
 
 function showPlayerBar(p) {
@@ -108,10 +110,6 @@ function showPlayerBar(p) {
   if (thumb) thumb.src = p.currentTrack.thumbnail_url || DEFAULT_THUMB;
 
   if (bar) bar.classList.remove('translate-y-full');
-
-  // Tambahkan padding bawah agar konten tidak tertutup player bar
-  const mainEl = document.querySelector('main');
-  if (mainEl) mainEl.classList.add('pb-28');
 }
 
 function updateProgressUI(p) {
@@ -249,19 +247,25 @@ function bindPlayerEvents(p) {
   const playBtn = document.getElementById('player-play-btn');
   const prevBtn = document.getElementById('player-prev-btn');
   const nextBtn = document.getElementById('player-next-btn');
-  const repeatBtn = document.getElementById('player-repeat-btn');
+  const repeatBtns = [document.getElementById('player-repeat-btn'), document.getElementById('mobile-player-repeat-btn')];
   const progressSlider = document.getElementById('progress-slider');
-  const volumeSlider = document.getElementById('volume-slider');
+  
+  const volumeSliders = [document.getElementById('volume-slider'), document.getElementById('mobile-volume-slider')];
   const volumeIconBtn = document.getElementById('volume-icon-btn');
+
+  const mobileVolIconBtn = document.getElementById('mobile-volume-icon-btn');
+  const mobileVolPopup = document.getElementById('mobile-volume-popup');
 
   playBtn?.addEventListener('click', () => togglePlayPause(p));
   prevBtn?.addEventListener('click', () => playPrev(p));
   nextBtn?.addEventListener('click', () => playNext(p));
 
-  repeatBtn?.addEventListener('click', () => {
-    p.isRepeat = !p.isRepeat;
-    updateRepeatUI(p);
-    saveState(p);
+  repeatBtns.forEach(btn => {
+    btn?.addEventListener('click', () => {
+      p.isRepeat = !p.isRepeat;
+      updateRepeatUI(p);
+      saveState(p);
+    });
   });
 
   progressSlider?.addEventListener('input', (e) => {
@@ -284,26 +288,41 @@ function bindPlayerEvents(p) {
     p.isDraggingProgress = false;
   });
 
-  volumeSlider?.addEventListener('input', (e) => {
-    const vol = parseFloat(e.target.value);
-    p.volume = vol;
-    if (p.audio) p.audio.volume = vol / 100;
-    updateVolumeUI(p);
-    saveState(p);
+  volumeSliders.forEach(slider => {
+    slider?.addEventListener('input', (e) => {
+      const vol = parseFloat(e.target.value);
+      p.volume = vol;
+      if (p.audio) p.audio.volume = vol / 100;
+      updateVolumeUI(p);
+      saveState(p);
+    });
   });
 
-  volumeIconBtn?.addEventListener('click', () => {
-    if (p.volume > 0) {
-      p.previousVolume = p.volume;
-      p.volume = 0;
-    } else {
-      p.volume = p.previousVolume || 80;
+  const desktopVolPopup = document.getElementById('desktop-volume-popup');
+
+  // Desktop Volume Icon (Toggles Popup)
+  volumeIconBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    desktopVolPopup?.classList.toggle('hidden');
+    desktopVolPopup?.classList.toggle('flex');
+  });
+
+  // Mobile Volume Icon (Toggles Popup)
+  mobileVolIconBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    mobileVolPopup?.classList.toggle('hidden');
+    mobileVolPopup?.classList.toggle('flex');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!mobileVolIconBtn?.contains(e.target) && !mobileVolPopup?.contains(e.target)) {
+      mobileVolPopup?.classList.add('hidden');
+      mobileVolPopup?.classList.remove('flex');
     }
-    if (p.audio) p.audio.volume = p.volume / 100;
-    const vs = document.getElementById('volume-slider');
-    if (vs) vs.value = p.volume;
-    updateVolumeUI(p);
-    saveState(p);
+    if (!volumeIconBtn?.contains(e.target) && !desktopVolPopup?.contains(e.target)) {
+      desktopVolPopup?.classList.add('hidden');
+      desktopVolPopup?.classList.remove('flex');
+    }
   });
 }
 
@@ -378,12 +397,6 @@ export function initAudioPlayer() {
       updateRepeatUI(p);
       if (p.audio) updateProgressUI(p);
     }
-  }
-
-  // Pastikan <main> punya padding bawah jika player bar terlihat
-  const mainEl = document.querySelector('main');
-  if (p.currentTrack && mainEl) {
-    mainEl.classList.add('pb-28');
   }
 
   // Simpan state secara berkala setiap 3 detik

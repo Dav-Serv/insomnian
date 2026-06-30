@@ -214,7 +214,7 @@ import Sidebar from '../layouts/Sidebar.astro';
 
 <script>
   import { isLoggedIn, getUser, logout, getToken } from '../utils/auth.js';
-  import { apiGetHome, apiGenerateMockSleep } from '../utils/api.js';
+  import { apiGetHome, apiGenerateMockSleep, apiGetHomeRecommendations } from '../utils/api.js';
 
   document.addEventListener('astro:page-load', async () => {
     const guestView = document.getElementById('guest-view');
@@ -252,37 +252,51 @@ import Sidebar from '../layouts/Sidebar.astro';
         `;
       }
 
+      // Populate helper function
+      const populateSummary = (summary) => {
+        if (summary.recovery_status === 'No Data Yet') {
+          mockSleepBtn?.classList.remove('hidden');
+        } else {
+          mockSleepBtn?.classList.add('hidden');
+        }
+
+        if (scoreText) scoreText.textContent = summary.sleep_score.replace('%', '');
+        
+        if (scoreArc) {
+          const scoreNum = parseInt(summary.sleep_score) || 0;
+          const offset = 263.89 * (1 - scoreNum / 100);
+          scoreArc.style.strokeDashoffset = offset.toString();
+        }
+
+        if (recoveryStatus) recoveryStatus.textContent = summary.recovery_status;
+        if (recoveryMessage) recoveryMessage.textContent = summary.recovery_message;
+        if (totalTime) totalTime.textContent = summary.total_time;
+        if (deepSleep) deepSleep.textContent = summary.deep_sleep;
+        if (restfulness) restfulness.textContent = summary.restfulness_status;
+      };
+
       // Load dashboard data from backend API
       try {
-        const response = await apiGetHome(token);
-        if (response.ok && response.data.success) {
-          const data = response.data.data;
-          const summary = data.sleep_summary;
-          const recommendations = data.recommended_soundscapes;
-
-          // Check if user has dummy data/first log or is blank
-          if (summary.recovery_status === 'No Data Yet') {
-            mockSleepBtn?.classList.remove('hidden');
-          } else {
-            mockSleepBtn?.classList.add('hidden');
+        if (window.__homeDataCache) {
+          populateSummary(window.__homeDataCache);
+        } else {
+          const response = await apiGetHome(token);
+          if (response.ok && response.data.success) {
+            const summary = response.data.data.sleep_summary;
+            window.__homeDataCache = summary;
+            populateSummary(summary);
           }
+        }
+      } catch (err) {
+        console.error("Error loading dashboard data:", err);
+      }
 
-          // Populate sleep score values
-          if (scoreText) scoreText.textContent = summary.sleep_score.replace('%', '');
+      // Load recommendations separately to avoid blocking UI
+      try {
+        const recResponse = await apiGetHomeRecommendations(token);
+        if (recResponse.ok && recResponse.data.success) {
+          const recommendations = recResponse.data.data;
           
-          // Animate score arc (circumference = 263.89)
-          if (scoreArc) {
-            const scoreNum = parseInt(summary.sleep_score) || 0;
-            const offset = 263.89 * (1 - scoreNum / 100);
-            scoreArc.style.strokeDashoffset = offset.toString();
-          }
-
-          if (recoveryStatus) recoveryStatus.textContent = summary.recovery_status;
-          if (recoveryMessage) recoveryMessage.textContent = summary.recovery_message;
-          if (totalTime) totalTime.textContent = summary.total_time;
-          if (deepSleep) deepSleep.textContent = summary.deep_sleep;
-          if (restfulness) restfulness.textContent = summary.restfulness_status;
-
           // Populate recommended soundscapes
           if (recommendationsGrid) {
             if (recommendations.length === 0) {
@@ -324,10 +338,9 @@ import Sidebar from '../layouts/Sidebar.astro';
               recommendationsGrid.appendChild(discoverMore);
             }
           }
-
         }
       } catch (err) {
-        console.error("Error loading dashboard data:", err);
+        console.error("Error loading recommendations data:", err);
       }
     } else {
       guestView?.classList.remove('hidden');
@@ -343,7 +356,11 @@ import Sidebar from '../layouts/Sidebar.astro';
       try {
         const response = await apiGenerateMockSleep(token);
         if (response.ok && response.data.success) {
-          window.location.reload();
+          window.__homeDataCache = null; // Clear cache
+          window.__diaryDataCache = null; // Clear diary cache too
+          import('astro:transitions/client').then(({ navigate }) => {
+            navigate(window.location.pathname);
+          });
         } else {
           alert('Gagal membuat data dummy: ' + (response.data.message || ''));
           mockSleepBtn.textContent = '⚙️ Buat Simulasi Data Tidur Pertama (Mock Sleep Data)';
