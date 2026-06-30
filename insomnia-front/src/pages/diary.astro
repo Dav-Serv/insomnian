@@ -496,18 +496,8 @@ const weeklyData = [
       }
     });
 
-    // 3. Load sleep logs from backend
-    try {
-      if (weeklyBarsContainer) {
-        weeklyBarsContainer.innerHTML = '<div class="col-span-full text-center text-xs text-muted/60 py-10">Memuat tren...</div>';
-      }
-      if (recentHistoryContainer) {
-        recentHistoryContainer.innerHTML = '<div class="text-center text-xs text-muted/60 py-10">Memuat riwayat...</div>';
-      }
-
-      const response = await apiGetDiary(token);
-      if (response.ok && response.data.success) {
-        const diaries = response.data.data;
+    // Helper function to render diaries
+    const renderDiary = (diaries: any[]) => {
         localDiaries = diaries; // Store in local variable
 
         // A. Render Weekly Trend Chart
@@ -518,7 +508,7 @@ const weeklyData = [
           const diff = today.getDate() - day + (day === 0 ? -6 : 1);
           const monday = new Date(today.setDate(diff));
 
-          const weekData = [];
+          const weekData: any[] = [];
           const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
           
           for (let i = 0; i < 7; i++) {
@@ -626,8 +616,28 @@ const weeklyData = [
             });
           }
         }
+    };
+
+    // 3. Load sleep logs from backend
+    try {
+      if (window.__diaryDataCache) {
+        renderDiary(window.__diaryDataCache);
       } else {
-        console.error('Gagal mengambil data diary:', response.data.message);
+        if (weeklyBarsContainer) {
+          weeklyBarsContainer.innerHTML = '<div class="col-span-full text-center text-xs text-muted/60 py-10">Memuat tren...</div>';
+        }
+        if (recentHistoryContainer) {
+          recentHistoryContainer.innerHTML = '<div class="text-center text-xs text-muted/60 py-10">Memuat riwayat...</div>';
+        }
+
+        const response = await apiGetDiary(token);
+        if (response.ok && response.data.success) {
+          const diaries = response.data.data;
+          window.__diaryDataCache = diaries;
+          renderDiary(diaries);
+        } else {
+          console.error('Gagal mengambil data diary:', response.data.message);
+        }
       }
     } catch (err) {
       console.error('Error fetching diary:', err);
@@ -684,7 +694,11 @@ const weeklyData = [
           }, token);
 
           if (res.ok && res.data.success) {
-            window.location.reload();
+            window.__diaryDataCache = null; // Clear cache so diary refreshes
+            window.__homeDataCache = null; // Clear cache to load fresh sleep score on home
+            import('astro:transitions/client').then(({ navigate }) => {
+              navigate(window.location.pathname);
+            });
           } else {
             alert('Gagal menyimpan: ' + (res.data.message || 'Error tidak diketahui'));
             if (submitBtn) {

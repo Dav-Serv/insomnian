@@ -20,6 +20,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function() {
     // home
     Route::get('/home', [HomeController::class, 'index']);
+    Route::get('/home/recommendations', [HomeController::class, 'recommendations']);
     // mockSleepLog hanya untuk testing, kalau mau deploy di comment saja codenya
     Route::post('/home/mock-sleep', [HomeController::class, 'mockSleepLog']);
 
